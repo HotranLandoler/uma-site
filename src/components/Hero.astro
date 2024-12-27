@@ -1,0 +1,21 @@
+---
+import { Image } from "astro:assets";
+import UMaLogo from "../assets/UMaLogoSquare_WhiteBackground.png";
+import SocialLinks from "./SocialLinks.astro";
+---
+
+<header class="mb-12">
+  <div class="mx-auto max-w-32 mb-2">
+    <Image src={UMaLogo} alt="A logo with a black round border and black dots denoting the Ursa Major." />
+  </div>
+
+  <div class="mb-4">
+    <h1 class="font-bold text-3xl mb-2">UMa Studio</h1>
+    <SocialLinks />
+  </div>
+
+  <p class="text-lg">
+    来自中国的独立游戏团队
+  </p>
+  <p lang="en">Indie game team from China</p>
+</header>

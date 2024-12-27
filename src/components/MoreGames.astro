@@ -1,0 +1,15 @@
+---
+import { Image } from "astro:assets";
+import itchBadge from "../assets/badge-color.png";
+---
+
+<section>
+  <hgroup class="mb-4">
+    <h2 class="text-2xl font-bold">全部游戏</h2>
+    <p class="text-lg font-bold" lang="en">All Games</p>
+  </hgroup>
+
+  <a class="inline-block max-w-36" href="https://itch.io/profile/uma-studio" rel="noreferrer" target="_blank" title="itch.io page">
+    <Image src={itchBadge} alt="Available on itch.io." />
+  </a>
+</section>

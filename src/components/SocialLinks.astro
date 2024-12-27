@@ -1,0 +1,24 @@
+---
+import { Image } from "astro:assets";
+import itchIoLogo from "../assets/itchio-logo-textless-black.png";
+import mail from "../assets/mail.svg";
+import gitee from "../assets/gitee.svg";
+---
+
+<ul class="flex items-center justify-center gap-2">
+  <li class="max-w-8">
+    <a href="https://itch.io/profile/uma-studio" rel="noreferrer" target="_blank" title="itch.io Page">
+      <Image src={itchIoLogo} alt="The logo of itch.io." />
+    </a>
+  </li>
+  <li class="max-w-8">
+    <a href="mailto:contact@uma-studio.games" title="Send Email">
+      <Image src={mail} alt="Icon of an envelope." />
+    </a>
+  </li>
+  <li class="max-w-7">
+    <a href="https://gitee.com/uma-studio" title="Gitee Page">
+      <Image class="w-full" src={gitee} alt="The logo of Gitee.com. " />
+    </a>
+  </li>
+</ul>

@@ -8,6 +8,9 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
+	<nav slot="topnav" aria-label="站点导航" class="flex justify-end px-8 py-4">
+		<a class="text-lg font-bold hover:underline" href="/vgti">VGTI</a>
+	</nav>
 	<main class="mb-16">
 		<Hero />
 		<ComingSoon />

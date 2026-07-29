@@ -1,6 +1,13 @@
 ---
 import "@fontsource-variable/noto-sans-sc";
 import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	fullBleed?: boolean;
+}
+
+const { title = "UMa Studio", fullBleed = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -11,13 +18,19 @@ import "../styles/global.css";
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<meta name="description" content="Official website of UMa Studio, an indie game team from China." />
 		<meta name="generator" content={Astro.generator} />
-		<title>UMa Studio</title>
+		<title>{title}</title>
 	</head>
 	<body class="text-center">
 		<slot name="topnav" />
-		<div class="max-w-[40rem] p-8 mx-auto">
-			<slot />
-		</div>
+		{
+			fullBleed ? (
+				<slot />
+			) : (
+				<div class="max-w-[40rem] p-8 mx-auto">
+					<slot />
+				</div>
+			)
+		}
 	</body>
 </html>
 

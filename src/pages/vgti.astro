@@ -1,17 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import CaigeTest from "../components/CaigeTest.svelte";
 ---
 
-<Layout>
-	<main class="mb-16">
-		<hgroup class="mb-4">
-			<h1 class="text-3xl font-bold">VGTI</h1>
-		</hgroup>
-
-		<p class="text-lg">页面建设中</p>
-
-		<p>
-			<a class="font-bold hover:underline" href="/">返回首页</a>
-		</p>
-	</main>
+<Layout title="键盘农场｜菜格测试" fullBleed>
+	<CaigeTest client:load />
 </Layout>

@@ -5,11 +5,20 @@ import itchBadge from "../assets/badge-color.png";
 
 <section>
   <hgroup class="mb-4">
-    <h2 class="text-2xl font-bold">全部游戏</h2>
-    <p class="text-lg font-bold" lang="en">All Games</p>
+    <h2 class="text-2xl font-bold">更多游戏</h2>
+    <p class="text-lg font-bold" lang="en">More Games</p>
   </hgroup>
 
-  <a class="inline-block max-w-36" href="https://uma-studio.itch.io/" rel="noreferrer" target="_blank" title="itch.io page">
-    <Image src={itchBadge} alt="Available on itch.io." />
-  </a>
+  <ul class="flex flex-col gap-4">
+    <li>
+      <a class="inline-flex items-center justify-center min-w-36 min-h-12 bg-[#f83055] text-white font-bold rounded" href="https://www.gcores.com/users/761043/" rel="noreferrer" target="_blank" title="GCORES page">
+        机核 GCORES
+      </a>
+    </li>
+    <li>
+      <a class="inline-block max-w-36" href="https://uma-studio.itch.io/" rel="noreferrer" target="_blank" title="itch.io page">
+        <Image src={itchBadge} alt="Available on itch.io." />
+      </a>
+    </li>
+  </ul>
 </section>

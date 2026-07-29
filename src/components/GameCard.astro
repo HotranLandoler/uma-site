@@ -6,9 +6,11 @@ interface Props {
   src: ImageMetadata;
   alt: string;
   title?: string;
+  /** CSS aspect-ratio 值，例如 "3 / 1"、"2 / 1"、"16 / 9"。 */
+  aspect?: string;
 }
 
-const { href, src, alt, title = alt } = Astro.props;
+const { href, src, alt, title = alt, aspect = "3 / 1" } = Astro.props;
 ---
 
 <a
@@ -19,7 +21,8 @@ const { href, src, alt, title = alt } = Astro.props;
   rel="noreferrer"
 >
   <Image
-    class="block w-full aspect-3/1 object-cover"
+    class="block w-full object-cover"
+    style={`aspect-ratio: ${aspect}`}
     src={src}
     alt={alt}
     widths={[400, 800]}

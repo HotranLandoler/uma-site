@@ -1,8 +1,9 @@
 ---
 import SocialLinks from "./SocialLinks.astro";
+const year = new Date().getFullYear();
 ---
 
 <footer class="flex items-center justify-between">
-  <small>© 2025 UMa Studio</small>
+  <small>© {year} UMa Studio</small>
   <SocialLinks />
 </footer>

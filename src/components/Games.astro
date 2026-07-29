@@ -1,21 +1,25 @@
+---
+import GameCard from "./GameCard.astro";
+import youchatBanner from "../assets/games/YouchatBanner.avif";
+import crashPunkBanner from "../assets/games/CrashPunkBanner.jpg";
+import poopyBirdBanner from "../assets/games/PoopyBirdBanner.jpg";
+---
+
 <section class="mb-12">
   <hgroup class="mb-4">
     <h2 class="text-2xl font-bold">代表作品</h2>
     <p class="text-lg font-bold" lang="en">Featured Products</p>
   </hgroup>
 
-  <ul>
+  <ul class="flex flex-col gap-4">
     <li>
-      <iframe class="border-none w-full" src="https://itch.io/embed/3401205" title="Live Zone by UMa Studio"></iframe>
+      <GameCard href="https://www.gcores.com/games/174049" src={youchatBanner} alt="Youchat.exe" title="Youchat.exe by UMa Studio" />
     </li>
     <li>
-      <iframe class="border-none w-full" src="https://itch.io/embed/3254449" title="Youchat.exe by UMa Studio"></iframe>
+      <GameCard href="https://www.gcores.com/games/130910" src={crashPunkBanner} alt="Crash Punk" title="Crash Punk by UMa Studio" />
     </li>
     <li>
-      <iframe class="border-none w-full" src="https://itch.io/embed/2819609" title="Crash Punk by UMa Studio"></iframe>
-    </li>
-    <li>
-      <iframe class="border-none w-full" src="https://itch.io/embed/2495952" title="Poopy Bird by UMa Studio"></iframe>
+      <GameCard href="https://www.gcores.com/games/174048" src={poopyBirdBanner} alt="Poopy Bird" title="Poopy Bird by UMa Studio" />
     </li>
   </ul>
 </section>

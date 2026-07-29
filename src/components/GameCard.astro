@@ -1,0 +1,28 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  href: string;
+  src: ImageMetadata;
+  alt: string;
+  title?: string;
+}
+
+const { href, src, alt, title = alt } = Astro.props;
+---
+
+<a
+  class="group block overflow-hidden rounded-lg ring-1 ring-black/10 transition hover:ring-black/30"
+  href={href}
+  title={title}
+  target="_blank"
+  rel="noreferrer"
+>
+  <Image
+    class="block w-full aspect-3/1 object-cover"
+    src={src}
+    alt={alt}
+    widths={[400, 800]}
+    sizes="(max-width: 640px) 100vw, 50vw"
+  />
+</a>

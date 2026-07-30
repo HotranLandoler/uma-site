@@ -196,15 +196,13 @@
           <div class="relation">
             <div class="relation-hero">
               <p class="relation-title">{result.heroTitle}</p>
-              <div class="relation-center">
-                <span class="relation-center-emoji">{result.emoji}</span>
-                <span class="relation-center-name">{result.name}</span>
-              </div>
             </div>
             <div class="relation-friends">
               {#each allCards as rel}
                 <div
-                  class="relation-card {rel.kind === 'tense' ? 'relation-card--tense' : ''}"
+                  class="relation-card {rel.kind === 'tense'
+                    ? 'relation-card--tense'
+                    : ''}"
                 >
                   <div
                     class="relation-avatar"
@@ -461,38 +459,23 @@
   }
   .relation-hero {
     background: linear-gradient(180deg, #f7d3c0 0%, #fbe4d6 100%);
-    padding: 26px 20px 0;
+    padding: 24px 20px;
     text-align: center;
   }
   .relation-title {
     font-weight: 900;
     font-size: 20px;
     color: #3a4a52;
-    margin: 0 0 18px;
-  }
-  .relation-center {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #fff;
-    border-radius: 999px;
-    padding: 10px 22px;
-    box-shadow: 0 10px 24px rgba(74, 93, 99, 0.18);
-    font-size: 20px;
-    font-weight: 900;
-    color: #2e5965;
-    margin-bottom: -28px;
-    position: relative;
+    margin: 0;
   }
   .relation-friends {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    padding: 44px 16px 22px;
+    padding: 22px 16px;
   }
   .relation-card {
     background: #fff;
-    border: 2px solid #cfe6ee;
     border-radius: 18px;
     padding: 16px 8px 14px;
     text-align: center;
@@ -530,7 +513,7 @@
   @media (max-width: 480px) {
     .relation-friends {
       gap: 8px;
-      padding: 40px 10px 18px;
+      padding: 16px 10px 18px;
     }
     .relation-card {
       padding: 12px 4px 10px;

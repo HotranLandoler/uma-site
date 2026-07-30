@@ -70,7 +70,7 @@ export interface TypeInfo {
 
 /** 界面固定文案 */
 export const UI = {
-  brand: "键盘农场",
+  brand: "键盘农场 菜格测试",
   brandSprout: "/vgti/stages/stage-2.png",
   brandSproutAlt: "发芽植物",
   titleLines: ["测测你的", "菜格类型"],
@@ -293,7 +293,7 @@ export const TYPES: Record<TypeKey, TypeInfo> = {
     image: "/vgti/banana.png",
     desc: "你有点“蕉绿”：deadline 还没到，脑子已经开始预演所有意外。你容易紧张，也容易被环境催熟；但状态稳定后，其实是甜甜的好相处型。",
     tags: ["蕉绿", "容易紧张", "成熟后甜甜的"],
-    heroTitle: "菜格关系图",
+    heroTitle: "最适合和TA们一起玩",
     avatarBg: "#fcecc4",
     color: "#b58a2a",
     relations: {

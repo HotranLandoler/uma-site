@@ -123,7 +123,12 @@
   }
 </script>
 
-<svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden">
+<svg
+  width="0"
+  height="0"
+  aria-hidden="true"
+  style="position:absolute;overflow:hidden"
+>
   <defs>
     <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
       <path d="M0,0 L1,0 L1,0.75 C0.75,0.95 0.25,0.95 0,0.75 Z" />
@@ -295,7 +300,6 @@
     padding: 6px 12px 6px 8px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 8px 20px rgba(66, 151, 121, 0.1);
   }
   .brand-sprout {
     width: 30px;
@@ -477,6 +481,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     padding: 22px 16px;
+    padding-top: 0;
   }
   .relation-card {
     background: #fff;
@@ -524,6 +529,7 @@
     .relation-friends {
       gap: 8px;
       padding: 16px 10px 18px;
+      padding-top: 0;
     }
     .relation-card {
       padding: 12px 4px 10px;

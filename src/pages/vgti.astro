@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import CaigeTest from "../components/CaigeTest.svelte";
+import CopyRight from "../components/CopyRight.astro";
 import { Image } from "astro:assets";
 import UMaLogo from "../assets/UMaLogoSquare_WhiteBackground.png";
 ---
@@ -10,10 +11,20 @@ import UMaLogo from "../assets/UMaLogoSquare_WhiteBackground.png";
 		href="/"
 		aria-label="返回主页"
 		title="返回主页"
-		class="flex w-fit items-center gap-2 ml-4 mt-4 rounded-full bg-white px-2 pr-3 py-2 transition hover:shadow-lg"
+		class="flex w-fit items-center gap-2 ml-4 mt-4 rounded-full bg-white px-2 pr-4 py-2 transition hover:shadow-lg"
 	>
 		<Image src={UMaLogo} alt="UMa Studio" class="h-8 w-8 rounded-full" />
-		<span class="text-sm font-bold text-[#2e5965]">UMa Studio</span>
+		<span class="font-bold text-[#2e5965]">UMa Studio</span>
 	</a>
 	<CaigeTest client:load />
+
+  <footer class="text-left p-4 text-white">
+    <CopyRight />
+  </footer>
 </Layout>
+
+<style>
+  span {
+    font-family: "Noto Sans SC Variable", sans-serif;
+  }
+</style>

@@ -234,11 +234,7 @@
 
 <style>
   :global(body) {
-    background-color: #00a1f7;
-    background-image: linear-gradient(180deg, #00a1f7, #49d4e5);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-
+    background: linear-gradient(to bottom, #00a1f7 0%, #49d4e5 100%);
     font-family: unset;
   }
   .wrap {

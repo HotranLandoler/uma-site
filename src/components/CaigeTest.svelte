@@ -355,10 +355,6 @@
       box-shadow 0.12s ease,
       opacity 0.12s ease;
   }
-  button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 28px rgba(48, 173, 132, 0.3);
-  }
   button:active {
     transform: translateY(1px);
   }
@@ -411,9 +407,15 @@
     font-weight: 800;
     line-height: 1.55;
   }
-  .option:hover {
-    border-color: rgba(68, 199, 179, 0.45);
-    background: #fafffb;
+  @media (hover: hover) {
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(48, 173, 132, 0.3);
+    }
+    .option:hover {
+      border-color: rgba(68, 199, 179, 0.45);
+      background: #fafffb;
+    }
   }
 
   .nav {

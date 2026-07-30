@@ -443,6 +443,35 @@
     display: grid;
     gap: 22px;
   }
+  .result-img,
+  .result-copy,
+  .relation,
+  .actions,
+  .toast {
+    animation: result-rise 0.5s ease-out both;
+  }
+  .result-img {
+    animation-delay: 0s;
+  }
+  .result-copy {
+    animation-delay: 0.1s;
+  }
+  .relation {
+    animation-delay: 0.2s;
+  }
+  .actions {
+    animation-delay: 0.3s;
+  }
+  @keyframes result-rise {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
   .result-img {
     width: min(380px, 86%);
     margin: 0 auto;

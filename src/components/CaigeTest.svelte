@@ -208,7 +208,7 @@
                     class="relation-avatar"
                     style="background: {TYPES[rel.key].avatarBg}"
                   >
-                    {TYPES[rel.key].emoji}
+                    <img src={TYPES[rel.key].icon} alt={TYPES[rel.key].name} />
                   </div>
                   <p
                     class="relation-friend-name"
@@ -248,17 +248,7 @@
     place-items: center;
     text-align: left;
     color: var(--ink);
-    background: radial-gradient(
-        circle at 12% 14%,
-        rgba(255, 255, 255, 0.55) 0 7%,
-        transparent 8%
-      ),
-      radial-gradient(
-        circle at 88% 8%,
-        rgba(255, 255, 255, 0.35) 0 6%,
-        transparent 7%
-      ),
-      linear-gradient(180deg, #b7f2f7 0%, #dff9d1 100%);
+    background: linear-gradient(180deg, #00a1f7, #48deef);
   }
 
   .panel {
@@ -488,14 +478,20 @@
     border-color: #f5b978;
   }
   .relation-avatar {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
+    overflow: visible;
     margin-bottom: 4px;
+  }
+  .relation-avatar img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+    display: block;
   }
   .relation-friend-name {
     font-weight: 900;
@@ -521,7 +517,6 @@
     .relation-avatar {
       width: 48px;
       height: 48px;
-      font-size: 24px;
     }
     .relation-friend-name {
       font-size: 15px;

@@ -123,6 +123,14 @@
   }
 </script>
 
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden">
+  <defs>
+    <clipPath id="hero-wave" clipPathUnits="objectBoundingBox">
+      <path d="M0,0 L1,0 L1,0.75 C0.75,0.95 0.25,0.95 0,0.75 Z" />
+    </clipPath>
+  </defs>
+</svg>
+
 <section class="wrap">
   <section class="panel">
     <div class="inner">
@@ -454,8 +462,9 @@
   }
   .relation-hero {
     background: linear-gradient(180deg, #f7d3c0 0%, #fbe4d6 100%);
-    padding: 24px 20px;
+    padding: 24px 20px 50px;
     text-align: center;
+    clip-path: url(#hero-wave);
   }
   .relation-title {
     font-weight: 900;

@@ -198,6 +198,8 @@
           <img
             class="result-img"
             src={result.image}
+            width="1200"
+            height="1600"
             alt={`你的菜格类型是${result.name}`}
           />
           <div class="result-copy">
@@ -474,6 +476,7 @@
   }
   .result-img {
     width: min(380px, 86%);
+    height: auto;
     margin: 0 auto;
     display: block;
     border-radius: 18px;

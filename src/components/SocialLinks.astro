@@ -1,24 +1,42 @@
 ---
 import { Image } from "astro:assets";
-import itchIoLogo from "../assets/itchio-logo-textless-black.png";
-import mail from "../assets/mail.svg";
-import gitee from "../assets/gitee.svg";
+import itchIoLogo from "../assets/social/itchio.png";
+import mail from "../assets/social/mail.svg";
+import xiaohongshu from "../assets/social/xiaohongshu.svg";
+import bilibili from "../assets/social/bilibili.png";
+
+const socialLinks = [
+  {
+    name: "Xiaohongshu",
+    href: "https://www.xiaohongshu.com/user/profile/6524c39e000000002a029247",
+    icon: xiaohongshu,
+  },
+  {
+    name: "itch.io",
+    href: "https://itch.io/profile/uma-studio",
+    icon: itchIoLogo,
+  },
+  {
+    name: "Bilibili",
+    href: "https://space.bilibili.com/3493083104676301",
+    icon: bilibili,
+  },
+  {
+    name: "Email",
+    href: "mailto:contact@uma-studio.games",
+    icon: mail,
+  },
+];
 ---
 
 <ul class="flex items-center justify-center gap-2">
-  <li class="max-w-8">
-    <a href="https://itch.io/profile/uma-studio" rel="noreferrer" target="_blank" title="itch.io Page">
-      <Image src={itchIoLogo} alt="The logo of itch.io." />
-    </a>
-  </li>
-  <li class="max-w-8">
-    <a href="mailto:contact@uma-studio.games" title="Send Email">
-      <Image src={mail} alt="Icon of an envelope." />
-    </a>
-  </li>
-  <li class="max-w-7">
-    <a href="https://gitee.com/uma-studio" title="Gitee Page">
-      <Image class="w-full" src={gitee} alt="The logo of Gitee.com. " />
-    </a>
-  </li>
+  {
+    socialLinks.map(({ name, href, icon }) => (
+      <li class="max-w-8">
+        <a href={href} rel="noreferrer" target="_blank" title={`${name} Page`}>
+          <Image src={icon} alt={`The logo of ${name}.`} />
+        </a>
+      </li>
+    ))
+  }
 </ul>

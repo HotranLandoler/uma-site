@@ -31,19 +31,41 @@ export interface Question {
   a: Option[];
 }
 
+export interface FriendRel {
+  /** 关联的菜格类型 */
+  key: TypeKey;
+  /** 关系副标题 */
+  tagline: string;
+  /** 关系种类 */
+  kind: "tense" | "recommend";
+}
+
+export interface Relations {
+  /** 推荐农友 */
+  recommend: FriendRel[];
+  /** 会让你紧张（可选） */
+  tense?: FriendRel[];
+}
+
 export interface TypeInfo {
   /** 类型名 */
   name: string;
+  /** 表情符号 */
+  emoji: string;
   /** 结果图（public 内路径） */
   image: string;
-  /** 关系图（public 内路径） */
-  relationImage: string;
   /** 结果描述 */
   desc: string;
   /** 关键词标签 */
   tags: string[];
-  /** 关系文案（用于复制） */
-  relationCopy: string;
+  /** 关系卡顶部标题 */
+  heroTitle: string;
+  /** 头像底色 */
+  avatarBg: string;
+  /** 类型主色（用于名称） */
+  color: string;
+  /** 菜格关系 */
+  relations: Relations;
 }
 
 /** 界面固定文案 */
@@ -199,50 +221,104 @@ export const QUESTIONS: Question[] = [
 export const TYPES: Record<TypeKey, TypeInfo> = {
   holly: {
     name: "冬青",
+    emoji: "🌲",
     image: "/vgti/holly.png",
-    relationImage: "/vgti/relation-holly.svg",
     desc: "你经常出现在热闹、节日、情侣氛围旁边，但不一定要加入。你低调旁观，偶尔单身自嘲，不依附别人，也能默默常绿。",
     tags: ["低调旁观", "单身自嘲", "默默常绿"],
-    relationCopy: "推荐农友：椰子、萝卜、莲花",
+    heroTitle: "最适合和TA们一起玩",
+    avatarBg: "#d6efd2",
+    color: "#3e7f55",
+    relations: {
+      recommend: [
+        { key: "coconut", tagline: "一起收集小确幸", kind: "recommend" },
+        { key: "carrot", tagline: "安静可靠搭子", kind: "recommend" },
+        { key: "lotus", tagline: "互相不催不急", kind: "recommend" },
+      ],
+    },
   },
   lotus: {
     name: "莲花",
+    emoji: "🪷",
     image: "/vgti/lotus.png",
-    relationImage: "/vgti/relation-lotus.svg",
     desc: "你有点佛系，你身边有种令人宁静的磁场。你不是没有潜力，只是启动需要一点外力。起床、开工、回复消息都可能卡一下；但只要被推一把，你也能让人看到惊艳的一面。",
     tags: ["需要启动", "有潜力", "被点燃后很强"],
-    relationCopy: "推荐农友：苹果、椰子、萝卜",
+    heroTitle: "最适合和TA们一起玩",
+    avatarBg: "#f3d6e3",
+    color: "#a64d7a",
+    relations: {
+      recommend: [
+        { key: "apple", tagline: "轻轻推你启动", kind: "recommend" },
+        { key: "coconut", tagline: "用仪式感开机", kind: "recommend" },
+        { key: "carrot", tagline: "陪你稳稳落地", kind: "recommend" },
+      ],
+    },
   },
   carrot: {
     name: "萝卜",
+    emoji: "🥕",
     image: "/vgti/carrot.png",
-    relationImage: "/vgti/relation-carrot.svg",
     desc: "你可能经常踩坑：工作踩坑、餐厅踩坑、网购踩坑。但你踩完会记下来，你的经验越来越丰富，成为朋友眼里那个最踏实可靠的人。",
     tags: ["经常踩坑", "务实可靠", "避坑体质"],
-    relationCopy: "推荐农友：苹果、椰子、香蕉",
+    heroTitle: "最适合和TA们一起玩",
+    avatarBg: "#d8efd3",
+    color: "#3e7f55",
+    relations: {
+      recommend: [
+        { key: "apple", tagline: "一起推进避坑", kind: "recommend" },
+        { key: "coconut", tagline: "踩坑后补血", kind: "recommend" },
+        { key: "banana", tagline: "帮TA少想一点", kind: "recommend" },
+      ],
+    },
   },
   apple: {
     name: "苹果",
+    emoji: "🍎",
     image: "/vgti/apple.png",
-    relationImage: "/vgti/relation-apple.svg",
     desc: "你有自律感，也有推进感。你不一定大声催促，但会让周围的水果意识到“该熟了”。你是团队里的隐形进度条，能让项目准时落地。",
     tags: ["自律", "推进项目", "隐形进度条"],
-    relationCopy: "推荐农友：萝卜、莲花、椰子",
+    heroTitle: "最适合和TA们一起玩",
+    avatarBg: "#fadbd2",
+    color: "#b54a3a",
+    relations: {
+      recommend: [
+        { key: "carrot", tagline: "提前排雷", kind: "recommend" },
+        { key: "lotus", tagline: "被你推醒", kind: "recommend" },
+        { key: "coconut", tagline: "把气氛调柔和", kind: "recommend" },
+      ],
+    },
   },
   banana: {
     name: "香蕉",
+    emoji: "🍌",
     image: "/vgti/banana.png",
-    relationImage: "/vgti/relation-banana.svg",
     desc: "你有点“蕉绿”：deadline 还没到，脑子已经开始预演所有意外。你容易紧张，也容易被环境催熟；但状态稳定后，其实是甜甜的好相处型。",
     tags: ["蕉绿", "容易紧张", "成熟后甜甜的"],
-    relationCopy: "会让你紧张：苹果；推荐农友：椰子、冬青",
+    heroTitle: "菜格关系图",
+    avatarBg: "#fcecc4",
+    color: "#b58a2a",
+    relations: {
+      tense: [{ key: "apple", tagline: "会让你紧张", kind: "tense" }],
+      recommend: [
+        { key: "coconut", tagline: "适合一起降噪", kind: "recommend" },
+        { key: "holly", tagline: "适合一起常绿", kind: "recommend" },
+      ],
+    },
   },
   coconut: {
     name: "椰子",
+    emoji: "🥥",
     image: "/vgti/coconut.png",
-    relationImage: "/vgti/relation-coconut.svg",
     desc: "你是生活美学派，也是小确幸收集者。美食、咖啡馆、下午茶、拼单、约饭，都是你在紧张的生活中创造愉悦的灵感。办公室下午茶时间，你总能第一时间带领同事们赶往现场。",
     tags: ["生活美学派", "小确幸收集者", "下午茶活跃"],
-    relationCopy: "推荐农友：香蕉、莲花、冬青",
+    heroTitle: "最适合和TA们一起玩",
+    avatarBg: "#e8dcc4",
+    color: "#8b6322",
+    relations: {
+      recommend: [
+        { key: "banana", tagline: "一起缓解蕉绿", kind: "recommend" },
+        { key: "lotus", tagline: "一起仪式感开机", kind: "recommend" },
+        { key: "holly", tagline: "陪你安稳快乐", kind: "recommend" },
+      ],
+    },
   },
 };

@@ -43,6 +43,12 @@
   const question = $derived(QUESTIONS[current]);
   const progress = $derived((current / total) * 100);
 
+  // 关系卡：先「会让你紧张」，再「推荐农友」
+  const allCards = $derived([
+    ...(result.relations.tense ?? []),
+    ...result.relations.recommend,
+  ]);
+
   function begin() {
     screen = "quiz";
     current = 0;
@@ -187,11 +193,36 @@
               {#each result.tags as tag}<span class="tag">{tag}</span>{/each}
             </div>
           </div>
-          <img
-            class="relation-img"
-            src={result.relationImage}
-            alt={`${result.name}的菜格关系图`}
-          />
+          <div class="relation">
+            <div class="relation-hero">
+              <p class="relation-title">{result.heroTitle}</p>
+              <div class="relation-center">
+                <span class="relation-center-emoji">{result.emoji}</span>
+                <span class="relation-center-name">{result.name}</span>
+              </div>
+            </div>
+            <div class="relation-friends">
+              {#each allCards as rel}
+                <div
+                  class="relation-card {rel.kind === 'tense' ? 'relation-card--tense' : ''}"
+                >
+                  <div
+                    class="relation-avatar"
+                    style="background: {TYPES[rel.key].avatarBg}"
+                  >
+                    {TYPES[rel.key].emoji}
+                  </div>
+                  <p
+                    class="relation-friend-name"
+                    style="color: {TYPES[rel.key].color}"
+                  >
+                    {TYPES[rel.key].name}
+                  </p>
+                  <p class="relation-friend-tag">{rel.tagline}</p>
+                </div>
+              {/each}
+            </div>
+          </div>
           <div class="actions">
             <button onclick={saveResult}>{UI.saveBtn}</button>
             <button class="secondary" onclick={restart}>{UI.againBtn}</button>
@@ -422,13 +453,99 @@
     line-height: 1.8;
     color: #526971;
   }
-  .relation-img {
-    width: min(520px, 100%);
-    margin: 0 auto;
-    display: block;
+  .relation {
+    background: #fff;
     border-radius: 24px;
     box-shadow: 0 16px 42px rgba(74, 93, 99, 0.14);
+    overflow: hidden;
+  }
+  .relation-hero {
+    background: linear-gradient(180deg, #f7d3c0 0%, #fbe4d6 100%);
+    padding: 26px 20px 0;
+    text-align: center;
+  }
+  .relation-title {
+    font-weight: 900;
+    font-size: 20px;
+    color: #3a4a52;
+    margin: 0 0 18px;
+  }
+  .relation-center {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: #fff;
+    border-radius: 999px;
+    padding: 10px 22px;
+    box-shadow: 0 10px 24px rgba(74, 93, 99, 0.18);
+    font-size: 20px;
+    font-weight: 900;
+    color: #2e5965;
+    margin-bottom: -28px;
+    position: relative;
+  }
+  .relation-friends {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 44px 16px 22px;
+  }
+  .relation-card {
+    background: #fff;
+    border: 2px solid #cfe6ee;
+    border-radius: 18px;
+    padding: 16px 8px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .relation-card--tense {
+    border-color: #f5b978;
+  }
+  .relation-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+  .relation-friend-name {
+    font-weight: 900;
+    font-size: 18px;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .relation-friend-tag {
+    font-size: 12px;
+    color: #6e8790;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 480px) {
+    .relation-friends {
+      gap: 8px;
+      padding: 40px 10px 18px;
+    }
+    .relation-card {
+      padding: 12px 4px 10px;
+    }
+    .relation-avatar {
+      width: 48px;
+      height: 48px;
+      font-size: 24px;
+    }
+    .relation-friend-name {
+      font-size: 15px;
+    }
+    .relation-friend-tag {
+      font-size: 11px;
+    }
   }
 
   .tags {

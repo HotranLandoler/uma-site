@@ -1,0 +1,49 @@
+---
+// 菜格测试入口按钮（含 hover 图标滑动动画）
+---
+
+<nav aria-label="站点导航" class="flex justify-end px-8 py-4">
+	<a
+		href="/vgti"
+		class="vgti-button flex items-center gap-2 rounded-full px-4 py-2 text-lg font-bold text-white"
+		style="background: linear-gradient(180deg, #00a1f7, #49d4e5)"
+	>
+		<span>键盘农场 菜格测试</span>
+		<span class="vgti-icon-wrap inline-flex overflow-hidden">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="3"
+				stroke="currentColor"
+				class="vgti-icon h-5 w-5 shrink-0"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+				/>
+			</svg>
+		</span>
+	</a>
+</nav>
+
+<style>
+	.vgti-button:hover .vgti-icon {
+		animation: chevron-slide 0.6s ease-out;
+	}
+	@keyframes chevron-slide {
+		0% {
+			transform: translateX(0);
+		}
+		45% {
+			transform: translateX(150%);
+		}
+		46% {
+			transform: translateX(-150%);
+		}
+		100% {
+			transform: translateX(0);
+		}
+	}
+</style>

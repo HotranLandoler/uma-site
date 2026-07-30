@@ -233,6 +233,14 @@
 </section>
 
 <style>
+  :global(body) {
+    background-color: #00a1f7;
+    background-image: linear-gradient(180deg, #00a1f7, #49d4e5);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    font-family: unset;
+  }
   .wrap {
     --card: rgba(255, 255, 255, 0.86);
     --ink: #39505a;
@@ -248,7 +256,6 @@
     place-items: center;
     text-align: left;
     color: var(--ink);
-    background: linear-gradient(180deg, #00a1f7, #48deef);
   }
 
   .panel {

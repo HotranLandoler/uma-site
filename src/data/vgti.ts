@@ -164,8 +164,8 @@ export const QUESTIONS: Question[] = [
 export const TYPES: Record<TypeKey, TypeInfo> = {
   holly: {
     name: "冬青",
-    icon: "/vgti/small-icons/Holly.png",
-    image: "/vgti/holly.png",
+    icon: "/vgti/small-icons/Holly.webp",
+    image: "/vgti/holly.webp",
     desc: "你经常出现在热闹、节日、情侣氛围旁边，但不一定要加入。你低调旁观，偶尔单身自嘲，不依附别人，也能默默常绿。",
     tags: ["低调旁观", "单身自嘲", "默默常绿"],
     heroTitle: "最适合和TA们一起玩",
@@ -181,8 +181,8 @@ export const TYPES: Record<TypeKey, TypeInfo> = {
   },
   lotus: {
     name: "莲花",
-    icon: "/vgti/small-icons/Lotus.png",
-    image: "/vgti/lotus.png",
+    icon: "/vgti/small-icons/Lotus.webp",
+    image: "/vgti/lotus.webp",
     desc: "你有点佛系，你身边有种令人宁静的磁场。你不是没有潜力，只是启动需要一点外力。起床、开工、回复消息都可能卡一下；但只要被推一把，你也能让人看到惊艳的一面。",
     tags: ["需要启动", "有潜力", "被点燃后很强"],
     heroTitle: "最适合和TA们一起玩",
@@ -198,8 +198,8 @@ export const TYPES: Record<TypeKey, TypeInfo> = {
   },
   carrot: {
     name: "萝卜",
-    icon: "/vgti/small-icons/Carrot.png",
-    image: "/vgti/carrot.png",
+    icon: "/vgti/small-icons/Carrot.webp",
+    image: "/vgti/carrot.webp",
     desc: "你可能经常踩坑：工作踩坑、餐厅踩坑、网购踩坑。但你踩完会记下来，你的经验越来越丰富，成为朋友眼里那个最踏实可靠的人。",
     tags: ["经常踩坑", "务实可靠", "避坑体质"],
     heroTitle: "最适合和TA们一起玩",
@@ -215,8 +215,8 @@ export const TYPES: Record<TypeKey, TypeInfo> = {
   },
   apple: {
     name: "苹果",
-    icon: "/vgti/small-icons/Apple.png",
-    image: "/vgti/apple.png",
+    icon: "/vgti/small-icons/Apple.webp",
+    image: "/vgti/apple.webp",
     desc: "你有自律感，也有推进感。你不一定大声催促，但会让周围的水果意识到“该熟了”。你是团队里的隐形进度条，能让项目准时落地。",
     tags: ["自律", "推进项目", "隐形进度条"],
     heroTitle: "最适合和TA们一起玩",
@@ -232,8 +232,8 @@ export const TYPES: Record<TypeKey, TypeInfo> = {
   },
   banana: {
     name: "香蕉",
-    icon: "/vgti/small-icons/Banana.png",
-    image: "/vgti/banana.png",
+    icon: "/vgti/small-icons/Banana.webp",
+    image: "/vgti/banana.webp",
     desc: "你有点“蕉绿”：deadline 还没到，脑子已经开始预演所有意外。你容易紧张，也容易被环境催熟；但状态稳定后，其实是甜甜的好相处型。",
     tags: ["蕉绿", "容易紧张", "成熟后甜甜的"],
     heroTitle: "最适合和TA们一起玩",
@@ -249,8 +249,8 @@ export const TYPES: Record<TypeKey, TypeInfo> = {
   },
   coconut: {
     name: "椰子",
-    icon: "/vgti/small-icons/Coco.png",
-    image: "/vgti/coconut.png",
+    icon: "/vgti/small-icons/Coco.webp",
+    image: "/vgti/coconut.webp",
     desc: "你是生活美学派，也是小确幸收集者。美食、咖啡馆、下午茶、拼单、约饭，都是你在紧张的生活中创造愉悦的灵感。办公室下午茶时间，你总能第一时间带领同事们赶往现场。",
     tags: ["生活美学派", "小确幸收集者", "下午茶活跃"],
     heroTitle: "最适合和TA们一起玩",

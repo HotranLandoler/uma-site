@@ -14,6 +14,7 @@
   let screen = $state<Screen>("start");
   let current = $state(0);
   let answers = $state<Score[]>([]);
+  let selected = $state<number | null>(null);
   let toast = $state("");
 
   const total = QUESTIONS.length;
@@ -42,6 +43,12 @@
   const result = $derived(TYPES[winner]);
   const question = $derived(QUESTIONS[current]);
   const progress = $derived((current / total) * 100);
+  const selectedOption = $derived(
+    selected === null ? null : question.a[selected],
+  );
+  const isPoolSelected = $derived(
+    selectedOption?.t === "波光闪闪的水池",
+  );
 
   // 关系卡：先「会让你紧张」，再「推荐农友」
   const allCards = $derived([
@@ -53,15 +60,22 @@
     screen = "quiz";
     current = 0;
     answers = [];
+    selected = null;
     toast = "";
   }
 
-  function choose(score: Score) {
-    answers = [...answers, score];
+  function choose(index: number) {
+    selected = index;
+  }
+
+  function next() {
+    if (selected === null) return;
+    answers = [...answers, question.a[selected].s];
     if (current + 1 >= total) {
       screen = "result";
     } else {
       current += 1;
+      selected = null;
     }
   }
 
@@ -69,12 +83,14 @@
     if (current === 0) return;
     current -= 1;
     answers = answers.slice(0, -1);
+    selected = null;
   }
 
   function restart() {
     screen = "start";
     current = 0;
     answers = [];
+    selected = null;
     toast = "";
   }
 
@@ -136,8 +152,32 @@
   </defs>
 </svg>
 
-<section class="wrap">
-  <section class="panel">
+<section class:pool-active={isPoolSelected} class="wrap">
+  <div class="background-art" aria-hidden="true">
+    <span class="facet facet-one"></span>
+    <span class="facet facet-two"></span>
+    <!-- Adapted from Goodkatz's MIT-licensed "Simple CSS Waves". -->
+    <svg
+      class="pool-waves"
+      viewBox="0 24 150 28"
+      preserveAspectRatio="none"
+      shape-rendering="auto"
+    >
+      <defs>
+        <path
+          id="pool-gentle-wave"
+          d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+        />
+      </defs>
+      <g class="pool-parallax">
+        <use href="#pool-gentle-wave" x="48" y="0"></use>
+        <use href="#pool-gentle-wave" x="48" y="3"></use>
+        <use href="#pool-gentle-wave" x="48" y="5"></use>
+        <use href="#pool-gentle-wave" x="48" y="7"></use>
+      </g>
+    </svg>
+  </div>
+  <section class:quiz-panel={screen === "quiz"} class="panel">
     <div class="inner">
       <div class="brand">
         <img
@@ -178,19 +218,32 @@
           </div>
           <h2>{question.q}</h2>
           <div class="options">
-            {#each question.a as opt}
-              <button class="option" onclick={() => choose(opt.s)}
-                >{opt.t}</button
+            {#each question.a as opt, index}
+              <button
+                class:selected={selected === index}
+                class:selected-pool={selected === index &&
+                  opt.t === "波光闪闪的水池"}
+                class="option"
+                aria-pressed={selected === index}
+                onclick={() => choose(index)}
+              >
+                <span class="option-text">{opt.t}</span>
+                <span class="option-water" aria-hidden="true"></span></button
               >
             {/each}
           </div>
           <div class="nav">
-            <button
-              class="secondary"
-              style="visibility: {current > 0 ? 'visible' : 'hidden'}"
-              onclick={back}>{UI.backBtn}</button
-            >
             <span class="tiny">{UI.backHint}</span>
+            <div class="nav-actions">
+              <button
+                class="secondary"
+                style="visibility: {current > 0 ? 'visible' : 'hidden'}"
+                onclick={back}>{UI.backBtn}</button
+              >
+              <button class="next" disabled={selected === null} onclick={next}>
+                {current + 1 >= total ? "查看答案" : "下一题"}
+              </button>
+            </div>
           </div>
         </div>
       {:else}
@@ -249,15 +302,45 @@
 
 <style>
   :global(body) {
-    background: linear-gradient(to bottom, #00a1f7 0%, #49d4e5 100%);
+    background: #dcebe5;
     font-family: unset;
   }
   .wrap {
-    --card: rgba(255, 255, 255, 0.86);
-    --ink: #39505a;
-    --muted: #6e8790;
-    --shadow: 0 20px 60px rgba(47, 122, 141, 0.22);
-    --radius: 28px;
+    --card: rgba(248, 251, 244, 0.88);
+    --ink: #253f43;
+    --muted: #587174;
+    --shadow: 0 18px 50px rgba(47, 93, 87, 0.14);
+    --radius: 24px;
+
+    /*
+     * 水池背景参数
+     * bg-top / bg-bottom：背景上下端颜色。
+     * wave-height：波浪区域高度；数值越大，波浪在页面中占据的高度越多。
+     * wave-color-1~4：由前至后的四层波浪颜色；alpha 越大越不透明。
+     * wave-speed-1~4：每层完成一次移动所需时间；秒数越小，移动越快。
+     */
+    --pool-bg-top: #8edee0;
+    --pool-bg-bottom: #3ca8bd;
+    --pool-wave-height: clamp(150px, 20vh, 270px);
+    --pool-wave-color-1: rgba(223, 255, 252, 0.68);
+    --pool-wave-color-2: rgba(173, 240, 236, 0.56);
+    --pool-wave-color-3: rgba(106, 206, 211, 0.52);
+    --pool-wave-color-4: rgba(42, 146, 171, 0.46);
+    --pool-wave-speed-1: 20s;
+    --pool-wave-speed-2: 14s;
+    --pool-wave-speed-3: 25s;
+    --pool-wave-speed-4: 36s;
+
+    /*
+     * 水池按钮参数
+     * button-rock-angle：按钮左右摇摆的最大角度；越大摇晃越明显。
+     * button-rock-speed：完成一次左右摇摆的时间；越小摇晃越快。
+     * button-water / button-crest：按钮内水体和浅色浪头的颜色。
+     */
+    --pool-button-rock-angle: 0.4deg;
+    --pool-button-rock-speed: 3s;
+    --pool-button-water: #42bdca;
+    --pool-button-crest: #78dfe0;
 
     width: 100%;
     min-height: 100vh;
@@ -267,23 +350,127 @@
     place-items: center;
     text-align: left;
     color: var(--ink);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      linear-gradient(145deg, rgba(255, 244, 190, 0.42), transparent 38%),
+      #dcebe5;
+    transition: background-color 0.55s ease;
+  }
+
+  .background-art {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .facet {
+    position: absolute;
+    opacity: 0.42;
+  }
+  .facet-one {
+    width: 42vmax;
+    height: 34vmax;
+    top: -14vmax;
+    right: -9vmax;
+    background: #f0c989;
+    clip-path: polygon(12% 0, 100% 8%, 72% 100%, 0 64%);
+  }
+  .facet-two {
+    width: 34vmax;
+    height: 30vmax;
+    bottom: -14vmax;
+    left: -8vmax;
+    background: #8fc5a9;
+    clip-path: polygon(0 18%, 72% 0, 100% 72%, 28% 100%);
+  }
+  .pool-waves {
+    position: absolute;
+    inset: auto 0 -1px;
+    width: 100%;
+    height: var(--pool-wave-height);
+    opacity: 0;
+    transform: translateY(22%);
+    transition:
+      opacity 0.45s ease,
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pool-active {
+    background: linear-gradient(
+      180deg,
+      var(--pool-bg-top),
+      var(--pool-bg-bottom)
+    );
+  }
+  .pool-active .facet {
+    opacity: 0.1;
+  }
+  .pool-active .pool-waves {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .pool-active .pool-parallax > use {
+    animation: move-pool-wave 20s cubic-bezier(0.55, 0.5, 0.45, 0.5)
+      infinite;
+  }
+  .pool-parallax > use:nth-child(1) {
+    fill: var(--pool-wave-color-1);
+    animation-delay: -2s;
+    animation-duration: var(--pool-wave-speed-1);
+  }
+  .pool-parallax > use:nth-child(2) {
+    fill: var(--pool-wave-color-2);
+    animation-delay: -3s;
+    animation-duration: var(--pool-wave-speed-2);
+  }
+  .pool-parallax > use:nth-child(3) {
+    fill: var(--pool-wave-color-3);
+    animation-delay: -4s;
+    animation-duration: var(--pool-wave-speed-3);
+  }
+  .pool-parallax > use:nth-child(4) {
+    fill: var(--pool-wave-color-4);
+    animation-delay: -5s;
+    animation-duration: var(--pool-wave-speed-4);
+  }
+  @keyframes move-pool-wave {
+    from {
+      transform: translate3d(-90px, 0, 0);
+    }
+    to {
+      transform: translate3d(85px, 0, 0);
+    }
   }
 
   .panel {
     width: min(720px, 100%);
     background: var(--card);
-    border: 3px solid rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.68);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    overflow: hidden;
     position: relative;
+    transition:
+      background 0.35s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
   }
   .panel::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
-    height: 10px;
-    background: linear-gradient(90deg, #80e36a, #43d8c9, #ffe067, #ff9f80);
+    height: 7px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: linear-gradient(90deg, #7dbd82, #69bdba, #e6c878, #df9c78);
+  }
+  .panel.quiz-panel {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .panel.quiz-panel::before {
+    display: none;
   }
 
   .inner {
@@ -408,14 +595,113 @@
   .option {
     width: 100%;
     text-align: left;
-    color: #3c565f;
-    background: #fff;
-    border: 2px solid transparent;
-    box-shadow: 0 10px 30px rgba(52, 111, 132, 0.08);
-    border-radius: 20px;
+    color: #304d51;
+    background: rgba(250, 253, 248, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 24px rgba(42, 83, 84, 0.08);
+    border-radius: 16px;
     padding: 16px 18px;
     font-weight: 800;
     line-height: 1.55;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .option-text {
+    position: relative;
+    z-index: 2;
+  }
+  .option.selected {
+    color: #173f46;
+    border-color: rgba(35, 105, 108, 0.62);
+    background: rgba(235, 250, 244, 0.92);
+    box-shadow:
+      0 0 0 3px rgba(241, 255, 248, 0.4),
+      0 12px 28px rgba(31, 94, 91, 0.16);
+    transform: translateY(-1px);
+  }
+  .option-water {
+    display: none;
+  }
+  .option.selected-pool {
+    color: #123f50;
+    border: 3px solid #278ca2;
+    background: #c9f3ef;
+    box-shadow:
+      0 5px 0 #176c81,
+      0 10px 20px rgba(16, 91, 110, 0.2);
+    transform-origin: center center;
+    animation: pool-button-rock var(--pool-button-rock-speed) ease-in-out
+      infinite;
+  }
+  .option.selected-pool .option-water {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: -5%;
+    bottom: -12px;
+    width: 110%;
+    height: 36px;
+    background: var(--pool-button-water);
+    animation: cartoon-water-sway 1.5s ease-in-out infinite alternate;
+  }
+  .option.selected-pool .option-water::before {
+    content: "";
+    position: absolute;
+    inset: -16px 0 auto;
+    height: 32px;
+    background: radial-gradient(
+        circle at 14px 16px,
+        var(--pool-button-crest) 0 15px,
+        transparent 16px
+      )
+      0 0 / 28px 32px repeat-x;
+  }
+  .option.selected-pool .option-water::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    top: -12px;
+    left: 22%;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+      8px -8px 0 -2px #fff,
+      96px 5px 0 -1px rgba(255, 255, 255, 0.9),
+      184px -7px 0 -2px rgba(255, 255, 255, 0.85);
+    animation: water-sparkle 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes cartoon-water-sway {
+    from {
+      transform: translateX(-2.5%) rotate(-1deg);
+    }
+    to {
+      transform: translateX(2.5%) rotate(1deg);
+    }
+  }
+  @keyframes pool-button-rock {
+    0% {
+      transform: translateY(-3px)
+        rotate(calc(0deg - var(--pool-button-rock-angle)));
+    }
+    50% {
+      transform: translateY(-3px) rotate(var(--pool-button-rock-angle));
+    }
+    100% {
+      transform: translateY(-3px)
+        rotate(calc(0deg - var(--pool-button-rock-angle)));
+    }
+  }
+  @keyframes water-sparkle {
+    from {
+      opacity: 0.48;
+      transform: scale(0.72);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.15);
+    }
   }
   @media (hover: hover) {
     button:hover {
@@ -426,14 +712,33 @@
       border-color: rgba(68, 199, 179, 0.45);
       background: #fafffb;
     }
+    .option.selected-pool:hover {
+      border-color: #278ca2;
+      background: #c9f3ef;
+    }
   }
 
   .nav {
     display: flex;
-    gap: 12px;
-    justify-content: space-between;
-    align-items: center;
+    gap: 16px;
+    flex-direction: column;
+    align-items: stretch;
     margin-top: 24px;
+  }
+  .nav-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .nav-actions .next {
+    margin-left: auto;
+    min-width: 132px;
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+    box-shadow: none;
+    transform: none;
   }
   .tiny {
     color: var(--muted);
@@ -607,8 +912,15 @@
   }
 
   @media (max-width: 560px) {
+    .wrap {
+      min-height: 100svh;
+      padding: 18px 14px 30px;
+    }
     .inner {
-      padding: 32px 18px 24px;
+      padding: 28px 4px 22px;
+    }
+    .panel:not(.quiz-panel) .inner {
+      padding-inline: 18px;
     }
     .lead {
       font-size: 16px;
@@ -617,11 +929,24 @@
       padding: 14px 15px;
     }
     .nav {
-      flex-direction: column-reverse;
-      align-items: stretch;
+      gap: 12px;
     }
-    .nav button {
-      width: 100%;
+    .nav-actions button {
+      flex: 1;
+    }
+    .nav-actions .next {
+      margin-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 </style>

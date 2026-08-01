@@ -20,7 +20,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-19";
+  const UI_VERSION = "2026.08.01-22";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -70,6 +70,9 @@
   );
   const isKeyboardWarriorSelected = $derived(
     selectedOption?.t === "当键盘侠和别人吵架",
+  );
+  const isDeadlineSelected = $derived(
+    selectedOption?.t === "赶一个马上就到ddl的作业",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -190,6 +193,7 @@
   class:rant-active={isRantSelected}
   class:draft-active={isDraftSelected}
   class:keyboard-warrior-active={isKeyboardWarriorSelected}
+  class:deadline-active={isDeadlineSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -299,6 +303,52 @@
       {#each ["$", "*", "^", "%", "~", "#", "!", "&", "@", "%", "*", "$", "^", "~", "!", "#", "%", "&", "*", "@"] as symbol}
         <span>{symbol}</span>
       {/each}
+    </div>
+    <div class="deadline-scene"></div>
+    <div class="deadline-workspace" aria-hidden="true">
+      <div class="deadline-document">
+        <div class="deadline-document-head">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="deadline-copy">
+          <div class="deadline-line deadline-line--one">
+            <span style="width: 8%; --deadline-reveal-at: 2"></span>
+            <span style="width: 10%; --deadline-reveal-at: 5"></span>
+            <span style="width: 6%; --deadline-reveal-at: 8"></span>
+            <span style="width: 12%; --deadline-reveal-at: 11"></span>
+            <span style="width: 7%; --deadline-reveal-at: 14"></span>
+            <span style="width: 9%; --deadline-reveal-at: 16"></span>
+            <span style="width: 5%; --deadline-reveal-at: 18"></span>
+            <span style="width: 11%; --deadline-reveal-at: 20"></span>
+          </div>
+          <div class="deadline-line deadline-line--two">
+            <span style="width: 11%; --deadline-reveal-at: 20"></span>
+            <span style="width: 6%; --deadline-reveal-at: 25"></span>
+            <span style="width: 8%; --deadline-reveal-at: 30"></span>
+            <span style="width: 5%; --deadline-reveal-at: 35"></span>
+            <span style="width: 12%; --deadline-reveal-at: 40"></span>
+            <span style="width: 7%; --deadline-reveal-at: 45"></span>
+            <span style="width: 9%; --deadline-reveal-at: 50"></span>
+            <span style="width: 6%; --deadline-reveal-at: 55"></span>
+          </div>
+          <div class="deadline-line deadline-line--three">
+            <span style="width: 7%; --deadline-reveal-at: 55"></span>
+            <span style="width: 12%; --deadline-reveal-at: 61"></span>
+            <span style="width: 5%; --deadline-reveal-at: 67"></span>
+            <span style="width: 9%; --deadline-reveal-at: 73"></span>
+            <span style="width: 6%; --deadline-reveal-at: 80"></span>
+            <span style="width: 11%; --deadline-reveal-at: 87"></span>
+            <span style="width: 8%; --deadline-reveal-at: 94"></span>
+            <span style="width: 5%; --deadline-reveal-at: 99"></span>
+          </div>
+        </div>
+      </div>
+      <div class="deadline-countdown">
+        <span class="deadline-countdown-label"></span>
+        <span class="deadline-countdown-track">
+          <span class="deadline-countdown-fill"></span>
+        </span>
+      </div>
     </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">

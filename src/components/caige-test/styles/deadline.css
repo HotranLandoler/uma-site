@@ -1,0 +1,290 @@
+@property --deadline-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.wrap {
+  /*
+   * DDL 作业背景参数
+   * scene-*：熬夜赶工的低饱和暖灰背景。
+   * document-cycle：写完三行的总时长；三行分别占 20% / 35% / 45%。
+   * 字块与倒计时共用这条时间轴，换行时倒计时会立刻重新填满。
+   * document-*：文档纸张、字块和倒计时颜色。
+   */
+  --deadline-scene-top: #d8d0c2;
+  --deadline-scene-bottom: #a79f9a;
+  --deadline-scene-accent: rgba(111, 76, 61, 0.13);
+  --deadline-document-cycle: 10s;
+  --deadline-document-bg: rgba(248, 246, 237, 0.94);
+  --deadline-document-border: rgba(72, 69, 67, 0.28);
+  --deadline-document-ink: #5b5b58;
+  --deadline-document-muted: #a29b90;
+  --deadline-timer-track: rgba(69, 64, 62, 0.2);
+  --deadline-timer-fill: #c8755f;
+}
+
+.wrap .deadline-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at 15% 18%,
+      var(--deadline-scene-accent) 0 12%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 78%,
+      var(--deadline-scene-accent) 0 10%,
+      transparent 28%
+    ),
+    linear-gradient(
+      155deg,
+      var(--deadline-scene-top),
+      var(--deadline-scene-bottom)
+    );
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+
+.wrap .deadline-workspace {
+  position: absolute;
+  left: 50%;
+  top: 69%;
+  width: min(620px, 68vw);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(-50%, 14px, 0) rotate(0.6deg);
+  transition:
+    opacity 0.24s ease,
+    transform 0.32s ease;
+  contain: layout paint;
+}
+
+.wrap .deadline-document {
+  min-height: 176px;
+  padding: 21px 25px 24px;
+  border: 2px solid var(--deadline-document-border);
+  border-radius: 10px 10px 5px 5px;
+  background: var(--deadline-document-bg);
+  box-shadow:
+    0 7px 0 rgba(71, 65, 61, 0.15),
+    0 24px 42px rgba(57, 51, 48, 0.13);
+}
+
+.wrap .deadline-document-head {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 22px;
+}
+
+.wrap .deadline-document-head span {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--deadline-document-muted);
+  opacity: 0.72;
+}
+
+.wrap .deadline-copy {
+  --deadline-progress: 0;
+  display: grid;
+  gap: 15px;
+  animation: deadline-document-progress var(--deadline-document-cycle)
+    linear infinite paused;
+}
+
+.wrap .deadline-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  height: 12px;
+}
+
+.wrap .deadline-line span {
+  flex: 0 0 auto;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--deadline-document-ink);
+  opacity: clamp(
+    0,
+    calc(
+      (var(--deadline-progress) - var(--deadline-reveal-at)) * 100 + 0.76
+    ),
+    0.76
+  );
+}
+
+.wrap .deadline-countdown {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 30px);
+  margin: 18px auto 0;
+  padding: 11px 14px;
+  border: 2px solid rgba(71, 65, 61, 0.24);
+  border-radius: 12px;
+  background: rgba(245, 238, 222, 0.86);
+  box-shadow: 0 6px 0 rgba(71, 65, 61, 0.13);
+}
+
+.wrap .deadline-countdown-label {
+  position: relative;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--deadline-document-ink);
+  border-radius: 50%;
+  opacity: 0.72;
+}
+
+.wrap .deadline-countdown-label::before,
+.wrap .deadline-countdown-label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--deadline-document-ink);
+  transform-origin: 50% 100%;
+}
+
+.wrap .deadline-countdown-label::before {
+  height: 6px;
+  transform: translate(-50%, -100%);
+}
+
+.wrap .deadline-countdown-label::after {
+  height: 5px;
+  transform: translate(-50%, -100%) rotate(122deg);
+}
+
+.wrap .deadline-countdown-track {
+  flex: 1;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--deadline-timer-track);
+}
+
+.wrap .deadline-countdown-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--deadline-timer-fill);
+  transform: scaleX(1);
+  transform-origin: left center;
+  animation: deadline-countdown var(--deadline-document-cycle) linear infinite
+    paused;
+  will-change: transform;
+}
+
+.wrap.deadline-active .deadline-scene {
+  opacity: 1;
+}
+
+.wrap.deadline-active .deadline-workspace {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(-50%, 0, 0) rotate(0.6deg);
+}
+
+.wrap.deadline-active .deadline-copy,
+.wrap.deadline-active .deadline-countdown-fill {
+  animation-play-state: running;
+}
+
+.wrap.deadline-active .facet {
+  opacity: 0.05;
+}
+
+@keyframes deadline-countdown {
+  0% {
+    transform: scaleX(1);
+  }
+  19.9% {
+    transform: scaleX(0.52);
+  }
+  20% {
+    transform: scaleX(1);
+  }
+  54.9% {
+    transform: scaleX(0.52);
+  }
+  55% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.52);
+  }
+}
+
+@keyframes deadline-document-progress {
+  from {
+    --deadline-progress: 0;
+  }
+  to {
+    --deadline-progress: 100;
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap .deadline-scene {
+    transition: none;
+  }
+
+  .wrap .deadline-workspace {
+    top: 72%;
+    width: calc(100% - 28px);
+  }
+
+  .wrap .deadline-document {
+    min-height: 142px;
+    padding: 17px 18px 20px;
+    box-shadow:
+      0 5px 0 rgba(71, 65, 61, 0.13),
+      0 16px 28px rgba(57, 51, 48, 0.1);
+  }
+
+  .wrap .deadline-document-head {
+    margin-bottom: 17px;
+  }
+
+  .wrap .deadline-copy {
+    gap: 11px;
+  }
+
+  .wrap .deadline-line {
+    gap: 5px;
+    height: 10px;
+  }
+
+  .wrap .deadline-line span {
+    height: 7px;
+  }
+
+  .wrap .deadline-countdown {
+    width: calc(100% - 20px);
+    margin-top: 13px;
+    padding: 9px 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap .deadline-copy,
+  .wrap .deadline-countdown-fill {
+    animation: none;
+  }
+
+  .wrap .deadline-line span {
+    opacity: 0.76;
+  }
+
+  .wrap .deadline-countdown-fill {
+    transform: scaleX(0.28);
+  }
+}

@@ -19,7 +19,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-1";
+  const UI_VERSION = "2026.08.01-3";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -51,6 +51,9 @@
   );
   const isPoolSelected = $derived(
     selectedOption?.t === "波光闪闪的水面",
+  );
+  const isCommuterSelected = $derived(
+    selectedOption?.t === "行色匆忙的路人",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -163,7 +166,11 @@
   </defs>
 </svg>
 
-<section class:pool-active={isPoolSelected} class="wrap">
+<section
+  class:pool-active={isPoolSelected}
+  class:commuter-active={isCommuterSelected}
+  class="wrap"
+>
   <div class="background-art" aria-hidden="true">
     <span class="facet facet-one"></span>
     <span class="facet facet-two"></span>
@@ -191,6 +198,13 @@
         ></use>
       </g>
     </svg>
+    <div class="commuter-city"></div>
+    <div class="commuter-crowd commuter-crowd--far">
+      {#each Array(4) as _}<span class="commuter-person"></span>{/each}
+    </div>
+    <div class="commuter-crowd commuter-crowd--near">
+      {#each Array(4) as _}<span class="commuter-person"></span>{/each}
+    </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">
     <div class="inner">
@@ -238,12 +252,24 @@
                 class:selected={selected === index}
                 class:selected-pool={selected === index &&
                   opt.t === "波光闪闪的水面"}
+                class:selected-commuter={selected === index &&
+                  opt.t === "行色匆忙的路人"}
                 class="option"
                 aria-pressed={selected === index}
                 onclick={() => choose(index)}
               >
                 <span class="option-text">{opt.t}</span>
-                <span class="option-water" aria-hidden="true"></span></button
+                <span class="option-water" aria-hidden="true"></span>
+                {#if opt.t === "行色匆忙的路人"}
+                  <span class="bus-carriage" aria-hidden="true">
+                    <span class="bus-window bus-window--one"></span>
+                    <span class="bus-window bus-window--two"></span>
+                    <span class="bus-window bus-window--three"></span>
+                    <span class="bus-strap bus-strap--one"></span>
+                    <span class="bus-strap bus-strap--two"></span>
+                    <span class="bus-strap bus-strap--three"></span>
+                  </span>
+                {/if}</button
               >
             {/each}
           </div>
@@ -366,6 +392,94 @@
     --pool-button-water: #42bdca;
     --pool-button-crest: #78dfe0;
 
+    /*
+     * 通勤背景参数
+     * city-top / city-bottom：城市背景上下端颜色。
+     * city-divider / city-road-line：站台分界线和路面横线颜色。
+     * city-fade-speed：城市背景淡入时长；越小越快，设为 0s 可直接切换。
+     * crowd-height：人群活动区域占页面底部的高度。
+     * crowd-fade-speed：桌面端人群淡入时长；手机端为性能考虑固定关闭。
+     * crowd-speed / fast / slow：路人穿过屏幕的三档时长；越小越匆忙。
+     * crowd-phase-far/near-1~4：8 个路人的负延迟；调整可改变初始分布，
+     * 尽量不要设成相同值，否则人物容易重叠成一团。
+     * crowd-step-speed：桌面端腿部摆动一次的时长；越小步频越快。
+     * person-scale：所有路人的基础尺寸；far-person-scale / opacity 控制远景。
+     * person-head：所有路人的头部颜色。
+     * walk-*-start / end：左右两组路人的起点和终点；绝对值越大，
+     * 路人在屏幕外等待和行走的距离越长。
+     * coat-far/near-1~4：前后两层 8 个路人的衣服颜色。
+     */
+    --commuter-city-top: #bfc8c4;
+    --commuter-city-bottom: #8f9da0;
+    --commuter-city-divider: #78878a;
+    --commuter-city-road-line: rgba(237, 224, 187, 0.42);
+    --commuter-city-fade-speed: 0.4s;
+    --commuter-crowd-height: 42%;
+    --commuter-crowd-fade-speed: 0.28s;
+    --commuter-crowd-speed: 16s;
+    --commuter-crowd-speed-fast: 13s;
+    --commuter-crowd-speed-slow: 20s;
+    --commuter-crowd-phase-far-1: -2s;
+    --commuter-crowd-phase-far-2: -8s;
+    --commuter-crowd-phase-far-3: -13s;
+    --commuter-crowd-phase-far-4: -5s;
+    --commuter-crowd-phase-near-1: -1s;
+    --commuter-crowd-phase-near-2: -9s;
+    --commuter-crowd-phase-near-3: -5s;
+    --commuter-crowd-phase-near-4: -12s;
+    --commuter-crowd-step-speed: 0.48s;
+    --commuter-person-scale: 1;
+    --commuter-far-person-scale: 0.78;
+    --commuter-far-person-opacity: 0.58;
+    --commuter-person-head: #33494d;
+    --commuter-walk-right-start: -12vw;
+    --commuter-walk-right-end: 116vw;
+    --commuter-walk-left-start: 12vw;
+    --commuter-walk-left-end: -116vw;
+    --commuter-coat-far-1: #5c7474;
+    --commuter-coat-far-2: #6d6670;
+    --commuter-coat-far-3: #536b64;
+    --commuter-coat-far-4: #76665e;
+    --commuter-coat-near-1: #344f54;
+    --commuter-coat-near-2: #7d554f;
+    --commuter-coat-near-3: #485d75;
+    --commuter-coat-near-4: #695f45;
+
+    /*
+     * 通勤按钮参数
+     * bus-bump-speed：一轮“静止—颠簸—静止”的总时长；越小颠簸越频繁。
+     * bus-idle/high/low/settle-y：桌面端车厢四档垂直位置；
+     * 更负代表抬得更高。mobile-* 是手机端对应的轻量幅度。
+     * bus-body / frame / window / accent：车身、结构线、车窗和腰线颜色。
+     * bus-text / wheel：选中文字和车轮颜色。
+     * bus-window-opacity：车窗透明度；越小越不抢文字。
+     * bus-radius：车厢圆角。
+     * bus-shadow-base / shadow-color：车厢底部硬阴影和外侧柔和阴影。
+     * strap-angle-1~3：三枚吊环摆动角度；越大摆幅越明显。
+     */
+    --commuter-bus-bump-speed: 8s;
+    --commuter-bus-idle-y: -2px;
+    --commuter-bus-high-y: -4px;
+    --commuter-bus-low-y: 0px;
+    --commuter-bus-settle-y: -3px;
+    --commuter-bus-mobile-idle-y: -1px;
+    --commuter-bus-mobile-high-y: -3px;
+    --commuter-bus-mobile-low-y: 0px;
+    --commuter-bus-body: #d77d55;
+    --commuter-bus-frame: #31535a;
+    --commuter-bus-window: #d9ebe5;
+    --commuter-bus-accent: #efc376;
+    --commuter-bus-text: #173f46;
+    --commuter-bus-wheel: #253f43;
+    --commuter-bus-window-opacity: 0.84;
+    --commuter-bus-radius: 11px;
+    --commuter-bus-shadow-base: #263f44;
+    --commuter-bus-shadow-color: rgba(28, 53, 58, 0.24);
+    --commuter-bus-text-highlight: rgba(255, 255, 255, 0.72);
+    --commuter-strap-angle-1: 5deg;
+    --commuter-strap-angle-2: 3deg;
+    --commuter-strap-angle-3: 6deg;
+
     width: 100%;
     min-height: 100vh;
     margin: 0;
@@ -457,6 +571,187 @@
   }
   .pool-active .facet {
     opacity: 0.1;
+  }
+  .commuter-city {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0 12%,
+        rgba(255, 255, 255, 0.12) 12% 13%,
+        transparent 13% 34%,
+        rgba(255, 255, 255, 0.1) 34% 35%,
+        transparent 35% 72%,
+        rgba(255, 255, 255, 0.12) 72% 73%,
+        transparent 73%
+      ),
+      linear-gradient(
+        180deg,
+        var(--commuter-city-top) 0 68%,
+        var(--commuter-city-divider) 68% 70%,
+        var(--commuter-city-bottom) 70%
+      );
+    transition: opacity var(--commuter-city-fade-speed) ease;
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+  .commuter-city::before,
+  .commuter-city::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--commuter-city-road-line);
+  }
+  .commuter-city::before {
+    bottom: 23%;
+  }
+  .commuter-city::after {
+    bottom: 9%;
+  }
+  .commuter-crowd {
+    position: absolute;
+    inset: auto 0 0;
+    height: var(--commuter-crowd-height);
+    opacity: 0;
+    transition: opacity var(--commuter-crowd-fade-speed) ease;
+  }
+  .commuter-person {
+    --coat: #485f62;
+    --person-scale: var(--commuter-person-scale);
+    position: absolute;
+    bottom: 9%;
+    left: 0;
+    width: 32px;
+    height: 74px;
+    border-radius: 45% 45% 20% 20%;
+    background: linear-gradient(var(--coat), var(--coat)) center 21px / 27px
+      36px no-repeat;
+    animation: commuter-walk-right var(--commuter-crowd-speed) linear infinite
+      paused;
+    will-change: transform;
+  }
+  .commuter-person::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 8px;
+    width: 17px;
+    height: 19px;
+    border-radius: 52% 52% 45% 45%;
+    background: var(--commuter-person-head);
+  }
+  .commuter-person::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    bottom: 0;
+    width: 16px;
+    height: 23px;
+    background:
+      linear-gradient(78deg, transparent 42%, var(--coat) 43% 62%, transparent 63%),
+      linear-gradient(102deg, transparent 38%, var(--coat) 39% 58%, transparent 59%);
+    transform-origin: 50% 0;
+    animation: commuter-steps var(--commuter-crowd-step-speed) ease-in-out
+      infinite alternate paused;
+  }
+  .commuter-crowd--far {
+    z-index: 0;
+  }
+  .commuter-crowd--far .commuter-person {
+    --person-scale: var(--commuter-far-person-scale);
+    opacity: var(--commuter-far-person-opacity);
+  }
+  .commuter-crowd--far .commuter-person:nth-child(1) {
+    --coat: var(--commuter-coat-far-1);
+    animation-delay: var(--commuter-crowd-phase-far-1);
+  }
+  .commuter-crowd--far .commuter-person:nth-child(2) {
+    --coat: var(--commuter-coat-far-2);
+    bottom: 19%;
+    animation-delay: var(--commuter-crowd-phase-far-2);
+    animation-duration: var(--commuter-crowd-speed-slow);
+  }
+  .commuter-crowd--far .commuter-person:nth-child(3) {
+    --coat: var(--commuter-coat-far-3);
+    bottom: 13%;
+    animation-delay: var(--commuter-crowd-phase-far-3);
+    animation-duration: var(--commuter-crowd-speed-fast);
+  }
+  .commuter-crowd--far .commuter-person:nth-child(4) {
+    --coat: var(--commuter-coat-far-4);
+    bottom: 23%;
+    animation-delay: var(--commuter-crowd-phase-far-4);
+    animation-duration: var(--commuter-crowd-speed-slow);
+  }
+  .commuter-crowd--near .commuter-person {
+    right: 0;
+    left: auto;
+    animation-name: commuter-walk-left;
+  }
+  .commuter-crowd--near .commuter-person:nth-child(1) {
+    --coat: var(--commuter-coat-near-1);
+    animation-delay: var(--commuter-crowd-phase-near-1);
+    animation-duration: var(--commuter-crowd-speed-fast);
+  }
+  .commuter-crowd--near .commuter-person:nth-child(2) {
+    --coat: var(--commuter-coat-near-2);
+    bottom: 5%;
+    animation-delay: var(--commuter-crowd-phase-near-2);
+  }
+  .commuter-crowd--near .commuter-person:nth-child(3) {
+    --coat: var(--commuter-coat-near-3);
+    bottom: 15%;
+    animation-delay: var(--commuter-crowd-phase-near-3);
+    animation-duration: var(--commuter-crowd-speed-fast);
+  }
+  .commuter-crowd--near .commuter-person:nth-child(4) {
+    --coat: var(--commuter-coat-near-4);
+    bottom: 8%;
+    animation-delay: var(--commuter-crowd-phase-near-4);
+    animation-duration: var(--commuter-crowd-speed-slow);
+  }
+  .commuter-active .commuter-city,
+  .commuter-active .commuter-crowd {
+    opacity: 1;
+  }
+  .commuter-active .facet {
+    opacity: 0.06;
+  }
+  .commuter-active .commuter-person,
+  .commuter-active .commuter-person::after {
+    animation-play-state: running;
+  }
+  @keyframes commuter-walk-right {
+    from {
+      transform: translate3d(var(--commuter-walk-right-start), 0, 0)
+        scale(var(--person-scale));
+    }
+    to {
+      transform: translate3d(var(--commuter-walk-right-end), 0, 0)
+        scale(var(--person-scale));
+    }
+  }
+  @keyframes commuter-walk-left {
+    from {
+      transform: translate3d(var(--commuter-walk-left-start), 0, 0)
+        scale(var(--person-scale));
+    }
+    to {
+      transform: translate3d(var(--commuter-walk-left-end), 0, 0)
+        scale(var(--person-scale));
+    }
+  }
+  @keyframes commuter-steps {
+    from {
+      transform: skewX(-7deg);
+    }
+    to {
+      transform: skewX(7deg);
+    }
   }
   /*
    * 动画常挂、默认 paused：选中时只切 play-state，
@@ -741,6 +1036,170 @@
   .option.selected-pool .option-water::after {
     animation: water-sparkle 1.2s ease-in-out infinite alternate;
   }
+  .bus-carriage {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        circle at 9% 94%,
+        var(--commuter-bus-wheel) 0 7px,
+        transparent 8px
+      ),
+      radial-gradient(
+        circle at 91% 94%,
+        var(--commuter-bus-wheel) 0 7px,
+        transparent 8px
+      ),
+      linear-gradient(
+        180deg,
+        var(--commuter-bus-body) 0 73%,
+        var(--commuter-bus-accent) 73% 82%,
+        var(--commuter-bus-frame) 82%
+      );
+  }
+  .bus-carriage::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    right: 8%;
+    left: 8%;
+    height: 3px;
+    border-radius: 99px;
+    background: var(--commuter-bus-frame);
+  }
+  .bus-window {
+    position: absolute;
+    top: 13px;
+    width: 22%;
+    height: 25px;
+    border: 2px solid var(--commuter-bus-frame);
+    border-radius: 3px;
+    background: var(--commuter-bus-window);
+    opacity: var(--commuter-bus-window-opacity);
+  }
+  .bus-window--one {
+    left: 5%;
+  }
+  .bus-window--two {
+    left: 39%;
+  }
+  .bus-window--three {
+    right: 5%;
+  }
+  .bus-strap {
+    --strap-angle: 4deg;
+    position: absolute;
+    z-index: 2;
+    top: 7px;
+    width: 2px;
+    height: 17px;
+    background: var(--commuter-bus-frame);
+    transform-origin: 50% 0;
+  }
+  .bus-strap::after {
+    content: "";
+    position: absolute;
+    top: 13px;
+    left: -7px;
+    width: 16px;
+    height: 14px;
+    z-index: 0;
+    background: var(--commuter-bus-frame);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+  .bus-strap::before {
+    content: "";
+    position: absolute;
+    top: 17px;
+    left: -4px;
+    width: 10px;
+    height: 8px;
+    z-index: 1;
+    background: var(--commuter-bus-window);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+  .bus-strap--one {
+    --strap-angle: var(--commuter-strap-angle-1);
+    left: 30%;
+  }
+  .bus-strap--two {
+    --strap-angle: var(--commuter-strap-angle-2);
+    left: 64%;
+  }
+  .bus-strap--three {
+    --strap-angle: var(--commuter-strap-angle-3);
+    left: 78%;
+  }
+  .option.selected-commuter {
+    color: var(--commuter-bus-text);
+    border-color: var(--commuter-bus-frame);
+    border-radius: var(--commuter-bus-radius);
+    background: var(--commuter-bus-body);
+    box-shadow:
+      0 5px 0 var(--commuter-bus-shadow-base),
+      0 12px 24px var(--commuter-bus-shadow-color);
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: bus-road-bump var(--commuter-bus-bump-speed) linear infinite;
+  }
+  .option.selected-commuter .option-text {
+    z-index: 3;
+    text-shadow: 0 1px 0 var(--commuter-bus-text-highlight);
+  }
+  .option.selected-commuter .bus-carriage {
+    opacity: 1;
+  }
+  .option.selected-commuter .bus-strap {
+    animation: bus-strap-sway var(--commuter-bus-bump-speed) linear infinite;
+  }
+  /*
+   * 34%~45% 与 70%~81% 是一轮中的两段颠簸窗口，其余时间保持平稳。
+   * 若希望更少颠簸，可删除后一组百分比；吊环 keyframes 需同步调整。
+   */
+  @keyframes bus-road-bump {
+    0%,
+    34%,
+    45%,
+    70%,
+    81%,
+    100% {
+      transform: translate3d(0, var(--commuter-bus-idle-y), 0);
+    }
+    36%,
+    74% {
+      transform: translate3d(0, var(--commuter-bus-high-y), 0);
+    }
+    39%,
+    77% {
+      transform: translate3d(0, var(--commuter-bus-low-y), 0);
+    }
+    42%,
+    79% {
+      transform: translate3d(0, var(--commuter-bus-settle-y), 0);
+    }
+  }
+  @keyframes bus-strap-sway {
+    0%,
+    34%,
+    45%,
+    70%,
+    82%,
+    100% {
+      transform: rotate(0deg);
+    }
+    38%,
+    75% {
+      transform: rotate(var(--strap-angle));
+    }
+    42%,
+    79% {
+      transform: rotate(calc(0deg - var(--strap-angle)));
+    }
+  }
   @keyframes cartoon-water-sway {
     from {
       transform: translate3d(-2.5%, 0, 0);
@@ -783,6 +1242,10 @@
     .option.selected-pool:hover {
       border-color: #278ca2;
       background: #c9f3ef;
+    }
+    .option.selected-commuter:hover {
+      border-color: var(--commuter-bus-frame);
+      background: var(--commuter-bus-body);
     }
   }
 
@@ -1018,6 +1481,28 @@
       animation: none;
       opacity: 0.85;
     }
+    /*
+     * 手机只保留前后景各两人，并关闭独立腿部动画。
+     * 人群直接出现，避免选中当帧为透明度过渡创建两张大合成层。
+     * nth-child(n + 3) 表示隐藏第 3 人起的元素；改为 n + 4 可各保留 3 人，
+     * 但会增加选中瞬间和持续运行的合成压力。
+     */
+    .facet,
+    .commuter-crowd {
+      transition: none;
+    }
+    .commuter-crowd--near .commuter-person:nth-child(n + 3),
+    .commuter-crowd--far .commuter-person:nth-child(n + 3) {
+      display: none;
+    }
+    .commuter-person::after {
+      animation: none;
+      transform: none;
+    }
+    /* 手机缩小车厢上下颠簸幅度 */
+    .option.selected-commuter {
+      animation-name: bus-road-bump-mobile;
+    }
   }
   @keyframes pool-button-float {
     0%,
@@ -1026,6 +1511,24 @@
     }
     50% {
       transform: translate3d(0, -5px, 0);
+    }
+  }
+  @keyframes bus-road-bump-mobile {
+    0%,
+    36%,
+    45%,
+    72%,
+    82%,
+    100% {
+      transform: translate3d(0, var(--commuter-bus-mobile-idle-y), 0);
+    }
+    39%,
+    75% {
+      transform: translate3d(0, var(--commuter-bus-mobile-high-y), 0);
+    }
+    42%,
+    79% {
+      transform: translate3d(0, var(--commuter-bus-mobile-low-y), 0);
     }
   }
 

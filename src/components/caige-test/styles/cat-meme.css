@@ -1,0 +1,244 @@
+.wrap {
+  /* “回一个猫猫表情包”：造型比例改编自参考 CodePen 的蓝猫。 */
+  --cat-meme-scene-top: #d8d2c9;
+  --cat-meme-scene-bottom: #9ca8a8;
+  --cat-meme-fur: #7c85ab;
+  --cat-meme-fur-dark: #475881;
+  --cat-meme-muzzle: #fbf1d8;
+  --cat-meme-nose: #ffa5c0;
+  --cat-meme-eye: #172033;
+  /* 头部五段绝对时间，支持 s 或 ms；整轮时长由五项自动相加。 */
+  --cat-meme-head-rise-time: 0.4s;
+  --cat-meme-head-fall-time: 0.8s;
+  --cat-meme-head-low-hold-time: 1s;
+  --cat-meme-head-reset-time: 0.5s;
+  --cat-meme-head-default-hold-time: 0.8s;
+  /* 三个动画节点的位置：X 正值向右，Y 正值向下。 */
+  --cat-meme-head-default-x: -70px;
+  --cat-meme-head-default-y: 40px;
+  --cat-meme-head-high-x: -72px;
+  --cat-meme-head-high-y: 25px;
+  --cat-meme-head-low-x: -80px;
+  --cat-meme-head-low-y: 72px;
+  /* 三段移动分别使用独立缓动，可替换为其他 CSS easing。 */
+  --cat-meme-head-rise-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --cat-meme-head-fall-easing: cubic-bezier(0.45, 0, 0.55, 1);
+  --cat-meme-head-reset-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  /* 发声在到达最低点时出现；位移负值分别表示向左、向上。 */
+  --cat-meme-voice-time: 2s;
+  --cat-meme-voice-left: -100px;
+  --cat-meme-voice-top: 62px;
+  --cat-meme-voice-drift-x: -30px;
+  --cat-meme-voice-drift-y: -18px;
+  --cat-meme-voice-size: 32px;
+  --cat-meme-voice-color: #475881;
+  --cat-meme-voice-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  /* 两只爪子的位置：top 越大越靠下，left/right 越大越靠中间。 */
+  --cat-meme-paw-top: 110px;
+  --cat-meme-paw-left: 10px;
+  --cat-meme-paw-right: 120px;
+}
+
+.wrap .cat-meme-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    160deg,
+    var(--cat-meme-scene-top),
+    var(--cat-meme-scene-bottom)
+  );
+  transition: opacity 0.35s ease;
+  will-change: opacity;
+}
+
+.wrap.cat-meme-active .cat-meme-scene {
+  opacity: 1;
+}
+
+.wrap .cat-meme-stage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.wrap.cat-meme-active .cat-meme-stage {
+  visibility: visible;
+  opacity: 1;
+}
+
+.wrap .cat-meme {
+  position: absolute;
+  right: clamp(24px, 8vw, 130px);
+  bottom: -16px;
+  width: 260px;
+  height: 270px;
+}
+
+.wrap .cat-meme-head-lift {
+  position: absolute;
+  top: 30px;
+  left: 55px;
+  width: 150px;
+  height: 112px;
+  z-index: 3;
+  transform: translate(
+    var(--cat-meme-head-default-x),
+    var(--cat-meme-head-default-y)
+  );
+  will-change: transform;
+}
+
+.wrap .cat-meme-ear {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-bottom: 34px solid var(--cat-meme-fur-dark);
+  border-left: 14px solid transparent;
+  border-right: 25px solid transparent;
+}
+
+.wrap .cat-meme-voice {
+  position: absolute;
+  left: var(--cat-meme-voice-left);
+  top: var(--cat-meme-voice-top);
+  z-index: 4;
+  opacity: 0;
+  color: var(--cat-meme-voice-color);
+  font-size: var(--cat-meme-voice-size);
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  text-shadow: 2px 2px 0 rgba(251, 241, 216, 0.72);
+  will-change: transform, opacity;
+}
+
+.wrap .cat-meme-ear--left {
+  left: 21px;
+  transform: rotate(-8deg);
+}
+
+.wrap .cat-meme-ear--right {
+  right: 18px;
+  transform: scaleX(-1) rotate(-8deg);
+}
+
+.wrap .cat-meme-head {
+  position: absolute;
+  top: 27px;
+  left: 5px;
+  width: 140px;
+  height: 78px;
+  border-radius: 42px;
+  background: var(--cat-meme-fur);
+  box-shadow: 8px 0 0 var(--cat-meme-fur-dark);
+}
+
+/* .wrap .cat-meme-eye {
+  position: absolute;
+  top: 27px;
+  width: 14px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cat-meme-eye);
+} */
+
+.wrap .cat-meme-eye--left {
+  left: 49px;
+}
+
+.wrap .cat-meme-eye--right {
+  left: 80px;
+}
+
+.wrap .cat-meme-muzzle {
+  position: absolute;
+  top: 49px;
+  width: 25px;
+  height: 23px;
+  border-radius: 50%;
+  background: var(--cat-meme-muzzle);
+}
+
+.wrap .cat-meme-muzzle--left {
+  left: 48px;
+}
+
+.wrap .cat-meme-muzzle--right {
+  left: 70px;
+}
+
+.wrap .cat-meme-nose {
+  position: absolute;
+  top: 50px;
+  left: 60px;
+  width: 0;
+  height: 0;
+  border-top: 11px solid var(--cat-meme-nose);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-radius: 8px;
+}
+
+.wrap .cat-meme-body {
+  position: absolute;
+  left: 20px;
+  bottom: 0;
+  z-index: 2;
+  width: 220px;
+  height: 150px;
+  border-radius: 70px 70px 22px 22px;
+  background: var(--cat-meme-fur);
+}
+
+.wrap .cat-meme-paw {
+  position: absolute;
+  top: var(--cat-meme-paw-top);
+  width: 42px;
+  height: 29px;
+  border-radius: 15px;
+  background: var(--cat-meme-muzzle);
+}
+
+.wrap .cat-meme-paw--left {
+  left: var(--cat-meme-paw-left);
+}
+
+.wrap .cat-meme-paw--right {
+  right: var(--cat-meme-paw-right);
+}
+
+.wrap .cat-meme-tail {
+  position: absolute;
+  left: -31px;
+  bottom: 28px;
+  z-index: 0;
+  width: 78px;
+  height: 28px;
+  border-radius: 18px 0 0 18px;
+  background: var(--cat-meme-fur-dark);
+}
+
+@media (max-width: 560px) {
+  .wrap .cat-meme {
+    right: -12px;
+    bottom: -32px;
+    transform: scale(0.76);
+    transform-origin: right bottom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.cat-meme-active .cat-meme-head-lift {
+    animation: none;
+    transform: translate(
+      var(--cat-meme-head-high-x),
+      var(--cat-meme-head-high-y)
+    );
+  }
+}

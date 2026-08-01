@@ -20,9 +20,11 @@
   let toast = $state("");
   let poolWaveOffsetIndex = $state(-1);
   let phoneTime = $state("--:--");
+  let catMemeHead = $state<HTMLDivElement | null>(null);
+  let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-33";
+  const UI_VERSION = "2026.08.02-42";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -85,9 +87,147 @@
   const isAvoidMessageSelected = $derived(
     selectedOption?.t === "不要来找我不要来找我……",
   );
+  const isCatMemeSelected = $derived(
+    selectedOption?.t === "回一个猫猫表情包",
+  );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
   );
+
+  function cssTimeToMs(value: string) {
+    const normalized = value.trim();
+    const amount = Number.parseFloat(normalized);
+    if (!Number.isFinite(amount)) return 0;
+    return Math.max(0, normalized.endsWith("ms") ? amount : amount * 1000);
+  }
+
+  $effect(() => {
+    if (!isCatMemeSelected || !catMemeHead || !catMemeVoice) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const style = getComputedStyle(catMemeHead);
+    const css = (name: string, fallback: string) =>
+      style.getPropertyValue(name).trim() || fallback;
+    const riseTime = cssTimeToMs(css("--cat-meme-head-rise-time", "0.2s"));
+    const fallTime = cssTimeToMs(css("--cat-meme-head-fall-time", "0.8s"));
+    const lowHoldTime = cssTimeToMs(
+      css("--cat-meme-head-low-hold-time", "1s"),
+    );
+    const resetTime = cssTimeToMs(
+      css("--cat-meme-head-reset-time", "0.2s"),
+    );
+    const defaultHoldTime = cssTimeToMs(
+      css("--cat-meme-head-default-hold-time", "1s"),
+    );
+    const voiceTime = Math.max(
+      1,
+      cssTimeToMs(css("--cat-meme-voice-time", "0.8s")),
+    );
+    const totalTime = Math.max(
+      1,
+      riseTime + fallTime + lowHoldTime + resetTime + defaultHoldTime,
+    );
+    const point = (x: string, y: string) => `translate(${x}, ${y})`;
+    const defaultPoint = point(
+      css("--cat-meme-head-default-x", "0px"),
+      css("--cat-meme-head-default-y", "0px"),
+    );
+    const highPoint = point(
+      css("--cat-meme-head-high-x", "0px"),
+      css("--cat-meme-head-high-y", "0px"),
+    );
+    const lowPoint = point(
+      css("--cat-meme-head-low-x", "0px"),
+      css("--cat-meme-head-low-y", "0px"),
+    );
+    const animation = catMemeHead.animate(
+      [
+        {
+          transform: defaultPoint,
+          offset: 0,
+          easing: css(
+            "--cat-meme-head-rise-easing",
+            "cubic-bezier(0.16, 1, 0.3, 1)",
+          ),
+        },
+        {
+          transform: highPoint,
+          offset: riseTime / totalTime,
+          easing: css(
+            "--cat-meme-head-fall-easing",
+            "cubic-bezier(0.45, 0, 0.55, 1)",
+          ),
+        },
+        {
+          transform: lowPoint,
+          offset: (riseTime + fallTime) / totalTime,
+          easing: "linear",
+        },
+        {
+          transform: lowPoint,
+          offset: (riseTime + fallTime + lowHoldTime) / totalTime,
+          easing: css(
+            "--cat-meme-head-reset-easing",
+            "cubic-bezier(0.4, 0, 0.2, 1)",
+          ),
+        },
+        {
+          transform: defaultPoint,
+          offset:
+            (riseTime + fallTime + lowHoldTime + resetTime) / totalTime,
+          easing: "linear",
+        },
+        { transform: defaultPoint, offset: 1 },
+      ],
+      { duration: totalTime, iterations: Infinity },
+    );
+    const voiceStartTime = riseTime + fallTime;
+    const voiceEndTime = Math.min(voiceStartTime + voiceTime, totalTime);
+    const voiceFadeInTime = Math.min(
+      voiceStartTime + Math.min(120, voiceTime * 0.25),
+      voiceEndTime,
+    );
+    const voiceEndTransform = `translate(${css(
+      "--cat-meme-voice-drift-x",
+      "-110px",
+    )}, ${css("--cat-meme-voice-drift-y", "-18px")}) scale(1.06)`;
+    const voiceAnimation = catMemeVoice.animate(
+      [
+        {
+          opacity: 0,
+          transform: "translate(0, 0) scale(0.82)",
+          offset: 0,
+        },
+        {
+          opacity: 0,
+          transform: "translate(0, 0) scale(0.82)",
+          offset: voiceStartTime / totalTime,
+          easing: "ease-out",
+        },
+        {
+          opacity: 1,
+          transform: "translate(0, 0) scale(1)",
+          offset: voiceFadeInTime / totalTime,
+          easing: css(
+            "--cat-meme-voice-easing",
+            "cubic-bezier(0.22, 1, 0.36, 1)",
+          ),
+        },
+        {
+          opacity: 0,
+          transform: voiceEndTransform,
+          offset: voiceEndTime / totalTime,
+        },
+        { opacity: 0, transform: voiceEndTransform, offset: 1 },
+      ],
+      { duration: totalTime, iterations: Infinity },
+    );
+
+    return () => {
+      animation.cancel();
+      voiceAnimation.cancel();
+    };
+  });
 
   onMount(() => {
     phoneTime = new Intl.DateTimeFormat(undefined, {
@@ -209,6 +349,7 @@
   class:fast-reply-active={isFastReplySelected}
   class:delayed-reply-active={isDelayedReplySelected}
   class:avoid-message-active={isAvoidMessageSelected}
+  class:cat-meme-active={isCatMemeSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -398,6 +539,28 @@
               </span>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="cat-meme-scene"></div>
+    <div class="cat-meme-stage" aria-hidden="true">
+      <div class="cat-meme">
+        <span class="cat-meme-tail"></span>
+        <div class="cat-meme-head-lift" bind:this={catMemeHead}>
+          <span class="cat-meme-ear cat-meme-ear--left"></span>
+          <span class="cat-meme-ear cat-meme-ear--right"></span>
+          <div class="cat-meme-head">
+            <span class="cat-meme-eye cat-meme-eye--left"></span>
+            <span class="cat-meme-eye cat-meme-eye--right"></span>
+            <span class="cat-meme-muzzle cat-meme-muzzle--left"></span>
+            <span class="cat-meme-muzzle cat-meme-muzzle--right"></span>
+            <span class="cat-meme-nose"></span>
+          </div>
+          <span class="cat-meme-voice" bind:this={catMemeVoice}>huh~</span>
+        </div>
+        <div class="cat-meme-body">
+          <span class="cat-meme-paw cat-meme-paw--left"></span>
+          <span class="cat-meme-paw cat-meme-paw--right"></span>
         </div>
       </div>
     </div>

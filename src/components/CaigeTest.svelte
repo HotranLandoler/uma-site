@@ -20,7 +20,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-15";
+  const UI_VERSION = "2026.08.01-16";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -64,6 +64,9 @@
   );
   const isRantSelected = $derived(
     selectedOption?.t === "和朋友吐槽刚遇到的奇葩",
+  );
+  const isDraftSelected = $derived(
+    selectedOption?.t === "为了一篇回复删了又打，打了又删",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -182,6 +185,7 @@
   class:commuter-active={isCommuterSelected}
   class:dance-active={isDanceSelected}
   class:rant-active={isRantSelected}
+  class:draft-active={isDraftSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -274,6 +278,18 @@
         <span>🫱</span><span>🫱</span>
       </span>
     </span>
+    <div class="draft-scene"></div>
+    <div class="draft-composer" aria-hidden="true">
+      <div class="draft-toolbar">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="draft-input">
+        <span class="draft-line draft-line--one">I thik...</span>
+        <span class="draft-line draft-line--two">Maybe it's...</span>
+        <span class="draft-line draft-line--three">No, never mind.</span>
+      </div>
+      <span class="draft-send"></span>
+    </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">
     <div class="inner">

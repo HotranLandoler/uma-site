@@ -1,0 +1,303 @@
+.wrap {
+  /*
+   * 反复斟酌回复的背景参数
+   * scene-*：克制的灰紫对话背景；只改变页面背景。
+   * cycle：三段草稿完成“输入—停顿—删除”的总时长。
+   * composer-*：输入框主体、边框与文字颜色。
+   */
+  --draft-scene-top: #d9d9e4;
+  --draft-scene-bottom: #aebbc0;
+  --draft-scene-accent: rgba(91, 83, 119, 0.12);
+  --draft-cycle: 10.8s;
+  --draft-composer-bg: rgba(247, 247, 243, 0.9);
+  --draft-composer-border: rgba(68, 78, 91, 0.34);
+  --draft-composer-ink: #48505f;
+  --draft-composer-muted: #8a8296;
+}
+
+.wrap .draft-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at 14% 20%,
+      var(--draft-scene-accent) 0 12%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 78%,
+      var(--draft-scene-accent) 0 10%,
+      transparent 28%
+    ),
+    linear-gradient(
+      155deg,
+      var(--draft-scene-top),
+      var(--draft-scene-bottom)
+    );
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+
+.wrap .draft-composer {
+  position: absolute;
+  left: 50%;
+  top: 76%;
+  width: min(760px, 72vw);
+  min-height: 104px;
+  padding: 17px 74px 17px 24px;
+  border: 2px solid var(--draft-composer-border);
+  border-radius: 24px;
+  background: var(--draft-composer-bg);
+  box-shadow:
+    0 8px 0 rgba(62, 69, 82, 0.16),
+    0 22px 45px rgba(54, 61, 73, 0.13);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(-50%, 12px, 0) rotate(-1deg);
+  transition:
+    opacity 0.24s ease,
+    transform 0.32s ease;
+  contain: layout paint;
+}
+
+.wrap .draft-toolbar {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 13px;
+}
+
+.wrap .draft-toolbar span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--draft-composer-muted);
+  opacity: 0.58;
+}
+
+.wrap .draft-input {
+  position: relative;
+  height: 1.55em;
+  overflow: hidden;
+  color: var(--draft-composer-ink);
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(17px, 2.1vw, 24px);
+  font-weight: 700;
+  line-height: 1.55;
+  white-space: nowrap;
+}
+
+.wrap .draft-line {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: block;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation-duration: var(--draft-cycle);
+  animation-timing-function: steps(15, end);
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+  will-change: width, opacity;
+}
+
+.wrap .draft-line::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: draft-caret 0.72s steps(1, end) infinite paused;
+}
+
+.wrap .draft-line--one {
+  animation-name: draft-type-one;
+}
+
+.wrap .draft-line--two {
+  animation-name: draft-type-two;
+}
+
+.wrap .draft-line--three {
+  animation-name: draft-type-three;
+}
+
+.wrap .draft-send {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--draft-composer-muted);
+  opacity: 0.72;
+}
+
+.wrap .draft-send::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 10px;
+  width: 11px;
+  height: 11px;
+  border-top: 3px solid #f7f7f3;
+  border-right: 3px solid #f7f7f3;
+  transform: rotate(45deg);
+}
+
+.wrap.draft-active .draft-scene {
+  opacity: 1;
+}
+
+.wrap.draft-active .draft-composer {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(-50%, 0, 0) rotate(-1deg);
+}
+
+.wrap.draft-active .draft-line,
+.wrap.draft-active .draft-line::after {
+  animation-play-state: running;
+}
+
+.wrap.draft-active .facet {
+  opacity: 0.05;
+}
+
+@keyframes draft-type-one {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  17%,
+  23% {
+    width: 9ch;
+    opacity: 1;
+  }
+  31% {
+    width: 0;
+    opacity: 1;
+  }
+  32%,
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes draft-type-two {
+  0%,
+  33% {
+    width: 0;
+    opacity: 0;
+  }
+  34% {
+    width: 0;
+    opacity: 1;
+  }
+  50%,
+  56% {
+    width: 13ch;
+    opacity: 1;
+  }
+  64% {
+    width: 0;
+    opacity: 1;
+  }
+  65%,
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes draft-type-three {
+  0%,
+  66% {
+    width: 0;
+    opacity: 0;
+  }
+  67% {
+    width: 0;
+    opacity: 1;
+  }
+  83%,
+  89% {
+    width: 15ch;
+    opacity: 1;
+  }
+  97% {
+    width: 0;
+    opacity: 1;
+  }
+  98%,
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes draft-caret {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  49%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap .draft-scene {
+    transition: none;
+  }
+
+  .wrap .draft-composer {
+    top: 78%;
+    width: calc(100% - 28px);
+    min-height: 88px;
+    padding: 14px 58px 14px 18px;
+    border-radius: 19px;
+    box-shadow:
+      0 6px 0 rgba(62, 69, 82, 0.14),
+      0 15px 28px rgba(54, 61, 73, 0.1);
+  }
+
+  .wrap .draft-toolbar {
+    margin-bottom: 9px;
+  }
+
+  .wrap .draft-input {
+    font-size: clamp(15px, 4.6vw, 19px);
+  }
+
+  .wrap .draft-send {
+    right: 16px;
+    bottom: 16px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .wrap .draft-send::before {
+    left: 9px;
+    top: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap .draft-line {
+    animation: none;
+  }
+
+  .wrap .draft-line--one {
+    width: 9ch;
+    opacity: 1;
+  }
+
+  .wrap .draft-line--one::after {
+    animation: none;
+  }
+}

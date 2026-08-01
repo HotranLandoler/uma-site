@@ -20,7 +20,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-16";
+  const UI_VERSION = "2026.08.01-19";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -67,6 +67,9 @@
   );
   const isDraftSelected = $derived(
     selectedOption?.t === "为了一篇回复删了又打，打了又删",
+  );
+  const isKeyboardWarriorSelected = $derived(
+    selectedOption?.t === "当键盘侠和别人吵架",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -186,6 +189,7 @@
   class:dance-active={isDanceSelected}
   class:rant-active={isRantSelected}
   class:draft-active={isDraftSelected}
+  class:keyboard-warrior-active={isKeyboardWarriorSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -289,6 +293,12 @@
         <span class="draft-line draft-line--three">No, never mind.</span>
       </div>
       <span class="draft-send"></span>
+    </div>
+    <div class="keyboard-warrior-scene"></div>
+    <div class="keyboard-warrior-rain" aria-hidden="true">
+      {#each ["$", "*", "^", "%", "~", "#", "!", "&", "@", "%", "*", "$", "^", "~", "!", "#", "%", "&", "*", "@"] as symbol}
+        <span>{symbol}</span>
+      {/each}
     </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">

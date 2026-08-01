@@ -1,0 +1,242 @@
+.wrap {
+  /*
+   * 键盘侠背景参数
+   * scene-*：低饱和的“火气上头”背景；只改变页面背景。
+   * cycle：一阵符号完成“集中抛落—停顿”的总时长。
+   * symbol：符号颜色；移动轨迹只使用 transform / opacity。
+   */
+  --keyboard-warrior-scene-top: #e3c8bd;
+  --keyboard-warrior-scene-bottom: #b58e8c;
+  --keyboard-warrior-scene-accent: rgba(103, 53, 67, 0.12);
+  --keyboard-warrior-cycle: 4.2s;
+  --keyboard-warrior-symbol: #633846;
+}
+
+.wrap .keyboard-warrior-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at 88% 12%,
+      var(--keyboard-warrior-scene-accent) 0 13%,
+      transparent 34%
+    ),
+    linear-gradient(
+      155deg,
+      var(--keyboard-warrior-scene-top),
+      var(--keyboard-warrior-scene-bottom)
+    );
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+
+.wrap .keyboard-warrior-rain {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.wrap .keyboard-warrior-rain span {
+  --throw-x: -32vw;
+  position: absolute;
+  top: -12vh;
+  right: 4%;
+  color: var(--keyboard-warrior-symbol);
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(34px, 5.6vw, 82px);
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0;
+  text-shadow: 4px 4px 0 rgba(255, 235, 218, 0.24);
+  animation: keyboard-warrior-throw var(--keyboard-warrior-cycle) linear infinite
+    paused;
+  will-change: transform, opacity;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(2) {
+  right: 10%;
+  --throw-x: -48vw;
+  animation-delay: -0.06s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(3) {
+  right: 17%;
+  --throw-x: -24vw;
+  animation-delay: -0.12s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(4) {
+  right: 2%;
+  --throw-x: -62vw;
+  animation-delay: -0.18s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(5) {
+  right: 24%;
+  --throw-x: -38vw;
+  animation-delay: -0.24s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(6) {
+  right: 8%;
+  --throw-x: -72vw;
+  animation-delay: -0.3s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(7) {
+  right: 30%;
+  --throw-x: -28vw;
+  animation-delay: -0.36s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(8) {
+  right: 14%;
+  --throw-x: -54vw;
+  animation-delay: -0.42s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(9) {
+  right: 1%;
+  --throw-x: -42vw;
+  animation-delay: -0.48s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(10) {
+  right: 21%;
+  --throw-x: -66vw;
+  animation-delay: -0.54s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(11) {
+  right: 6%;
+  --throw-x: -22vw;
+  animation-delay: -0.6s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(12) {
+  right: 27%;
+  --throw-x: -46vw;
+  animation-delay: -0.66s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(13) {
+  right: 12%;
+  --throw-x: -34vw;
+  animation-delay: -0.72s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(14) {
+  right: 34%;
+  --throw-x: -58vw;
+  animation-delay: -0.78s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(15) {
+  right: 4%;
+  --throw-x: -18vw;
+  animation-delay: -0.84s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(16) {
+  right: 19%;
+  --throw-x: -76vw;
+  animation-delay: -0.9s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(17) {
+  right: 29%;
+  --throw-x: -40vw;
+  animation-delay: -0.96s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(18) {
+  right: 7%;
+  --throw-x: -52vw;
+  animation-delay: -1.02s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(19) {
+  right: 23%;
+  --throw-x: -30vw;
+  animation-delay: -1.08s;
+}
+
+.wrap .keyboard-warrior-rain span:nth-child(20) {
+  right: 15%;
+  --throw-x: -68vw;
+  animation-delay: -1.14s;
+}
+
+.wrap.keyboard-warrior-active .keyboard-warrior-scene {
+  opacity: 1;
+}
+
+.wrap.keyboard-warrior-active .keyboard-warrior-rain {
+  visibility: visible;
+}
+
+.wrap.keyboard-warrior-active .keyboard-warrior-rain span {
+  animation-play-state: running;
+}
+
+.wrap.keyboard-warrior-active .facet {
+  opacity: 0.05;
+}
+
+@keyframes keyboard-warrior-throw {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -10vh, 0) rotate(-18deg) scale(0.78);
+  }
+
+  3% {
+    opacity: 0.82;
+  }
+
+  29% {
+    opacity: 0.72;
+  }
+
+  36% {
+    opacity: 0;
+    transform: translate3d(var(--throw-x), 122vh, 0) rotate(250deg) scale(1.08);
+  }
+
+  36.01%,
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--throw-x), 122vh, 0) rotate(250deg) scale(1.08);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap .keyboard-warrior-scene {
+    transition: none;
+  }
+
+  .wrap .keyboard-warrior-rain span {
+    font-size: clamp(30px, 11vw, 52px);
+    text-shadow: 3px 3px 0 rgba(255, 235, 218, 0.2);
+  }
+
+  .wrap .keyboard-warrior-rain span:nth-child(n + 13) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap .keyboard-warrior-rain span {
+    animation: none;
+    opacity: 0.54;
+    transform: translate3d(-18vw, 18vh, 0) rotate(12deg);
+  }
+
+  .wrap .keyboard-warrior-rain span:nth-child(even) {
+    transform: translate3d(-42vw, 52vh, 0) rotate(-10deg);
+  }
+
+  .wrap .keyboard-warrior-rain span:nth-child(n + 5) {
+    display: none;
+  }
+}

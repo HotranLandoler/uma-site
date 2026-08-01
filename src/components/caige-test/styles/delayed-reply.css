@@ -1,0 +1,255 @@
+.wrap {
+  /*
+   * “已读，但是等到有空再回”背景参数
+   * cycle：一轮白天—黄昏—夜晚—清晨的总时长；越大越显得等待漫长。
+   * day/night：昼夜天空纯色；昼夜切换只动画独立图层的 opacity。
+   * arc-height：太阳和月亮的抛物线高度；负值绝对值越大，轨迹越高。
+   */
+  --delayed-reply-cycle: 8s;
+  --delayed-reply-day: #bfd4ce;
+  --delayed-reply-night: #718092;
+  --delayed-reply-arc-height: -52vh;
+  --delayed-reply-sun: #f1c96c;
+  --delayed-reply-moon: #e8e1c9;
+  --delayed-reply-star: rgba(247, 239, 204, 0.86);
+}
+
+.wrap .delayed-reply-scene,
+.wrap .delayed-reply-night {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.wrap .delayed-reply-scene {
+  background: var(--delayed-reply-day);
+  transition: opacity 0.32s ease;
+}
+
+.wrap .delayed-reply-night {
+  background: var(--delayed-reply-night);
+  visibility: hidden;
+  animation: delayed-reply-nightfall var(--delayed-reply-cycle) linear infinite
+    paused;
+}
+
+.wrap .delayed-reply-sky {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.wrap .delayed-reply-sun,
+.wrap .delayed-reply-moon {
+  position: absolute;
+  left: 7%;
+  top: 68%;
+  width: clamp(54px, 7vw, 88px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0;
+  will-change: translate, transform, opacity;
+}
+
+.wrap .delayed-reply-sun {
+  background: var(--delayed-reply-sun);
+  animation:
+    delayed-reply-sun-x var(--delayed-reply-cycle) linear infinite paused,
+    delayed-reply-sun-y var(--delayed-reply-cycle) linear infinite paused;
+}
+
+.wrap .delayed-reply-moon {
+  background: var(--delayed-reply-moon);
+  box-shadow: inset -14px 4px 0 rgba(146, 151, 151, 0.2);
+  animation:
+    delayed-reply-moon-x var(--delayed-reply-cycle) linear infinite paused,
+    delayed-reply-moon-y var(--delayed-reply-cycle) linear infinite paused;
+}
+
+.wrap .delayed-reply-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: delayed-reply-stars-show var(--delayed-reply-cycle) linear infinite
+    paused;
+  will-change: opacity;
+}
+
+.wrap .delayed-reply-stars i {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--delayed-reply-star);
+  box-shadow: 0 0 0 2px rgba(247, 239, 204, 0.08);
+}
+
+.wrap .delayed-reply-stars i:nth-child(1) { left: 10%; top: 17%; }
+.wrap .delayed-reply-stars i:nth-child(2) { left: 22%; top: 32%; }
+.wrap .delayed-reply-stars i:nth-child(3) { left: 34%; top: 13%; }
+.wrap .delayed-reply-stars i:nth-child(4) { left: 45%; top: 27%; }
+.wrap .delayed-reply-stars i:nth-child(5) { left: 57%; top: 10%; }
+.wrap .delayed-reply-stars i:nth-child(6) { left: 68%; top: 34%; }
+.wrap .delayed-reply-stars i:nth-child(7) { left: 78%; top: 18%; }
+.wrap .delayed-reply-stars i:nth-child(8) { left: 88%; top: 29%; }
+.wrap .delayed-reply-stars i:nth-child(9) { left: 94%; top: 9%; }
+
+.wrap .delayed-reply-stars i:nth-child(3n) {
+  width: 6px;
+  height: 6px;
+}
+
+.wrap.delayed-reply-active .delayed-reply-scene {
+  opacity: 1;
+}
+
+.wrap.delayed-reply-active .delayed-reply-night {
+  visibility: visible;
+  animation-play-state: running;
+}
+
+.wrap.delayed-reply-active .delayed-reply-sky {
+  visibility: visible;
+}
+
+.wrap.delayed-reply-active .delayed-reply-sun,
+.wrap.delayed-reply-active .delayed-reply-moon,
+.wrap.delayed-reply-active .delayed-reply-stars {
+  animation-play-state: running;
+}
+
+.wrap.delayed-reply-active .facet {
+  opacity: 0;
+}
+
+@keyframes delayed-reply-nightfall {
+  0%,
+  27%,
+  100% {
+    opacity: 0;
+  }
+  48%,
+  78% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.12;
+  }
+}
+
+@keyframes delayed-reply-sun-x {
+  0% {
+    opacity: 0;
+    translate: -14vw 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  43% {
+    opacity: 0;
+    translate: 98vw 0;
+  }
+  100% {
+    opacity: 0;
+    translate: 98vw 0;
+  }
+}
+
+@keyframes delayed-reply-sun-y {
+  0% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  23% {
+    transform: translate3d(0, var(--delayed-reply-arc-height), 0);
+    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+  }
+  43%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes delayed-reply-moon-x {
+  0%,
+  43% {
+    opacity: 0;
+    translate: -14vw 0;
+  }
+  46% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0;
+    translate: 98vw 0;
+  }
+  100% {
+    opacity: 0;
+    translate: 98vw 0;
+  }
+}
+
+@keyframes delayed-reply-moon-y {
+  0%,
+  43% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  68% {
+    transform: translate3d(0, var(--delayed-reply-arc-height), 0);
+    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+  }
+  90%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes delayed-reply-stars-show {
+  0%,
+  36%,
+  94%,
+  100% {
+    opacity: 0;
+  }
+  51%,
+  81% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --delayed-reply-cycle: 6s;
+    --delayed-reply-arc-height: -43vh;
+  }
+
+  .wrap .delayed-reply-scene {
+    transition: none;
+  }
+
+  .wrap .delayed-reply-stars i:nth-child(n + 7) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.delayed-reply-active .delayed-reply-night {
+    opacity: 0.55;
+  }
+
+  .wrap.delayed-reply-active .delayed-reply-sun {
+    opacity: 0;
+  }
+
+  .wrap.delayed-reply-active .delayed-reply-moon {
+    opacity: 0.9;
+    translate: 36vw 0;
+    transform: translate3d(0, -28vh, 0);
+  }
+
+  .wrap.delayed-reply-active .delayed-reply-stars {
+    opacity: 0.7;
+  }
+}

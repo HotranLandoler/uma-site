@@ -1,0 +1,393 @@
+.wrap {
+  /*
+   * “不要来找我不要来找我……”手机背景参数
+   * cycle：亮屏、通知、熄屏、映出表情并抛走的一轮总时长。
+   * throw-x/height/end-y：抛物线的水平距离、最高点和离场高度。
+   * phone-*：手机外壳、亮屏、熄屏及反光颜色。
+   */
+  --avoid-message-cycle: 5s;
+  --avoid-message-scene-top: #d4d0ca;
+  --avoid-message-scene-bottom: #97979a;
+  --avoid-message-phone-shell: #393d43;
+  --avoid-message-phone-edge: #74777c;
+  --avoid-message-screen-on: #dce9e6;
+  --avoid-message-screen-off: #20252b;
+  --avoid-message-screen-ink: #46545a;
+  --avoid-message-reflection: rgba(205, 213, 214, 0.52);
+  --avoid-message-alert: #c95353;
+  --avoid-message-throw-x: min(70vw, 920px);
+  --avoid-message-throw-height: -46vh;
+  --avoid-message-throw-end-y: -14vh;
+}
+
+.wrap .avoid-message-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    155deg,
+    var(--avoid-message-scene-top),
+    var(--avoid-message-scene-bottom)
+  );
+  transition: opacity 0.3s ease;
+  will-change: opacity;
+}
+
+.wrap .avoid-message-stage {
+  position: absolute;
+  left: clamp(24px, 12vw, 180px);
+  top: 63%;
+  width: clamp(96px, 11vw, 140px);
+  aspect-ratio: 0.5;
+  visibility: hidden;
+}
+
+.wrap .avoid-message-phone-x,
+.wrap .avoid-message-phone-y {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.wrap .avoid-message-phone {
+  position: absolute;
+  inset: 0;
+  padding: 10% 7% 8%;
+  border: 3px solid var(--avoid-message-phone-edge);
+  border-radius: 18% / 9%;
+  background: var(--avoid-message-phone-shell);
+  box-shadow: 8px 10px 0 rgba(48, 48, 51, 0.18);
+  transform-origin: 50% 55%;
+  will-change: transform;
+}
+
+.wrap .avoid-message-speaker {
+  position: absolute;
+  z-index: 3;
+  top: 4.5%;
+  left: 50%;
+  width: 26%;
+  height: 2.2%;
+  border-radius: 999px;
+  background: #171a1e;
+  transform: translateX(-50%);
+}
+
+.wrap .avoid-message-screen {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12% / 6%;
+  background: var(--avoid-message-screen-on);
+  color: var(--avoid-message-screen-ink);
+  contain: paint;
+}
+
+.wrap .avoid-message-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  background: var(--avoid-message-screen-off);
+  will-change: opacity;
+}
+
+.wrap .avoid-message-time {
+  position: absolute;
+  z-index: 2;
+  top: 17%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(15px, 1.8vw, 24px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.wrap .avoid-message-alert {
+  position: absolute;
+  z-index: 3;
+  left: 13%;
+  top: 39%;
+  width: 74%;
+  height: 25%;
+  padding: 13% 12%;
+  border: 2px solid rgba(70, 76, 80, 0.2);
+  border-radius: 12px;
+  background: #f2f0e9;
+  box-shadow: 0 7px 0 rgba(54, 59, 62, 0.12);
+  opacity: 0;
+  transform: scale3d(0.72, 0.72, 1);
+  will-change: transform, opacity;
+}
+
+.wrap .avoid-message-alert i {
+  display: block;
+  width: 72%;
+  height: 5px;
+  border-radius: 999px;
+  background: #8e9697;
+}
+
+.wrap .avoid-message-alert i + i {
+  width: 48%;
+  margin-top: 14%;
+}
+
+.wrap .avoid-message-alert b {
+  position: absolute;
+  top: -8px;
+  right: -7px;
+  width: 17px;
+  aspect-ratio: 1;
+  border: 3px solid #f2f0e9;
+  border-radius: 50%;
+  background: var(--avoid-message-alert);
+}
+
+.wrap .avoid-message-face {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 49%;
+  width: 66%;
+  aspect-ratio: 1;
+  border: 4px solid var(--avoid-message-reflection);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale3d(0.94, 0.94, 1);
+  will-change: transform, opacity;
+}
+
+.wrap .avoid-message-face i {
+  position: absolute;
+  top: 31%;
+  width: 10%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--avoid-message-reflection);
+}
+
+.wrap .avoid-message-face i:first-child {
+  left: 25%;
+}
+
+.wrap .avoid-message-face i:nth-child(2) {
+  right: 25%;
+}
+
+.wrap .avoid-message-face b {
+  position: absolute;
+  left: 50%;
+  bottom: 19%;
+  width: 43%;
+  height: 22%;
+  border-top: 4px solid var(--avoid-message-reflection);
+  border-radius: 50% 50% 0 0;
+  transform: translateX(-50%);
+}
+
+.wrap.avoid-message-active .avoid-message-scene {
+  opacity: 1;
+}
+
+.wrap.avoid-message-active .avoid-message-stage {
+  visibility: visible;
+}
+
+.wrap.avoid-message-active .avoid-message-phone-x {
+  animation: avoid-message-phone-x var(--avoid-message-cycle) linear infinite;
+}
+
+.wrap.avoid-message-active .avoid-message-phone-y {
+  animation: avoid-message-phone-y var(--avoid-message-cycle) linear infinite;
+}
+
+.wrap.avoid-message-active .avoid-message-phone {
+  animation: avoid-message-phone-spin var(--avoid-message-cycle) linear infinite;
+}
+
+.wrap.avoid-message-active .avoid-message-screen::after {
+  animation: avoid-message-screen-off var(--avoid-message-cycle) linear infinite;
+}
+
+.wrap.avoid-message-active .avoid-message-time {
+  animation: avoid-message-time var(--avoid-message-cycle) linear infinite;
+}
+
+.wrap.avoid-message-active .avoid-message-alert {
+  animation: avoid-message-alert-pop var(--avoid-message-cycle) ease-out infinite;
+}
+
+.wrap.avoid-message-active .avoid-message-face {
+  animation: avoid-message-face-show var(--avoid-message-cycle) linear infinite;
+}
+
+.wrap.avoid-message-active .facet {
+  opacity: 0;
+}
+
+@keyframes avoid-message-screen-off {
+  0%,
+  27% {
+    opacity: 0;
+  }
+  30%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes avoid-message-time {
+  0%,
+  21% {
+    opacity: 1;
+  }
+  25%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes avoid-message-alert-pop {
+  0%,
+  15% {
+    opacity: 0;
+    transform: scale3d(0.72, 0.72, 1);
+  }
+  18%,
+  24% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+  28%,
+  100% {
+    opacity: 0;
+    transform: scale3d(0.9, 0.9, 1);
+  }
+}
+
+@keyframes avoid-message-face-show {
+  0%,
+  29% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale3d(0.94, 0.94, 1);
+  }
+  33%,
+  58% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale3d(1, 1, 1);
+  }
+  72% {
+    opacity: 0.62;
+  }
+  88%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale3d(1, 1, 1);
+  }
+}
+
+@keyframes avoid-message-phone-x {
+  0%,
+  58% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  88% {
+    opacity: 0;
+    transform: translate3d(var(--avoid-message-throw-x), 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--avoid-message-throw-x), 0, 0);
+  }
+}
+
+@keyframes avoid-message-phone-y {
+  0%,
+  58% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  74% {
+    transform: translate3d(0, var(--avoid-message-throw-height), 0);
+    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+  }
+  88%,
+  100% {
+    transform: translate3d(0, var(--avoid-message-throw-end-y), 0);
+  }
+}
+
+@keyframes avoid-message-phone-spin {
+  0%,
+  58% {
+    transform: rotateZ(0deg) scale3d(1, 1, 1);
+  }
+  74% {
+    transform: rotateZ(92deg) scale3d(0.5, 0.5, 1);
+  }
+  88%,
+  100% {
+    transform: rotateZ(230deg) scale3d(0.12, 0.12, 1);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --avoid-message-throw-x: 76vw;
+    --avoid-message-throw-height: -40vh;
+    --avoid-message-throw-end-y: -12vh;
+  }
+
+  .wrap .avoid-message-scene {
+    transition: none;
+  }
+
+  .wrap .avoid-message-stage {
+    left: 7vw;
+    top: 70%;
+    width: 94px;
+  }
+
+  .wrap .avoid-message-phone {
+    border-width: 2px;
+    box-shadow: 5px 7px 0 rgba(48, 48, 51, 0.14);
+  }
+
+  .wrap .avoid-message-alert b {
+    width: 14px;
+    border-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.avoid-message-active .avoid-message-phone-x,
+  .wrap.avoid-message-active .avoid-message-phone-y,
+  .wrap.avoid-message-active .avoid-message-phone {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .wrap.avoid-message-active .avoid-message-screen::after {
+    opacity: 1;
+    animation: none !important;
+  }
+
+  .wrap.avoid-message-active .avoid-message-time,
+  .wrap.avoid-message-active .avoid-message-alert {
+    opacity: 0;
+    animation: none !important;
+  }
+
+  .wrap.avoid-message-active .avoid-message-face {
+    opacity: 0.8;
+    transform: translate(-50%, -50%);
+    animation: none !important;
+  }
+}

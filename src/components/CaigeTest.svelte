@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import "./caige-test/styles/index.css";
   import {
     QUESTIONS,
@@ -18,9 +19,10 @@
   let selected = $state<number | null>(null);
   let toast = $state("");
   let poolWaveOffsetIndex = $state(-1);
+  let phoneTime = $state("--:--");
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-28";
+  const UI_VERSION = "2026.08.02-33";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -80,9 +82,20 @@
   const isDelayedReplySelected = $derived(
     selectedOption?.t === "已读，但是等到有空再回",
   );
+  const isAvoidMessageSelected = $derived(
+    selectedOption?.t === "不要来找我不要来找我……",
+  );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
   );
+
+  onMount(() => {
+    phoneTime = new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(new Date());
+  });
 
   // 关系卡：先「会让你紧张」，再「推荐农友」
   const allCards = $derived([
@@ -116,13 +129,6 @@
       current += 1;
       selected = null;
     }
-  }
-
-  function back() {
-    if (current === 0) return;
-    current -= 1;
-    answers = answers.slice(0, -1);
-    selected = null;
   }
 
   function restart() {
@@ -202,6 +208,7 @@
   class:deadline-active={isDeadlineSelected}
   class:fast-reply-active={isFastReplySelected}
   class:delayed-reply-active={isDelayedReplySelected}
+  class:avoid-message-active={isAvoidMessageSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -374,6 +381,26 @@
         {#each Array(9) as _}<i></i>{/each}
       </span>
     </div>
+    <div class="avoid-message-scene"></div>
+    <div class="avoid-message-stage" aria-hidden="true">
+      <div class="avoid-message-phone-x">
+        <div class="avoid-message-phone-y">
+          <div class="avoid-message-phone">
+            <span class="avoid-message-speaker"></span>
+            <div class="avoid-message-screen">
+              <span class="avoid-message-time">{phoneTime}</span>
+              <span class="avoid-message-alert">
+                <i></i><i></i>
+                <b></b>
+              </span>
+              <span class="avoid-message-face">
+                <i></i><i></i><b></b>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">
     <div class="inner">
@@ -393,7 +420,9 @@
           </h1>
           <p class="lead">{UI.lead}</p>
           <div class="pill-row">
-            {#each UI.pills as pill}<span class="pill">{pill}</span>{/each}
+            {#each UI.pills.filter((pill) => pill !== "凭第一反应选择") as pill}
+              <span class="pill">{pill}</span>
+            {/each}
           </div>
           <button onclick={begin}>{UI.startBtn}</button>
         </div>
@@ -401,8 +430,7 @@
         <div>
           <div class="progress">
             <div class="progress-top">
-              <span>第 {current + 1} / {total} 题</span>
-              <span>{UI.countHint}</span>
+              <span>{current + 1}/{total}</span>
             </div>
             <div
               class="bar"
@@ -452,13 +480,7 @@
             {/each}
           </div>
           <div class="nav">
-            <span class="tiny">{UI.backHint}</span>
             <div class="nav-actions">
-              <button
-                class="secondary"
-                style="visibility: {current > 0 ? 'visible' : 'hidden'}"
-                onclick={back}>{UI.backBtn}</button
-              >
               <button class="next" disabled={selected === null} onclick={next}>
                 {current + 1 >= total ? "查看答案" : "下一题"}
               </button>

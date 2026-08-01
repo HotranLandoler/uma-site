@@ -318,7 +318,6 @@
      * wave-height：波浪区域高度；数值越大，波浪在页面中占据的高度越多。
      * wave-color-1~4：由前至后的四层波浪颜色；alpha 越大越不透明。
      * wave-speed-1~4：每层完成一次移动所需时间；秒数越小，移动越快。
-     * wave-phase-1~4：负值 delay，选中瞬间各层已处于周期中的不同相位。
      */
     --pool-bg-top: #8edee0;
     --pool-bg-bottom: #3ca8bd;
@@ -331,11 +330,6 @@
     --pool-wave-speed-2: 14s;
     --pool-wave-speed-3: 25s;
     --pool-wave-speed-4: 36s;
-    /* 负 delay = 选中瞬间已处于周期中的不同相位，避免四层叠在同一起点 */
-    --pool-wave-phase-1: -5s;
-    --pool-wave-phase-2: -9s;
-    --pool-wave-phase-3: -16s;
-    --pool-wave-phase-4: -27s;
 
     /*
      * 水池按钮参数
@@ -417,30 +411,28 @@
     opacity: 1;
     transform: translateY(0);
   }
-  /* 用 longhand，避免 animation 简写把 delay 重置为 0 */
   .pool-active .pool-parallax > use {
-    animation-name: move-pool-wave;
-    animation-timing-function: cubic-bezier(0.55, 0.5, 0.45, 0.5);
-    animation-iteration-count: infinite;
+    animation: move-pool-wave 20s cubic-bezier(0.55, 0.5, 0.45, 0.5)
+      infinite;
   }
   .pool-parallax > use:nth-child(1) {
     fill: var(--pool-wave-color-1);
-    animation-delay: var(--pool-wave-phase-1);
+    animation-delay: -2s;
     animation-duration: var(--pool-wave-speed-1);
   }
   .pool-parallax > use:nth-child(2) {
     fill: var(--pool-wave-color-2);
-    animation-delay: var(--pool-wave-phase-2);
+    animation-delay: -3s;
     animation-duration: var(--pool-wave-speed-2);
   }
   .pool-parallax > use:nth-child(3) {
     fill: var(--pool-wave-color-3);
-    animation-delay: var(--pool-wave-phase-3);
+    animation-delay: -4s;
     animation-duration: var(--pool-wave-speed-3);
   }
   .pool-parallax > use:nth-child(4) {
     fill: var(--pool-wave-color-4);
-    animation-delay: var(--pool-wave-phase-4);
+    animation-delay: -5s;
     animation-duration: var(--pool-wave-speed-4);
   }
   @keyframes move-pool-wave {

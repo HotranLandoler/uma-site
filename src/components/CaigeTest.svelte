@@ -19,7 +19,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-8";
+  const UI_VERSION = "2026.08.01-12";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -51,6 +51,9 @@
   );
   const isPoolSelected = $derived(
     selectedOption?.t === "波光闪闪的水面",
+  );
+  const isCloudSelected = $derived(
+    selectedOption?.t === "棉花糖一样的云朵",
   );
   const isCommuterSelected = $derived(
     selectedOption?.t === "行色匆忙的路人",
@@ -171,6 +174,7 @@
 
 <section
   class:pool-active={isPoolSelected}
+  class:cloud-active={isCloudSelected}
   class:commuter-active={isCommuterSelected}
   class:dance-active={isDanceSelected}
   class="wrap"
@@ -202,6 +206,14 @@
         ></use>
       </g>
     </svg>
+    <div class="cloud-sky"></div>
+    <div class="cloud-field">
+      <span class="cloud"></span>
+      <span class="cloud"></span>
+      <span class="cloud"></span>
+      <span class="cloud"></span>
+      <span class="cloud"></span>
+    </div>
     <div class="commuter-city"></div>
     <div class="commuter-crowd commuter-crowd--far">
       {#each Array(4) as _}<span class="commuter-person"></span>{/each}
@@ -293,6 +305,8 @@
                 class:selected={selected === index}
                 class:selected-pool={selected === index &&
                   opt.t === "波光闪闪的水面"}
+                class:selected-cloud={selected === index &&
+                  opt.t === "棉花糖一样的云朵"}
                 class:selected-commuter={selected === index &&
                   opt.t === "行色匆忙的路人"}
                 class:selected-dance={selected === index &&
@@ -439,6 +453,23 @@
     --pool-button-rock-speed: 3s;
     --pool-button-water: #42bdca;
     --pool-button-crest: #78dfe0;
+
+    /*
+     * 棉花糖云朵参数
+     * sky-*：区别于水面的暖粉紫天空；front/back：前后景纯色云体。
+     * drift-speed：基准飘动周期，各朵云在选择器中略有快慢变化。
+     * button-*：按钮只保留奶油云体、紫灰圆框、文字与软阴影，不叠图形。
+     */
+    --cloud-sky-top: #c7b8dc;
+    --cloud-sky-bottom: #efd0d1;
+    --cloud-front: #fffaf5;
+    --cloud-back: #e9dcec;
+    --cloud-drift-speed: 26s;
+    --cloud-button-body: #fff6f3;
+    --cloud-button-frame: #8d7597;
+    --cloud-button-text: #56435f;
+    --cloud-button-shadow-base: #b99db7;
+    --cloud-button-shadow-soft: rgba(92, 65, 102, 0.2);
 
     /*
      * 通勤背景参数
@@ -654,6 +685,123 @@
   }
   .pool-active .facet {
     opacity: 0.1;
+  }
+  .cloud-sky {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: linear-gradient(
+      180deg,
+      var(--cloud-sky-top),
+      var(--cloud-sky-bottom)
+    );
+    transition: opacity 0.4s ease;
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+  .cloud-field {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  /*
+   * 云形参考 CodePen zrxGve：横向圆角云底 + 两个相互覆盖的圆形伪元素。
+   * 每朵只移动自身 transform，伪元素不单独动画。
+   */
+  .cloud {
+    --cloud-scale-x: 1;
+    --cloud-scale-y: 1;
+    --cloud-color: var(--cloud-front);
+    position: absolute;
+    top: 20%;
+    left: -300px;
+    width: 230px;
+    height: 76px;
+    border-radius: 999px;
+    background: var(--cloud-color);
+    box-shadow: 0 12px 22px rgba(101, 76, 111, 0.13);
+    transform: translate3d(-300px, 0, 0)
+      scale3d(var(--cloud-scale-x), var(--cloud-scale-y), 1);
+    transform-origin: center;
+    animation: cloud-sail var(--cloud-drift-speed) linear infinite paused;
+    will-change: transform;
+  }
+  .cloud::before,
+  .cloud::after {
+    content: "";
+    position: absolute;
+    background: var(--cloud-color);
+    border-radius: 48% 52% 46% 54%;
+  }
+  .cloud::before {
+    width: 122px;
+    height: 96px;
+    top: -28px;
+    left: 28px;
+    transform: rotate(18deg);
+  }
+  .cloud::after {
+    width: 150px;
+    height: 136px;
+    top: -73px;
+    right: 22px;
+  }
+  .cloud:nth-child(1) {
+    --cloud-scale-x: 1.06;
+    --cloud-scale-y: 0.96;
+    top: 17%;
+    animation-delay: -7s;
+  }
+  .cloud:nth-child(2) {
+    --cloud-scale-x: 0.6;
+    --cloud-scale-y: 0.52;
+    --cloud-color: var(--cloud-back);
+    top: 38%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.35);
+    animation-delay: -25s;
+  }
+  .cloud:nth-child(3) {
+    --cloud-scale-x: 1.28;
+    --cloud-scale-y: 1.18;
+    top: 66%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.18);
+    animation-delay: -18s;
+  }
+  .cloud:nth-child(4) {
+    --cloud-scale-x: 0.78;
+    --cloud-scale-y: 0.68;
+    --cloud-color: var(--cloud-back);
+    top: 8%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.5);
+    animation-delay: -34s;
+  }
+  .cloud:nth-child(5) {
+    --cloud-scale-x: 0.94;
+    --cloud-scale-y: 0.84;
+    top: 82%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.28);
+    animation-delay: -12s;
+  }
+  .cloud-active .cloud-sky,
+  .cloud-active .cloud-field {
+    opacity: 1;
+  }
+  .cloud-active .cloud {
+    animation-play-state: running;
+  }
+  .cloud-active .facet {
+    opacity: 0.04;
+  }
+  @keyframes cloud-sail {
+    from {
+      transform: translate3d(-300px, 0, 0)
+        scale3d(var(--cloud-scale-x), var(--cloud-scale-y), 1);
+    }
+    to {
+      transform: translate3d(calc(100vw + 340px), 0, 0)
+        scale3d(var(--cloud-scale-x), var(--cloud-scale-y), 1);
+    }
   }
   .commuter-city {
     position: absolute;
@@ -1208,6 +1356,22 @@
   .option.selected-pool .option-water::after {
     animation: water-sparkle 1.2s ease-in-out infinite alternate;
   }
+  .option.selected-cloud {
+    color: var(--cloud-button-text);
+    border-color: var(--cloud-button-frame);
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fffdfb, var(--cloud-button-body));
+    box-shadow:
+      0 6px 0 var(--cloud-button-shadow-base),
+      0 14px 26px var(--cloud-button-shadow-soft);
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: cloud-button-breathe 3.6s ease-in-out infinite;
+  }
+  .option.selected-cloud .option-text {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
   .bus-carriage {
     position: absolute;
     z-index: 1;
@@ -1481,6 +1645,15 @@
       opacity: 1;
     }
   }
+  @keyframes cloud-button-breathe {
+    0%,
+    100% {
+      transform: translate3d(0, -2px, 0) scale3d(1, 1, 1);
+    }
+    50% {
+      transform: translate3d(0, -4px, 0) scale3d(1.006, 0.988, 1);
+    }
+  }
   @media (hover: hover) {
     button:hover {
       transform: translateY(-1px);
@@ -1493,6 +1666,10 @@
     .option.selected-pool:hover {
       border-color: #278ca2;
       background: #c9f3ef;
+    }
+    .option.selected-cloud:hover {
+      border-color: var(--cloud-button-frame);
+      background: var(--cloud-button-body);
     }
     .option.selected-commuter:hover {
       border-color: var(--commuter-bus-frame);
@@ -1743,9 +1920,53 @@
      * 但会增加选中瞬间和持续运行的合成压力。
      */
     .facet,
+    .cloud-field,
     .commuter-crowd,
     .dance-crowd {
       transition: none;
+    }
+    /* 手机仅保留三朵云，并以更慢周期移动，控制同时运行的合成层数量 */
+    .cloud:nth-child(2),
+    .cloud:nth-child(4) {
+      display: none;
+      animation-name: none;
+    }
+    .cloud {
+      left: 0;
+      animation-name: cloud-sail;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-play-state: paused;
+      will-change: transform;
+    }
+    .cloud:nth-child(1) {
+      --cloud-scale-x: 0.52;
+      --cloud-scale-y: 0.46;
+      top: 12%;
+      animation-duration: 36s;
+      animation-delay: -8s;
+    }
+    .cloud:nth-child(3) {
+      --cloud-scale-x: 0.58;
+      --cloud-scale-y: 0.52;
+      top: 50%;
+      animation-duration: 44s;
+      animation-delay: -29s;
+    }
+    .cloud:nth-child(5) {
+      --cloud-scale-x: 0.46;
+      --cloud-scale-y: 0.4;
+      top: 82%;
+      animation-duration: 40s;
+      animation-delay: -17s;
+    }
+    .cloud-active .cloud {
+      animation-play-state: running;
+    }
+    .option.selected-cloud {
+      animation: none;
+      transform: translate3d(0, -2px, 0);
+      will-change: auto;
     }
     .commuter-crowd--near .commuter-person:nth-child(n + 3),
     .commuter-crowd--far .commuter-person:nth-child(n + 3) {

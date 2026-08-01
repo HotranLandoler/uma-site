@@ -19,7 +19,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-3";
+  const UI_VERSION = "2026.08.01-8";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -54,6 +54,9 @@
   );
   const isCommuterSelected = $derived(
     selectedOption?.t === "行色匆忙的路人",
+  );
+  const isDanceSelected = $derived(
+    selectedOption?.t === "跳广场舞的叔叔阿姨",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -169,6 +172,7 @@
 <section
   class:pool-active={isPoolSelected}
   class:commuter-active={isCommuterSelected}
+  class:dance-active={isDanceSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -205,6 +209,43 @@
     <div class="commuter-crowd commuter-crowd--near">
       {#each Array(4) as _}<span class="commuter-person"></span>{/each}
     </div>
+    <div class="dance-plaza"></div>
+    <svg
+      class="dance-crowd"
+      viewBox="0 0 760 210"
+      preserveAspectRatio="xMidYMax meet"
+    >
+      <g class="dance-figure dance-figure--one" transform="translate(70 67)">
+        <circle cx="0" cy="0" r="16"></circle>
+        <path d="M-19 25Q0 13 19 25L24 91H-24Z"></path>
+        <path class="dance-limb" d="M-14 34L-43 13M14 34L43 50"></path>
+        <path class="dance-limb" d="M-11 88L-27 133M11 88L29 130"></path>
+      </g>
+      <g class="dance-figure dance-figure--two" transform="translate(220 45)">
+        <circle cx="0" cy="0" r="17"></circle>
+        <path d="M-21 27Q0 14 21 27L27 98H-27Z"></path>
+        <path class="dance-limb" d="M-15 38L-46 57M15 38L42 9"></path>
+        <path class="dance-limb" d="M-12 95L-31 145M12 95L27 145"></path>
+      </g>
+      <g class="dance-figure dance-figure--three" transform="translate(380 26)">
+        <circle cx="0" cy="0" r="18"></circle>
+        <path d="M-23 29Q0 15 23 29L29 106H-29Z"></path>
+        <path class="dance-limb" d="M-17 42L-50 18M17 42L50 18"></path>
+        <path class="dance-limb" d="M-13 103L-35 158M13 103L35 158"></path>
+      </g>
+      <g class="dance-figure dance-figure--four" transform="translate(540 45)">
+        <circle cx="0" cy="0" r="17"></circle>
+        <path d="M-21 27Q0 14 21 27L27 98H-27Z"></path>
+        <path class="dance-limb" d="M-15 38L-42 9M15 38L46 57"></path>
+        <path class="dance-limb" d="M-12 95L-27 145M12 95L31 145"></path>
+      </g>
+      <g class="dance-figure dance-figure--five" transform="translate(690 67)">
+        <circle cx="0" cy="0" r="16"></circle>
+        <path d="M-19 25Q0 13 19 25L24 91H-24Z"></path>
+        <path class="dance-limb" d="M-14 34L-43 50M14 34L43 13"></path>
+        <path class="dance-limb" d="M-11 88L-29 130M11 88L27 133"></path>
+      </g>
+    </svg>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">
     <div class="inner">
@@ -254,6 +295,8 @@
                   opt.t === "波光闪闪的水面"}
                 class:selected-commuter={selected === index &&
                   opt.t === "行色匆忙的路人"}
+                class:selected-dance={selected === index &&
+                  opt.t === "跳广场舞的叔叔阿姨"}
                 class="option"
                 aria-pressed={selected === index}
                 onclick={() => choose(index)}
@@ -268,6 +311,11 @@
                     <span class="bus-strap bus-strap--one"></span>
                     <span class="bus-strap bus-strap--two"></span>
                     <span class="bus-strap bus-strap--three"></span>
+                  </span>
+                {/if}
+                {#if opt.t === "跳广场舞的叔叔阿姨"}
+                  <span class="dance-beat" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
                   </span>
                 {/if}</button
               >
@@ -480,6 +528,38 @@
     --commuter-strap-angle-2: 3deg;
     --commuter-strap-angle-3: 6deg;
 
+    /*
+     * 广场舞背景与按钮参数
+     * sky / ground：晚饭后广场的天空、地面颜色。
+     * grid：地砖分隔线；crowd-*：人物轮廓与五件低饱和上衣颜色。
+     * beat-speed：一轮“动次打次”的时长。
+     * crowd-shift-*：人群左右整体移动幅度；button-scale-*：按钮强弱拍缩放。
+     * 注意：≤560px 会在下方媒体查询中覆盖这两组幅度；调整桌面值不会影响手机值。
+     * button-*：按钮主体、结构线、节拍块、文字与阴影颜色。
+     */
+    --dance-sky-top: #f1d9bf;
+    --dance-sky-bottom: #d8bab2;
+    --dance-ground: #a49aaa;
+    --dance-ground-deep: #81798d;
+    --dance-grid: rgba(244, 225, 202, 0.3);
+    --dance-crowd-ink: #4f5260;
+    --dance-crowd-1: #bd6f68;
+    --dance-crowd-2: #668781;
+    --dance-crowd-3: #c29358;
+    --dance-crowd-4: #73809c;
+    --dance-crowd-5: #9a6e83;
+    --dance-beat-speed: 1.6s;
+    --dance-crowd-shift-strong: -18px;
+    --dance-crowd-shift-weak: 14px;
+    --dance-button-scale-strong: 1.016;
+    --dance-button-scale-weak: 1.006;
+    --dance-button-body: #dc8877;
+    --dance-button-frame: #555564;
+    --dance-button-accent: #f0c36e;
+    --dance-button-text: #323744;
+    --dance-button-shadow-base: #675963;
+    --dance-button-shadow-color: rgba(62, 52, 64, 0.22);
+
     width: 100%;
     min-height: 100vh;
     margin: 0;
@@ -518,6 +598,9 @@
   }
   .pool-active .ui-version {
     color: rgba(255, 255, 255, 0.38);
+  }
+  .dance-active .ui-version {
+    color: rgba(255, 250, 240, 0.48);
   }
   .facet {
     position: absolute;
@@ -724,6 +807,95 @@
   .commuter-active .commuter-person,
   .commuter-active .commuter-person::after {
     animation-play-state: running;
+  }
+  .dance-plaza {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 13vw,
+        var(--dance-grid) 13vw calc(13vw + 2px)
+      )
+      0 100% / 100% 38% no-repeat,
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 58px,
+        var(--dance-grid) 58px 60px
+      )
+      0 100% / 100% 38% no-repeat,
+      linear-gradient(
+        180deg,
+        var(--dance-sky-top) 0 62%,
+        var(--dance-ground) 62% 82%,
+        var(--dance-ground-deep) 100%
+      );
+    transition: opacity 0.35s ease;
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+  .dance-crowd {
+    position: absolute;
+    right: 4%;
+    bottom: 2%;
+    left: 4%;
+    width: 92%;
+    height: min(29vh, 240px);
+    margin: auto;
+    overflow: visible;
+    opacity: 0;
+    color: var(--dance-crowd-ink);
+    transition: opacity 0.25s ease;
+    transform: translate3d(var(--dance-crowd-shift-strong), 0, 0);
+    animation: dance-crowd-shift var(--dance-beat-speed) ease-in-out infinite
+      paused;
+    will-change: transform;
+  }
+  .dance-figure {
+    fill: var(--dance-crowd-1);
+    stroke: var(--dance-crowd-ink);
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .dance-figure circle {
+    fill: var(--dance-crowd-ink);
+    stroke: none;
+  }
+  .dance-figure > path:not(.dance-limb) {
+    stroke: none;
+  }
+  .dance-figure--two {
+    fill: var(--dance-crowd-2);
+  }
+  .dance-figure--three {
+    fill: var(--dance-crowd-3);
+  }
+  .dance-figure--four {
+    fill: var(--dance-crowd-4);
+  }
+  .dance-figure--five {
+    fill: var(--dance-crowd-5);
+  }
+  .dance-active .dance-plaza,
+  .dance-active .dance-crowd {
+    opacity: 1;
+  }
+  .dance-active .facet {
+    opacity: 0.06;
+  }
+  .dance-active .dance-crowd {
+    animation-play-state: running;
+  }
+  @keyframes dance-crowd-shift {
+    0%,
+    100% {
+      transform: translate3d(var(--dance-crowd-shift-strong), 0, 0);
+    }
+    50% {
+      transform: translate3d(var(--dance-crowd-shift-weak), 0, 0);
+    }
   }
   @keyframes commuter-walk-right {
     from {
@@ -1156,6 +1328,56 @@
   .option.selected-commuter .bus-strap {
     animation: bus-strap-sway var(--commuter-bus-bump-speed) linear infinite;
   }
+  .dance-beat {
+    position: absolute;
+    z-index: 1;
+    right: 16px;
+    bottom: 12px;
+    width: 45px;
+    height: 27px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .dance-beat span {
+    width: 8px;
+    border: 2px solid var(--dance-button-frame);
+    border-radius: 4px 4px 2px 2px;
+    background: var(--dance-button-accent);
+  }
+  .dance-beat span:nth-child(1) {
+    height: 18px;
+  }
+  .dance-beat span:nth-child(2) {
+    height: 10px;
+  }
+  .dance-beat span:nth-child(3) {
+    height: 24px;
+  }
+  .dance-beat span:nth-child(4) {
+    height: 13px;
+  }
+  .option.selected-dance {
+    color: var(--dance-button-text);
+    border-color: var(--dance-button-frame);
+    background: var(--dance-button-body);
+    box-shadow:
+      0 5px 0 var(--dance-button-shadow-base),
+      0 12px 24px var(--dance-button-shadow-color);
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: dance-button-beat var(--dance-beat-speed) ease-in-out infinite;
+  }
+  .option.selected-dance .option-text {
+    z-index: 2;
+    text-shadow: 0 1px 0 rgba(255, 245, 225, 0.62);
+  }
+  .option.selected-dance .dance-beat {
+    opacity: 1;
+  }
   /*
    * 34%~45% 与 70%~81% 是一轮中的两段颠簸窗口，其余时间保持平稳。
    * 若希望更少颠簸，可删除后一组百分比；吊环 keyframes 需同步调整。
@@ -1198,6 +1420,35 @@
     42%,
     79% {
       transform: rotate(calc(0deg - var(--strap-angle)));
+    }
+  }
+  @keyframes dance-button-beat {
+    0%,
+    100% {
+      transform: translate3d(0, -2px, 0)
+        scale3d(
+          var(--dance-button-scale-strong),
+          var(--dance-button-scale-strong),
+          1
+        );
+    }
+    18% {
+      transform: translate3d(0, -1px, 0) scale3d(1, 1, 1);
+    }
+    42% {
+      transform: translate3d(0, -1px, 0) scale3d(1, 1, 1);
+    }
+    50% {
+      transform: translate3d(0, -1px, 0)
+        scale3d(
+          var(--dance-button-scale-weak),
+          var(--dance-button-scale-weak),
+          1
+        );
+    }
+    68%,
+    92% {
+      transform: translate3d(0, -1px, 0) scale3d(1, 1, 1);
     }
   }
   @keyframes cartoon-water-sway {
@@ -1246,6 +1497,10 @@
     .option.selected-commuter:hover {
       border-color: var(--commuter-bus-frame);
       background: var(--commuter-bus-body);
+    }
+    .option.selected-dance:hover {
+      border-color: var(--dance-button-frame);
+      background: var(--dance-button-body);
     }
   }
 
@@ -1488,7 +1743,8 @@
      * 但会增加选中瞬间和持续运行的合成压力。
      */
     .facet,
-    .commuter-crowd {
+    .commuter-crowd,
+    .dance-crowd {
       transition: none;
     }
     .commuter-crowd--near .commuter-person:nth-child(n + 3),
@@ -1502,6 +1758,28 @@
     /* 手机缩小车厢上下颠簸幅度 */
     .option.selected-commuter {
       animation-name: bus-road-bump-mobile;
+    }
+    /*
+     * 手机只保留中间三人，并单独覆盖人群整体位移与按钮缩放：
+     * 人群 -1.5px / 1px，按钮 1.008 / 1.004。调整桌面 `.wrap` 中的同名变量
+     * 不会改变这里的手机值；若希望双端同步，可删除下面四个覆盖声明。
+     * 静态四拍块仍保留，避免为同一节奏再启动四个独立动画。
+     */
+    .wrap {
+      --dance-crowd-shift-strong: -15px;
+      --dance-crowd-shift-weak: 10px;
+      --dance-button-scale-strong: 1.012;
+      --dance-button-scale-weak: 1.008;
+    }
+    .dance-figure--one,
+    .dance-figure--five {
+      display: none;
+    }
+    .dance-crowd {
+      right: -15%;
+      left: -15%;
+      width: 130%;
+      height: min(24vh, 190px);
     }
   }
   @keyframes pool-button-float {

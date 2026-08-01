@@ -1,0 +1,250 @@
+.wrap{
+    /*
+     * 水池背景参数
+     * bg-top / bg-bottom：背景上下端颜色。
+     * wave-height：波浪区域高度；数值越大，波浪在页面中占据的高度越多。
+     * wave-color-1~4：由前至后的四层波浪颜色；alpha 越大越不透明。
+     * wave-speed-1~4：每层完成一次移动所需时间；秒数越小，移动越快。
+     * wave-phase-1~4：负值 delay，选中瞬间各层已处于周期中的不同相位。
+     * wave-offset：由交互循环写入的水平偏移，避免每次激活都从同一位置出现。
+     */
+    --pool-bg-top: #8edee0;
+    --pool-bg-bottom: #3ca8bd;
+    --pool-wave-height: clamp(150px, 20vh, 270px);
+    --pool-wave-color-1: rgba(223, 255, 252, 0.68);
+    --pool-wave-color-2: rgba(173, 240, 236, 0.56);
+    --pool-wave-color-3: rgba(106, 206, 211, 0.52);
+    --pool-wave-color-4: rgba(42, 146, 171, 0.46);
+    --pool-wave-speed-1: 20s;
+    --pool-wave-speed-2: 14s;
+    --pool-wave-speed-3: 25s;
+    --pool-wave-speed-4: 36s;
+    --pool-wave-offset: 0px;
+    /* 负 delay = 选中瞬间已处于周期中的不同相位，避免四层叠在同一起点 */
+    --pool-wave-phase-1: -5s;
+    --pool-wave-phase-2: -9s;
+    --pool-wave-phase-3: -16s;
+    --pool-wave-phase-4: -27s;
+
+    /*
+     * 水池按钮参数
+     * button-rock-angle：按钮左右摇摆的最大角度；越大摇晃越明显。
+     * button-rock-speed：完成一次左右摇摆的时间；越小摇晃越快。
+     * button-water / button-crest：按钮内水体和浅色浪头的颜色。
+     */
+    --pool-button-rock-angle: 0.4deg;
+    --pool-button-rock-speed: 3s;
+    --pool-button-water: #42bdca;
+    --pool-button-crest: #78dfe0;
+}
+
+  .wrap.pool-active .ui-version{
+    color: rgba(255, 255, 255, 0.38);
+  }
+
+  .wrap .pool-sky{
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: linear-gradient(
+      180deg,
+      var(--pool-bg-top),
+      var(--pool-bg-bottom)
+    );
+    transition: opacity 0.45s ease;
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+  .wrap .pool-waves{
+    position: absolute;
+    inset: auto 0 -1px;
+    width: 100%;
+    height: var(--pool-wave-height);
+    opacity: 0;
+    /* 只淡入，避免与子层 transform 动画抢同一合成层 */
+    transition: opacity 0.4s ease;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: opacity;
+  }
+  .wrap.pool-active .pool-sky,
+.wrap.pool-active .pool-waves{
+    opacity: 1;
+  }
+  .wrap.pool-active .facet{
+    opacity: 0.1;
+  }
+
+  /*
+   * 动画常挂、默认 paused：选中时只切 play-state，
+   * 避免四层 SVG 同时冷启动；负 delay 仍保留相位。
+   * 用 longhand，避免 animation 简写把 delay 重置为 0。
+   */
+  .wrap .pool-parallax > use{
+    animation-name: move-pool-wave;
+    animation-timing-function: cubic-bezier(0.55, 0.5, 0.45, 0.5);
+    animation-iteration-count: infinite;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+  .wrap.pool-active .pool-parallax > use{
+    animation-play-state: running;
+  }
+  .wrap .pool-parallax > use:nth-child(1){
+    fill: var(--pool-wave-color-1);
+    animation-delay: var(--pool-wave-phase-1);
+    animation-duration: var(--pool-wave-speed-1);
+  }
+  .wrap .pool-parallax > use:nth-child(2){
+    fill: var(--pool-wave-color-2);
+    animation-delay: var(--pool-wave-phase-2);
+    animation-duration: var(--pool-wave-speed-2);
+  }
+  .wrap .pool-parallax > use:nth-child(3){
+    fill: var(--pool-wave-color-3);
+    animation-delay: var(--pool-wave-phase-3);
+    animation-duration: var(--pool-wave-speed-3);
+  }
+  .wrap .pool-parallax > use:nth-child(4){
+    fill: var(--pool-wave-color-4);
+    animation-delay: var(--pool-wave-phase-4);
+    animation-duration: var(--pool-wave-speed-4);
+  }
+  @keyframes move-pool-wave {
+    from {
+      transform: translate3d(calc(-90px + var(--pool-wave-offset)), 0, 0);
+    }
+    to {
+      transform: translate3d(calc(85px + var(--pool-wave-offset)), 0, 0);
+    }
+  }
+
+  .wrap .option-water{
+    position: absolute;
+    z-index: 1;
+    left: -5%;
+    bottom: -12px;
+    width: 110%;
+    height: 36px;
+    background: var(--pool-button-water);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+  }
+  .wrap .option-water::before{
+    content: "";
+    position: absolute;
+    inset: -16px 0 auto;
+    height: 32px;
+    background: radial-gradient(
+        circle at 14px 16px,
+        var(--pool-button-crest) 0 15px,
+        transparent 16px
+      )
+      0 0 / 28px 32px repeat-x;
+  }
+  .wrap .option-water::after{
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    top: -12px;
+    left: 22%;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.75;
+    box-shadow:
+      8px -8px 0 -2px #fff,
+      96px 5px 0 -1px rgba(255, 255, 255, 0.9),
+      184px -7px 0 -2px rgba(255, 255, 255, 0.85);
+  }
+  .wrap .option.selected-pool{
+    color: #123f50;
+    /* 与普通选项保持同样边框宽度，避免选中瞬间让整组选项重新布局 */
+    border: 2px solid #278ca2;
+    background: #c9f3ef;
+    box-shadow:
+      0 5px 0 #176c81,
+      0 10px 20px rgba(16, 91, 110, 0.2);
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: pool-button-rock var(--pool-button-rock-speed) ease-in-out
+      infinite;
+  }
+  .wrap .option.selected-pool .option-water{
+    opacity: 1;
+    /* 仅平移，去掉 rotate，减少每帧重绘径向渐变 */
+    animation: cartoon-water-sway 1.5s ease-in-out infinite alternate;
+  }
+  .wrap .option.selected-pool .option-water::after{
+    animation: water-sparkle 1.2s ease-in-out infinite alternate;
+  }
+
+  @keyframes cartoon-water-sway {
+    from {
+      transform: translate3d(-2.5%, 0, 0);
+    }
+    to {
+      transform: translate3d(2.5%, 0, 0);
+    }
+  }
+  @keyframes pool-button-rock {
+    0% {
+      transform: translate3d(0, -3px, 0)
+        rotate(calc(0deg - var(--pool-button-rock-angle)));
+    }
+    50% {
+      transform: translate3d(0, -3px, 0)
+        rotate(var(--pool-button-rock-angle));
+    }
+    100% {
+      transform: translate3d(0, -3px, 0)
+        rotate(calc(0deg - var(--pool-button-rock-angle)));
+    }
+  }
+  @keyframes water-sparkle {
+    from {
+      opacity: 0.48;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+@media (hover: hover) {
+  .wrap .option.selected-pool:hover{
+    border-color: #278ca2;
+    background: #c9f3ef;
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap{
+    --pool-wave-height: clamp(120px, 18vh, 200px);
+  }
+  /* 手机少画一层 SVG，减轻选中瞬间合成压力 */
+  .wrap .pool-wave-back{
+    display: none;
+  }
+  /* 手机上按钮只做轻量上下浮动，避免旋转带动阴影重绘 */
+  .wrap .option.selected-pool{
+    animation-name: pool-button-float;
+  }
+  .wrap .option.selected-pool .option-water::after{
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
+  @keyframes pool-button-float {
+    0%,
+    100% {
+      transform: translate3d(0, -2px, 0);
+    }
+    50% {
+      transform: translate3d(0, -5px, 0);
+    }
+  }

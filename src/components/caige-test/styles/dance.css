@@ -1,0 +1,236 @@
+.wrap{
+    /*
+     * 广场舞背景与按钮参数
+     * sky / ground：晚饭后广场的天空、地面颜色。
+     * grid：地砖分隔线；crowd-*：人物轮廓与五件低饱和上衣颜色。
+     * beat-speed：一轮“动次打次”的时长。
+     * crowd-shift-*：人群左右整体移动幅度；button-scale-*：按钮强弱拍缩放。
+     * 注意：≤560px 会在下方媒体查询中覆盖这两组幅度；调整桌面值不会影响手机值。
+     * button-*：按钮主体、结构线、节拍块、文字与阴影颜色。
+     */
+    --dance-sky-top: #f1d9bf;
+    --dance-sky-bottom: #d8bab2;
+    --dance-ground: #a49aaa;
+    --dance-ground-deep: #81798d;
+    --dance-grid: rgba(244, 225, 202, 0.3);
+    --dance-crowd-ink: #4f5260;
+    --dance-crowd-1: #bd6f68;
+    --dance-crowd-2: #668781;
+    --dance-crowd-3: #c29358;
+    --dance-crowd-4: #73809c;
+    --dance-crowd-5: #9a6e83;
+    --dance-beat-speed: 1.6s;
+    --dance-crowd-shift-strong: -18px;
+    --dance-crowd-shift-weak: 14px;
+    --dance-button-scale-strong: 1.016;
+    --dance-button-scale-weak: 1.006;
+    --dance-button-body: #dc8877;
+    --dance-button-frame: #555564;
+    --dance-button-accent: #f0c36e;
+    --dance-button-text: #323744;
+    --dance-button-shadow-base: #675963;
+    --dance-button-shadow-color: rgba(62, 52, 64, 0.22);
+}
+
+  .wrap.dance-active .ui-version{
+    color: rgba(255, 250, 240, 0.48);
+  }
+
+  .wrap .dance-plaza{
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 13vw,
+        var(--dance-grid) 13vw calc(13vw + 2px)
+      )
+      0 100% / 100% 38% no-repeat,
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 58px,
+        var(--dance-grid) 58px 60px
+      )
+      0 100% / 100% 38% no-repeat,
+      linear-gradient(
+        180deg,
+        var(--dance-sky-top) 0 62%,
+        var(--dance-ground) 62% 82%,
+        var(--dance-ground-deep) 100%
+      );
+    transition: opacity 0.35s ease;
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+  .wrap .dance-crowd{
+    position: absolute;
+    right: 4%;
+    bottom: 2%;
+    left: 4%;
+    width: 92%;
+    height: min(29vh, 240px);
+    margin: auto;
+    overflow: visible;
+    opacity: 0;
+    color: var(--dance-crowd-ink);
+    transition: opacity 0.25s ease;
+    transform: translate3d(var(--dance-crowd-shift-strong), 0, 0);
+    animation: dance-crowd-shift var(--dance-beat-speed) ease-in-out infinite
+      paused;
+    will-change: transform;
+  }
+  .wrap .dance-figure{
+    fill: var(--dance-crowd-1);
+    stroke: var(--dance-crowd-ink);
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .wrap .dance-figure circle{
+    fill: var(--dance-crowd-ink);
+    stroke: none;
+  }
+  .wrap .dance-figure > path:not(.dance-limb){
+    stroke: none;
+  }
+  .wrap .dance-figure--two{
+    fill: var(--dance-crowd-2);
+  }
+  .wrap .dance-figure--three{
+    fill: var(--dance-crowd-3);
+  }
+  .wrap .dance-figure--four{
+    fill: var(--dance-crowd-4);
+  }
+  .wrap .dance-figure--five{
+    fill: var(--dance-crowd-5);
+  }
+  .wrap.dance-active .dance-plaza,
+.wrap.dance-active .dance-crowd{
+    opacity: 1;
+  }
+  .wrap.dance-active .facet{
+    opacity: 0.06;
+  }
+  .wrap.dance-active .dance-crowd{
+    animation-play-state: running;
+  }
+
+  @keyframes dance-crowd-shift {
+    0%,
+    100% {
+      transform: translate3d(var(--dance-crowd-shift-strong), 0, 0);
+    }
+    50% {
+      transform: translate3d(var(--dance-crowd-shift-weak), 0, 0);
+    }
+  }
+
+  .wrap .dance-beat{
+    position: absolute;
+    z-index: 1;
+    right: 16px;
+    bottom: 12px;
+    width: 45px;
+    height: 27px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .wrap .dance-beat span{
+    width: 8px;
+    border: 2px solid var(--dance-button-frame);
+    border-radius: 4px 4px 2px 2px;
+    background: var(--dance-button-accent);
+  }
+  .wrap .dance-beat span:nth-child(1){
+    height: 18px;
+  }
+  .wrap .dance-beat span:nth-child(2){
+    height: 10px;
+  }
+  .wrap .dance-beat span:nth-child(3){
+    height: 24px;
+  }
+  .wrap .dance-beat span:nth-child(4){
+    height: 13px;
+  }
+  .wrap .option.selected-dance{
+    color: var(--dance-button-text);
+    border-color: var(--dance-button-frame);
+    background: var(--dance-button-body);
+    box-shadow:
+      0 5px 0 var(--dance-button-shadow-base),
+      0 12px 24px var(--dance-button-shadow-color);
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: dance-button-beat var(--dance-beat-speed) ease-in-out infinite;
+  }
+  .wrap .option.selected-dance .option-text{
+    z-index: 2;
+    text-shadow: 0 1px 0 rgba(255, 245, 225, 0.62);
+  }
+  .wrap .option.selected-dance .dance-beat{
+    opacity: 1;
+  }
+
+  @keyframes dance-button-beat {
+    0%,
+    100% {
+      transform: translate3d(0, -2px, 0)
+        scale3d(
+          var(--dance-button-scale-strong),
+          var(--dance-button-scale-strong),
+          1
+        );
+    }
+    18% {
+      transform: translate3d(0, -1px, 0) scale3d(1, 1, 1);
+    }
+    42% {
+      transform: translate3d(0, -1px, 0) scale3d(1, 1, 1);
+    }
+    50% {
+      transform: translate3d(0, -1px, 0)
+        scale3d(
+          var(--dance-button-scale-weak),
+          var(--dance-button-scale-weak),
+          1
+        );
+    }
+    68%,
+    92% {
+      transform: translate3d(0, -1px, 0) scale3d(1, 1, 1);
+    }
+  }
+
+@media (hover: hover) {
+  .wrap .option.selected-dance:hover{
+    border-color: var(--dance-button-frame);
+    background: var(--dance-button-body);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap{
+    --dance-crowd-shift-strong: -15px;
+    --dance-crowd-shift-weak: 10px;
+    --dance-button-scale-strong: 1.012;
+    --dance-button-scale-weak: 1.008;
+  }
+  .wrap .dance-crowd{
+    transition: none;
+    right: -15%;
+    left: -15%;
+    width: 130%;
+    height: min(24vh, 190px);
+  }
+  .wrap .dance-figure--one,
+.wrap .dance-figure--five{
+    display: none;
+  }
+}

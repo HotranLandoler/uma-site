@@ -1,0 +1,219 @@
+.wrap{
+    /*
+     * 棉花糖云朵参数
+     * sky-*：区别于水面的暖粉紫天空；front/back：前后景纯色云体。
+     * drift-speed：基准飘动周期，各朵云在选择器中略有快慢变化。
+     * button-*：按钮只保留奶油云体、紫灰圆框、文字与软阴影，不叠图形。
+     */
+    --cloud-sky-top: #c7b8dc;
+    --cloud-sky-bottom: #efd0d1;
+    --cloud-front: #fffaf5;
+    --cloud-back: #e9dcec;
+    --cloud-drift-speed: 26s;
+    --cloud-button-body: #fff6f3;
+    --cloud-button-frame: #8d7597;
+    --cloud-button-text: #56435f;
+    --cloud-button-shadow-base: #b99db7;
+    --cloud-button-shadow-soft: rgba(92, 65, 102, 0.2);
+}
+
+  .wrap .cloud-sky{
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: linear-gradient(
+      180deg,
+      var(--cloud-sky-top),
+      var(--cloud-sky-bottom)
+    );
+    transition: opacity 0.4s ease;
+    transform: translateZ(0);
+    will-change: opacity;
+  }
+  .wrap .cloud-field{
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  /*
+   * 云形参考 CodePen zrxGve：横向圆角云底 + 两个相互覆盖的圆形伪元素。
+   * 每朵只移动自身 transform，伪元素不单独动画。
+   */
+  .wrap .cloud{
+    --cloud-scale-x: 1;
+    --cloud-scale-y: 1;
+    --cloud-color: var(--cloud-front);
+    position: absolute;
+    top: 20%;
+    left: -300px;
+    width: 230px;
+    height: 76px;
+    border-radius: 999px;
+    background: var(--cloud-color);
+    box-shadow: 0 12px 22px rgba(101, 76, 111, 0.13);
+    transform: translate3d(-300px, 0, 0)
+      scale3d(var(--cloud-scale-x), var(--cloud-scale-y), 1);
+    transform-origin: center;
+    animation: cloud-sail var(--cloud-drift-speed) linear infinite paused;
+    will-change: transform;
+  }
+  .wrap .cloud::before,
+.wrap .cloud::after{
+    content: "";
+    position: absolute;
+    background: var(--cloud-color);
+    border-radius: 48% 52% 46% 54%;
+  }
+  .wrap .cloud::before{
+    width: 122px;
+    height: 96px;
+    top: -28px;
+    left: 28px;
+    transform: rotate(18deg);
+  }
+  .wrap .cloud::after{
+    width: 150px;
+    height: 136px;
+    top: -73px;
+    right: 22px;
+  }
+  .wrap .cloud:nth-child(1){
+    --cloud-scale-x: 1.06;
+    --cloud-scale-y: 0.96;
+    top: 17%;
+    animation-delay: -7s;
+  }
+  .wrap .cloud:nth-child(2){
+    --cloud-scale-x: 0.6;
+    --cloud-scale-y: 0.52;
+    --cloud-color: var(--cloud-back);
+    top: 38%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.35);
+    animation-delay: -25s;
+  }
+  .wrap .cloud:nth-child(3){
+    --cloud-scale-x: 1.28;
+    --cloud-scale-y: 1.18;
+    top: 66%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.18);
+    animation-delay: -18s;
+  }
+  .wrap .cloud:nth-child(4){
+    --cloud-scale-x: 0.78;
+    --cloud-scale-y: 0.68;
+    --cloud-color: var(--cloud-back);
+    top: 8%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.5);
+    animation-delay: -34s;
+  }
+  .wrap .cloud:nth-child(5){
+    --cloud-scale-x: 0.94;
+    --cloud-scale-y: 0.84;
+    top: 82%;
+    animation-duration: calc(var(--cloud-drift-speed) * 1.28);
+    animation-delay: -12s;
+  }
+  .wrap.cloud-active .cloud-sky,
+.wrap.cloud-active .cloud-field{
+    opacity: 1;
+  }
+  .wrap.cloud-active .cloud{
+    animation-play-state: running;
+  }
+  .wrap.cloud-active .facet{
+    opacity: 0.04;
+  }
+  @keyframes cloud-sail {
+    from {
+      transform: translate3d(-300px, 0, 0)
+        scale3d(var(--cloud-scale-x), var(--cloud-scale-y), 1);
+    }
+    to {
+      transform: translate3d(calc(100vw + 340px), 0, 0)
+        scale3d(var(--cloud-scale-x), var(--cloud-scale-y), 1);
+    }
+  }
+
+  .wrap .option.selected-cloud{
+    color: var(--cloud-button-text);
+    border-color: var(--cloud-button-frame);
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fffdfb, var(--cloud-button-body));
+    box-shadow:
+      0 6px 0 var(--cloud-button-shadow-base),
+      0 14px 26px var(--cloud-button-shadow-soft);
+    transform-origin: center center;
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: cloud-button-breathe 3.6s ease-in-out infinite;
+  }
+  .wrap .option.selected-cloud .option-text{
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  @keyframes cloud-button-breathe {
+    0%,
+    100% {
+      transform: translate3d(0, -2px, 0) scale3d(1, 1, 1);
+    }
+    50% {
+      transform: translate3d(0, -4px, 0) scale3d(1.006, 0.988, 1);
+    }
+  }
+
+@media (hover: hover) {
+  .wrap .option.selected-cloud:hover{
+    border-color: var(--cloud-button-frame);
+    background: var(--cloud-button-body);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap .cloud-field{
+    transition: none;
+  }
+  /* 手机仅保留三朵云，并以更慢周期移动，控制同时运行的合成层数量 */
+  .wrap .cloud:nth-child(2),
+.wrap .cloud:nth-child(4){
+    display: none;
+    animation-name: none;
+  }
+  .wrap .cloud{
+    left: 0;
+    animation-name: cloud-sail;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+  .wrap .cloud:nth-child(1){
+    --cloud-scale-x: 0.52;
+    --cloud-scale-y: 0.46;
+    top: 12%;
+    animation-duration: 36s;
+    animation-delay: -8s;
+  }
+  .wrap .cloud:nth-child(3){
+    --cloud-scale-x: 0.58;
+    --cloud-scale-y: 0.52;
+    top: 50%;
+    animation-duration: 44s;
+    animation-delay: -29s;
+  }
+  .wrap .cloud:nth-child(5){
+    --cloud-scale-x: 0.46;
+    --cloud-scale-y: 0.4;
+    top: 82%;
+    animation-duration: 40s;
+    animation-delay: -17s;
+  }
+  .wrap.cloud-active .cloud{
+    animation-play-state: running;
+  }
+  .wrap .option.selected-cloud{
+    animation: none;
+    transform: translate3d(0, -2px, 0);
+    will-change: auto;
+  }
+}

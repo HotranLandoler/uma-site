@@ -1,0 +1,237 @@
+.wrap {
+  /*
+   * “立刻问什么事”棒球背景参数
+   * scene-*：无装饰的低饱和背景；只改变页面背景，不改变选项按钮。
+   * cycle：一轮“慢速高抛—受击—快速直线返回—停顿”的总时长。
+   * contact-x/y：球的受击点；移动端会单独覆盖。
+   * incoming/return/exit-x：来球起点、回球终点和消失点。
+   * arc-height：抛物线最高点；负值绝对值越大，弧线越高。
+   */
+  --fast-reply-scene-top: #c9d8d0;
+  --fast-reply-scene-bottom: #88a68f;
+  --fast-reply-cycle: 3s;
+  --fast-reply-contact-x: 18%;
+  --fast-reply-contact-y: 72%;
+  --fast-reply-incoming-x: 84vw;
+  --fast-reply-return-x: 86vw;
+  --fast-reply-exit-x: 88vw;
+  --fast-reply-arc-height: -53vh;
+  --fast-reply-ball: #f8f1df;
+  --fast-reply-impact: #f2cf72;
+}
+
+.wrap .fast-reply-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--fast-reply-scene-top),
+    var(--fast-reply-scene-bottom)
+  );
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+
+.wrap .fast-reply-play {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.wrap .fast-reply-ball {
+  position: absolute;
+  left: var(--fast-reply-contact-x);
+  top: var(--fast-reply-contact-y);
+  width: clamp(25px, 3vw, 38px);
+  aspect-ratio: 1;
+  border: 2px solid rgba(77, 69, 57, 0.34);
+  border-radius: 50%;
+  background: var(--fast-reply-ball);
+  box-shadow: 3px 4px 0 rgba(67, 72, 62, 0.14);
+  opacity: 0;
+  animation:
+    fast-reply-ball-x var(--fast-reply-cycle) linear infinite paused,
+    fast-reply-ball-y var(--fast-reply-cycle) linear infinite paused;
+  will-change: translate, transform, opacity;
+}
+
+.wrap .fast-reply-impact {
+  position: absolute;
+  left: calc(var(--fast-reply-contact-x) - 17px);
+  top: calc(var(--fast-reply-contact-y) - 17px);
+  width: 48px;
+  height: 48px;
+  background: var(--fast-reply-impact);
+  clip-path: polygon(
+    50% 0,
+    61% 34%,
+    88% 12%,
+    70% 42%,
+    100% 50%,
+    68% 59%,
+    88% 88%,
+    59% 69%,
+    50% 100%,
+    41% 68%,
+    12% 88%,
+    31% 59%,
+    0 50%,
+    32% 41%,
+    12% 12%,
+    41% 32%
+  );
+  opacity: 0;
+  animation: fast-reply-impact-pop var(--fast-reply-cycle) ease-out infinite
+    paused;
+  will-change: transform, opacity;
+}
+
+.wrap .fast-reply-return-line {
+  position: absolute;
+  left: calc(var(--fast-reply-contact-x) + 28px);
+  top: calc(var(--fast-reply-contact-y) - 13px);
+  width: clamp(72px, 10vw, 142px);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(248, 241, 223, 0.66);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: fast-reply-return-streak var(--fast-reply-cycle) ease-out infinite
+    paused;
+}
+
+.wrap .fast-reply-return-line--two {
+  top: calc(var(--fast-reply-contact-y) + 5px);
+  width: clamp(50px, 7vw, 104px);
+  animation-delay: -0.05s;
+}
+
+.wrap.fast-reply-active .fast-reply-scene {
+  opacity: 1;
+}
+
+.wrap.fast-reply-active .fast-reply-play {
+  visibility: visible;
+}
+
+.wrap.fast-reply-active .fast-reply-ball,
+.wrap.fast-reply-active .fast-reply-impact,
+.wrap.fast-reply-active .fast-reply-return-line {
+  animation-play-state: running;
+}
+
+.wrap.fast-reply-active .facet {
+  opacity: 0;
+}
+
+@keyframes fast-reply-ball-x {
+  0%,
+  9% {
+    opacity: 0;
+    translate: var(--fast-reply-incoming-x) 0;
+  }
+  10% {
+    opacity: 1;
+    translate: var(--fast-reply-incoming-x) 0;
+  }
+  70% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  78% {
+    opacity: 1;
+    translate: var(--fast-reply-return-x) 0;
+  }
+  79%,
+  100% {
+    opacity: 0;
+    translate: var(--fast-reply-exit-x) 0;
+  }
+}
+
+@keyframes fast-reply-ball-y {
+  0%,
+  10% {
+    transform: translate3d(0, 0, 0);
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  40% {
+    transform: translate3d(0, var(--fast-reply-arc-height), 0);
+    animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+  }
+  70%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fast-reply-impact-pop {
+  0%,
+  68%,
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale3d(0.45, 0.45, 1) rotate(0);
+  }
+  70% {
+    opacity: 0.92;
+    transform: scale3d(1, 1, 1) rotate(12deg);
+  }
+}
+
+@keyframes fast-reply-return-streak {
+  0%,
+  70%,
+  79%,
+  100% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  72% {
+    opacity: 0.72;
+    transform: scaleX(1);
+  }
+  77% {
+    opacity: 0;
+    transform: scaleX(1.18);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --fast-reply-contact-x: 14%;
+    --fast-reply-contact-y: 76%;
+    --fast-reply-incoming-x: 88vw;
+    --fast-reply-return-x: 90vw;
+    --fast-reply-exit-x: 92vw;
+    --fast-reply-arc-height: -43vh;
+  }
+
+  .wrap .fast-reply-scene {
+    transition: none;
+  }
+
+  .wrap .fast-reply-impact {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.fast-reply-active .fast-reply-ball {
+    opacity: 1;
+    translate: 72px 0;
+    transform: none;
+  }
+
+  .wrap.fast-reply-active .fast-reply-impact {
+    opacity: 0.72;
+    transform: scale3d(0.76, 0.76, 1) rotate(12deg);
+  }
+
+  .wrap .fast-reply-return-line {
+    display: none;
+  }
+}

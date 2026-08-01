@@ -20,7 +20,7 @@
   let poolWaveOffsetIndex = $state(-1);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.01-22";
+  const UI_VERSION = "2026.08.01-25";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -73,6 +73,9 @@
   );
   const isDeadlineSelected = $derived(
     selectedOption?.t === "赶一个马上就到ddl的作业",
+  );
+  const isFastReplySelected = $derived(
+    selectedOption?.t === "立刻问什么事",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -194,6 +197,7 @@
   class:draft-active={isDraftSelected}
   class:keyboard-warrior-active={isKeyboardWarriorSelected}
   class:deadline-active={isDeadlineSelected}
+  class:fast-reply-active={isFastReplySelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -349,6 +353,13 @@
           <span class="deadline-countdown-fill"></span>
         </span>
       </div>
+    </div>
+    <div class="fast-reply-scene"></div>
+    <div class="fast-reply-play" aria-hidden="true">
+      <span class="fast-reply-return-line fast-reply-return-line--one"></span>
+      <span class="fast-reply-return-line fast-reply-return-line--two"></span>
+      <span class="fast-reply-ball"></span>
+      <span class="fast-reply-impact"></span>
     </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">

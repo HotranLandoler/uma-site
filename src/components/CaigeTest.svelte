@@ -26,7 +26,7 @@
 
   const total = QUESTIONS.length;
   const UI_VERSION = "2026.08.02-59";
-  const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
+  const POOL_WAVE_OFFSETS = [-28, -14, 0, 16, 28] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
   const winner = $derived.by<TypeKey>(() => {
@@ -407,7 +407,7 @@
       <defs>
         <path
           id="pool-gentle-wave"
-          d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+          d="M-248 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18 58-18 88-18 58 18 88 18v44h-528z"
         />
       </defs>
       <g class="pool-parallax">
@@ -427,49 +427,20 @@
       <span class="cloud"></span>
     </div>
     <div class="commuter-city"></div>
-    <div class="commuter-crowd commuter-crowd--far">
-      {#each Array(4) as _}<span class="commuter-person"></span>{/each}
-    </div>
-    <div class="commuter-crowd commuter-crowd--near">
-      {#each Array(4) as _}<span class="commuter-person"></span>{/each}
+    <div class="commuter-crowd" aria-hidden="true">
+      <span class="commuter-person commuter-person--1">🚶</span>
+      <span class="commuter-person commuter-person--2">🚶‍♂️</span>
+      <span class="commuter-person commuter-person--3">🚶‍♀️</span>
+      <span class="commuter-person commuter-person--4">🏇</span>
     </div>
     <div class="dance-plaza"></div>
-    <svg
-      class="dance-crowd"
-      viewBox="0 0 760 210"
-      preserveAspectRatio="xMidYMax meet"
-    >
-      <g class="dance-figure dance-figure--one" transform="translate(70 67)">
-        <circle cx="0" cy="0" r="16"></circle>
-        <path d="M-19 25Q0 13 19 25L24 91H-24Z"></path>
-        <path class="dance-limb" d="M-14 34L-43 13M14 34L43 50"></path>
-        <path class="dance-limb" d="M-11 88L-27 133M11 88L29 130"></path>
-      </g>
-      <g class="dance-figure dance-figure--two" transform="translate(220 45)">
-        <circle cx="0" cy="0" r="17"></circle>
-        <path d="M-21 27Q0 14 21 27L27 98H-27Z"></path>
-        <path class="dance-limb" d="M-15 38L-46 57M15 38L42 9"></path>
-        <path class="dance-limb" d="M-12 95L-31 145M12 95L27 145"></path>
-      </g>
-      <g class="dance-figure dance-figure--three" transform="translate(380 26)">
-        <circle cx="0" cy="0" r="18"></circle>
-        <path d="M-23 29Q0 15 23 29L29 106H-29Z"></path>
-        <path class="dance-limb" d="M-17 42L-50 18M17 42L50 18"></path>
-        <path class="dance-limb" d="M-13 103L-35 158M13 103L35 158"></path>
-      </g>
-      <g class="dance-figure dance-figure--four" transform="translate(540 45)">
-        <circle cx="0" cy="0" r="17"></circle>
-        <path d="M-21 27Q0 14 21 27L27 98H-27Z"></path>
-        <path class="dance-limb" d="M-15 38L-42 9M15 38L46 57"></path>
-        <path class="dance-limb" d="M-12 95L-27 145M12 95L31 145"></path>
-      </g>
-      <g class="dance-figure dance-figure--five" transform="translate(690 67)">
-        <circle cx="0" cy="0" r="16"></circle>
-        <path d="M-19 25Q0 13 19 25L24 91H-24Z"></path>
-        <path class="dance-limb" d="M-14 34L-43 50M14 34L43 13"></path>
-        <path class="dance-limb" d="M-11 88L-29 130M11 88L27 133"></path>
-      </g>
-    </svg>
+    <div class="dance-crowd" aria-hidden="true">
+      <span class="dance-figure dance-figure--one">💃</span>
+      <span class="dance-figure dance-figure--two">🕺</span>
+      <span class="dance-figure dance-figure--three">💃</span>
+      <span class="dance-figure dance-figure--four">💃</span>
+      <span class="dance-figure dance-figure--five">💃</span>
+    </div>
     <div class="rant-scene"></div>
     <span class="rant-mark rant-mark--left">?</span>
     <span class="rant-mark rant-mark--right">?!</span>
@@ -770,17 +741,9 @@
                 <span class="option-water" aria-hidden="true"></span>
                 {#if opt.t === "行色匆忙的路人"}
                   <span class="bus-carriage" aria-hidden="true">
-                    <span class="bus-window bus-window--one"></span>
-                    <span class="bus-window bus-window--two"></span>
-                    <span class="bus-window bus-window--three"></span>
                     <span class="bus-strap bus-strap--one"></span>
                     <span class="bus-strap bus-strap--two"></span>
                     <span class="bus-strap bus-strap--three"></span>
-                  </span>
-                {/if}
-                {#if opt.t === "跳广场舞的叔叔阿姨"}
-                  <span class="dance-beat" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span>
                   </span>
                 {/if}</button
               >

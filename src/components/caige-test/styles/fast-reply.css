@@ -197,7 +197,7 @@
 @media (max-width: 560px) {
   .wrap {
     --fast-reply-contact-x: 14%;
-    --fast-reply-contact-y: 76%;
+    --fast-reply-contact-y: 80%;
     --fast-reply-incoming-x: 88vw;
     --fast-reply-return-x: 90vw;
     --fast-reply-exit-x: 92vw;

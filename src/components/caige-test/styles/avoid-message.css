@@ -13,7 +13,6 @@
   --avoid-message-screen-on: #dce9e6;
   --avoid-message-screen-off: #20252b;
   --avoid-message-screen-ink: #46545a;
-  --avoid-message-reflection: rgba(205, 213, 214, 0.52);
   --avoid-message-alert: #c95353;
   --avoid-message-throw-x: min(70vw, 920px);
   --avoid-message-throw-height: -46vh;
@@ -147,43 +146,19 @@
 .wrap .avoid-message-face {
   position: absolute;
   z-index: 2;
-  left: 50%;
+  /* PC 上系统 emoji 字形常光学偏右，略左移；手机端再拨回 50% */
+  left: 46.5%;
   top: 49%;
-  width: 66%;
-  aspect-ratio: 1;
-  border: 4px solid var(--avoid-message-reflection);
-  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  width: 72%;
+  font-size: clamp(40px, 8.5vw, 72px);
+  line-height: 1;
+  text-align: center;
+  user-select: none;
   opacity: 0;
   transform: translate(-50%, -50%) scale3d(0.94, 0.94, 1);
   will-change: transform, opacity;
-}
-
-.wrap .avoid-message-face i {
-  position: absolute;
-  top: 31%;
-  width: 10%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--avoid-message-reflection);
-}
-
-.wrap .avoid-message-face i:first-child {
-  left: 25%;
-}
-
-.wrap .avoid-message-face i:nth-child(2) {
-  right: 25%;
-}
-
-.wrap .avoid-message-face b {
-  position: absolute;
-  left: 50%;
-  bottom: 19%;
-  width: 43%;
-  height: 22%;
-  border-top: 4px solid var(--avoid-message-reflection);
-  border-radius: 50% 50% 0 0;
-  transform: translateX(-50%);
 }
 
 .wrap.avoid-message-active .avoid-message-scene {
@@ -358,6 +333,11 @@
   .wrap .avoid-message-alert b {
     width: 14px;
     border-width: 2px;
+  }
+
+  .wrap .avoid-message-face {
+    left: 50%;
+    font-size: clamp(32px, 11vw, 48px);
   }
 }
 

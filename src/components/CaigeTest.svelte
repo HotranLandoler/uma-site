@@ -544,9 +544,7 @@
                 <i></i><i></i>
                 <b></b>
               </span>
-              <span class="avoid-message-face">
-                <i></i><i></i><b></b>
-              </span>
+              <span class="avoid-message-face">😨</span>
             </div>
           </div>
         </div>

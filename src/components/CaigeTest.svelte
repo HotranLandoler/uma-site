@@ -101,7 +101,7 @@
     selectedOption?.t === "一个教程视频的开头",
   );
   const isReviewsSelected = $derived(
-    selectedOption?.t === "一家外卖店的评论区",
+    selectedOption?.t === "一家餐厅的评论区",
   );
   const isLemonCandySelected = $derived(
     selectedOption?.t === "超酸柠檬糖",

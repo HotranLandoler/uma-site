@@ -144,7 +144,7 @@ export const QUESTIONS: Question[] = [
       { t: "早上7点的闹钟正在响铃", s: { lotus: 1 } },
       { t: "一条搞笑的帖子", s: { holly: 1 } },
       { t: "一个教程视频的开头", s: { coconut: 1 } },
-      { t: "一家外卖店的评论区", s: { carrot: 1 } },
+      { t: "一家餐厅的评论区", s: { carrot: 1 } },
     ],
   },
   {

@@ -1,0 +1,539 @@
+.wrap {
+  /*
+   * 两个图形直接沿用参考 CodePen 的视觉参数：
+   * 眼睛视觉上只有白色图案；上下层均使用背景色裁切白色圆形，
+   * 不使用黑色层或混合模式，避免激活首帧出现黑色闪烁。
+   * 铃铛使用原始白色 SVG 路径、旋转角度与铃舌位移。
+   * eye/bell-offset-x/y：双眼和铃铛相对屏幕中心的独立偏移量。
+   * eye-size/bell-size：单只眼睛和铃铛的尺寸。
+   * eye-edge-blur：眼形边缘的柔化量；越大越模糊，设为 0px 完全关闭。
+   */
+  --alarm-cycle: 5.4s;
+  --alarm-background: #aaa5b6;
+  --alarm-eye-size: clamp(150px, 20vmin, 280px);
+  --alarm-eye-gap: clamp(120px, 16vmin, 230px);
+  --alarm-eye-offset-x: 0px;
+  --alarm-eye-offset-y: clamp(300px, 4vh, 600px);
+  --alarm-eye-color: #fff;
+  --alarm-eye-mask: var(--alarm-background);
+  --alarm-eye-edge-blur: clamp(0.35px, 0.08vmin, 1px);
+  --alarm-bell-color: #fff;
+  --alarm-bell-size: clamp(120px, 17vmin, 220px);
+  --alarm-bell-offset-x: 0px;
+  --alarm-bell-offset-y: clamp(-50px, 4vh, -50px);
+  --alarm-face-rotation: 0deg;
+}
+
+.wrap .alarm-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: var(--alarm-background);
+}
+
+.wrap.alarm-active .alarm-scene {
+  opacity: 1;
+}
+
+.wrap .alarm-stage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.wrap.alarm-active .alarm-stage {
+  visibility: visible;
+  opacity: 1;
+}
+
+.wrap.alarm-active .facet {
+  opacity: 0;
+}
+
+.wrap .alarm-eyes {
+  /* neutral：参考例中的完全睁眼状态。 */
+  --left-lower-rotation: 0deg;
+  --left-lower-position: 0%;
+  --left-upper-rotation: 0deg;
+  --left-upper-position: 0%;
+  --right-lower-rotation: 0deg;
+  --right-lower-position: 0%;
+  --right-upper-rotation: 0deg;
+  --right-upper-position: 0%;
+  /* A/B 默认都引用当前单表情值；交替预设只需覆盖其中一组。 */
+  --left-lower-rotation-a: var(--left-lower-rotation);
+  --left-lower-position-a: var(--left-lower-position);
+  --left-upper-rotation-a: var(--left-upper-rotation);
+  --left-upper-position-a: var(--left-upper-position);
+  --right-lower-rotation-a: var(--right-lower-rotation);
+  --right-lower-position-a: var(--right-lower-position);
+  --right-upper-rotation-a: var(--right-upper-rotation);
+  --right-upper-position-a: var(--right-upper-position);
+  --left-lower-rotation-b: var(--left-lower-rotation);
+  --left-lower-position-b: var(--left-lower-position);
+  --left-upper-rotation-b: var(--left-upper-rotation);
+  --left-upper-position-b: var(--left-upper-position);
+  --right-lower-rotation-b: var(--right-lower-rotation);
+  --right-lower-position-b: var(--right-lower-position);
+  --right-upper-rotation-b: var(--right-upper-rotation);
+  --right-upper-position-b: var(--right-upper-position);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  grid-template-columns: var(--alarm-eye-size) var(--alarm-eye-gap)
+    var(--alarm-eye-size);
+  grid-template-rows: var(--alarm-eye-size);
+  grid-template-areas: "left . right";
+  filter: blur(var(--alarm-eye-edge-blur));
+  transform:
+    translate(
+      calc(-50% + var(--alarm-eye-offset-x)),
+      calc(-50% + var(--alarm-eye-offset-y))
+    )
+    rotate(var(--alarm-face-rotation));
+}
+
+.wrap .alarm-eye {
+  position: relative;
+  width: var(--alarm-eye-size);
+  height: var(--alarm-eye-size);
+  overflow: hidden;
+  border-radius: 100%;
+  background: var(--alarm-eye-color);
+  box-shadow: 0 0 0 clamp(12px, 2vmin, 26px) var(--alarm-eye-mask);
+}
+
+.wrap .alarm-eye--left {
+  grid-area: left;
+}
+
+.wrap .alarm-eye--right {
+  grid-area: right;
+}
+
+.wrap .alarm-eye-lower,
+.wrap .alarm-eye-upper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation-duration: calc(var(--alarm-cycle) + var(--alarm-cycle));
+  animation-timing-function: cubic-bezier(0.75, 0.25, 0.25, 0.75);
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.wrap .alarm-eye-lid {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--alarm-eye-mask);
+  animation-duration: calc(var(--alarm-cycle) + var(--alarm-cycle));
+  animation-timing-function: cubic-bezier(0.75, 0.25, 0.25, 0.75);
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+
+.wrap .alarm-eye-lower .alarm-eye-lid {
+  top: 55%;
+}
+
+.wrap .alarm-eye-upper .alarm-eye-lid {
+  bottom: 55%;
+}
+
+.wrap .alarm-eye--left .alarm-eye-lower {
+  animation-name: alarm-left-lower-rotation;
+}
+
+.wrap .alarm-eye--left .alarm-eye-lower .alarm-eye-lid {
+  animation-name: alarm-left-lower-position;
+}
+
+.wrap .alarm-eye--left .alarm-eye-upper {
+  animation-name: alarm-left-upper-rotation;
+}
+
+.wrap .alarm-eye--left .alarm-eye-upper .alarm-eye-lid {
+  animation-name: alarm-left-upper-position;
+}
+
+.wrap .alarm-eye--right .alarm-eye-lower {
+  animation-name: alarm-right-lower-rotation;
+}
+
+.wrap .alarm-eye--right .alarm-eye-lower .alarm-eye-lid {
+  animation-name: alarm-right-lower-position;
+}
+
+.wrap .alarm-eye--right .alarm-eye-upper {
+  animation-name: alarm-right-upper-rotation;
+}
+
+.wrap .alarm-eye--right .alarm-eye-upper .alarm-eye-lid {
+  animation-name: alarm-right-upper-position;
+}
+
+.wrap .alarm-bell {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: var(--alarm-bell-size);
+  height: var(--alarm-bell-size);
+  overflow: visible;
+  transform: translate(
+    calc(-50% + var(--alarm-bell-offset-x)),
+    calc(-50% + var(--alarm-bell-offset-y))
+  );
+}
+
+.wrap .alarm-bell path {
+  fill: var(--alarm-bell-color);
+}
+
+.wrap .alarm-bell-body {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: alarm-bell-ring var(--alarm-cycle) linear infinite paused;
+  will-change: transform;
+}
+
+.wrap .alarm-bell-clapper {
+  animation: alarm-bell-clapper var(--alarm-cycle) linear infinite paused;
+  will-change: transform;
+}
+
+.wrap.alarm-active .alarm-eye-lower,
+.wrap.alarm-active .alarm-eye-upper,
+.wrap.alarm-active .alarm-eye-lid,
+.wrap.alarm-active .alarm-bell-body,
+.wrap.alarm-active .alarm-bell-clapper {
+  animation-play-state: running;
+}
+
+/* 以下数值逐项对应参考 CodePen 的 states 对象。 */
+.wrap .alarm-eyes--happy {
+  --left-lower-rotation: 20deg;
+  --left-lower-position: 40%;
+  --right-lower-rotation: -20deg;
+  --right-lower-position: 40%;
+}
+
+.wrap .alarm-eyes--sad {
+  --left-upper-rotation: -20deg;
+  --left-upper-position: 40%;
+  --right-upper-rotation: 20deg;
+  --right-upper-position: 40%;
+}
+
+.wrap .alarm-eyes--angry {
+  --left-upper-rotation: 20deg;
+  --left-upper-position: 40%;
+  --right-upper-rotation: -20deg;
+  --right-upper-position: 40%;
+}
+
+.wrap .alarm-eyes--confused {
+  --left-upper-position: 40%;
+}
+
+.wrap .alarm-eyes--suspicious {
+  --left-lower-rotation: -4deg;
+  --left-lower-position: 20%;
+  --left-upper-rotation: 4deg;
+  --left-upper-position: 20%;
+  --right-lower-rotation: 4deg;
+  --right-lower-position: 20%;
+  --right-upper-rotation: -4deg;
+  --right-upper-position: 20%;
+}
+
+.wrap .alarm-eyes--pain {
+  --left-lower-rotation: 10deg;
+  --left-lower-position: 20%;
+  --left-upper-rotation: -10deg;
+  --left-upper-position: 20%;
+  --right-lower-rotation: -10deg;
+  --right-lower-position: 20%;
+  --right-upper-rotation: 10deg;
+  --right-upper-position: 20%;
+}
+
+.wrap .alarm-eyes--unamused {
+  --left-upper-position: 40%;
+  --right-upper-position: 40%;
+}
+
+.wrap .alarm-eyes--unsure {
+  --alarm-face-rotation: 7deg;
+  --left-lower-rotation: 10deg;
+  --left-lower-position: 20%;
+  --left-upper-rotation: -10deg;
+  --left-upper-position: 20%;
+}
+
+/*
+ * 两轮交替：A 为 unamused，B 为 sad。
+ * 两次表情切换都发生在闭眼区间，不会产生睁眼状态跳变。
+ */
+.wrap .alarm-eyes--alternate-unamused-sad {
+  /* 无动画环境显示第一种 unamused。 */
+  --left-upper-position: 40%;
+  --right-upper-position: 40%;
+  --left-upper-position-a: 40%;
+  --right-upper-position-a: 40%;
+  --left-upper-rotation-b: -20deg;
+  --left-upper-position-b: 40%;
+  --right-upper-rotation-b: 20deg;
+  --right-upper-position-b: 40%;
+}
+
+@keyframes alarm-bell-ring {
+  0%,
+  8%,
+  36%,
+  100% {
+    transform: rotate(0deg);
+  }
+  17% {
+    transform: rotate(10deg);
+  }
+  21% {
+    transform: rotate(-10deg);
+  }
+  27% {
+    transform: rotate(8deg);
+  }
+  31% {
+    transform: rotate(-8deg);
+  }
+}
+
+@keyframes alarm-bell-clapper {
+  0%,
+  8%,
+  36%,
+  100% {
+    transform: translateX(0);
+  }
+  17% {
+    transform: translateX(-0.15em);
+  }
+  21% {
+    transform: translateX(0.15em);
+  }
+  27% {
+    transform: translateX(-0.1em);
+  }
+  31% {
+    transform: translateX(0.1em);
+  }
+}
+
+@keyframes alarm-left-lower-rotation {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22%,
+  36% {
+    transform: rotate(var(--left-lower-rotation-a));
+  }
+  72%,
+  86% {
+    transform: rotate(var(--left-lower-rotation-b));
+  }
+}
+
+@keyframes alarm-left-lower-position {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    top: 55%;
+  }
+  22%,
+  36% {
+    top: calc(100% - var(--left-lower-position-a));
+  }
+  72%,
+  86% {
+    top: calc(100% - var(--left-lower-position-b));
+  }
+}
+
+@keyframes alarm-left-upper-rotation {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22%,
+  36% {
+    transform: rotate(var(--left-upper-rotation-a));
+  }
+  72%,
+  86% {
+    transform: rotate(var(--left-upper-rotation-b));
+  }
+}
+
+@keyframes alarm-left-upper-position {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    bottom: 55%;
+  }
+  22%,
+  36% {
+    bottom: calc(100% - var(--left-upper-position-a));
+  }
+  72%,
+  86% {
+    bottom: calc(100% - var(--left-upper-position-b));
+  }
+}
+
+@keyframes alarm-right-lower-rotation {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22%,
+  36% {
+    transform: rotate(var(--right-lower-rotation-a));
+  }
+  72%,
+  86% {
+    transform: rotate(var(--right-lower-rotation-b));
+  }
+}
+
+@keyframes alarm-right-lower-position {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    top: 55%;
+  }
+  22%,
+  36% {
+    top: calc(100% - var(--right-lower-position-a));
+  }
+  72%,
+  86% {
+    top: calc(100% - var(--right-lower-position-b));
+  }
+}
+
+@keyframes alarm-right-upper-rotation {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22%,
+  36% {
+    transform: rotate(var(--right-upper-rotation-a));
+  }
+  72%,
+  86% {
+    transform: rotate(var(--right-upper-rotation-b));
+  }
+}
+
+@keyframes alarm-right-upper-position {
+  0%,
+  17%,
+  41%,
+  67%,
+  91%,
+  100% {
+    bottom: 55%;
+  }
+  22%,
+  36% {
+    bottom: calc(100% - var(--right-upper-position-a));
+  }
+  72%,
+  86% {
+    bottom: calc(100% - var(--right-upper-position-b));
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --alarm-eye-size: clamp(60px, 38vmin, 120px);
+    --alarm-eye-gap: clamp(62px, 22vmin, 88px);
+    --alarm-bell-size: clamp(99px, 24vmin, 126px);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.alarm-active .alarm-eye-lower,
+  .wrap.alarm-active .alarm-eye-upper,
+  .wrap.alarm-active .alarm-eye-lid,
+  .wrap.alarm-active .alarm-bell-body,
+  .wrap.alarm-active .alarm-bell-clapper {
+    animation: none !important;
+  }
+
+  .wrap.alarm-active .alarm-eye--left .alarm-eye-lower {
+    transform: rotate(var(--left-lower-rotation));
+  }
+
+  .wrap.alarm-active .alarm-eye--left .alarm-eye-upper {
+    transform: rotate(var(--left-upper-rotation));
+  }
+
+  .wrap.alarm-active .alarm-eye--right .alarm-eye-lower {
+    transform: rotate(var(--right-lower-rotation));
+  }
+
+  .wrap.alarm-active .alarm-eye--right .alarm-eye-upper {
+    transform: rotate(var(--right-upper-rotation));
+  }
+
+  .wrap.alarm-active .alarm-eye--left .alarm-eye-lower .alarm-eye-lid {
+    top: calc(100% - var(--left-lower-position));
+  }
+
+  .wrap.alarm-active .alarm-eye--left .alarm-eye-upper .alarm-eye-lid {
+    bottom: calc(100% - var(--left-upper-position));
+  }
+
+  .wrap.alarm-active .alarm-eye--right .alarm-eye-lower .alarm-eye-lid {
+    top: calc(100% - var(--right-lower-position));
+  }
+
+  .wrap.alarm-active .alarm-eye--right .alarm-eye-upper .alarm-eye-lid {
+    bottom: calc(100% - var(--right-upper-position));
+  }
+}

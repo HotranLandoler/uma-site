@@ -24,7 +24,7 @@
   let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-42";
+  const UI_VERSION = "2026.08.02-47";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -89,6 +89,9 @@
   );
   const isCatMemeSelected = $derived(
     selectedOption?.t === "回一个猫猫表情包",
+  );
+  const isAlarmSelected = $derived(
+    selectedOption?.t === "早上7点的闹钟正在响铃",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -350,6 +353,7 @@
   class:delayed-reply-active={isDelayedReplySelected}
   class:avoid-message-active={isAvoidMessageSelected}
   class:cat-meme-active={isCatMemeSelected}
+  class:alarm-active={isAlarmSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -563,6 +567,37 @@
           <span class="cat-meme-paw cat-meme-paw--right"></span>
         </div>
       </div>
+    </div>
+    <div class="alarm-scene"></div>
+    <div class="alarm-stage" aria-hidden="true">
+      <!--
+        单表情可替换为：
+        alarm-eyes--neutral / --happy / --sad / --angry /
+        --unamused / --suspicious / --pain / --confused / --unsure
+        当前按两个完整循环交替播放 unamused / sad。
+      -->
+      <div class="alarm-eyes alarm-eyes--alternate-unamused-sad">
+        {#each ["left", "right"] as side}
+          <div class="alarm-eye alarm-eye--{side}">
+            <div class="alarm-eye-lower">
+              <div class="alarm-eye-lid"></div>
+            </div>
+            <div class="alarm-eye-upper">
+              <div class="alarm-eye-lid"></div>
+            </div>
+          </div>
+        {/each}
+      </div>
+      <svg class="alarm-bell" viewBox="-10 0 35 35" aria-hidden="true">
+        <path
+          class="alarm-bell-body"
+          d="M14 12v1H0v-1l0.73-0.58c0.77-0.77 0.81-3.55 1.19-4.42 0.77-3.77 4.08-5 4.08-5 0-0.55 0.45-1 1-1s1 0.45 1 1c0 0 3.39 1.23 4.16 5 0.38 1.88 0.42 3.66 1.19 4.42l0.66 0.58z"
+        ></path>
+        <path
+          class="alarm-bell-clapper"
+          d="M7 15.7c1.11 0 2-0.89 2-2H5c0 1.11 0.89 2 2 2z"
+        ></path>
+      </svg>
     </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">

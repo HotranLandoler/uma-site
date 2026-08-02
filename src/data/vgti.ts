@@ -80,6 +80,9 @@ export const UI = {
   backBtn: "上一题",
   saveBtn: "保存结果图片",
   againBtn: "重新测试",
+  promoLead:
+    "感谢您喜欢这个测试！\n更多可爱植物，尽在桌面打字种田游戏《键盘农场》！",
+  promoImageAlt: "键盘农场游戏宣传图",
   preparing: "正在准备图片…",
   shareDone: "已保存/分享。",
   downloadDone: "图片已开始下载，可保存到手机相册。",

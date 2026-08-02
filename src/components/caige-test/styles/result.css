@@ -156,3 +156,28 @@
     color: #4a8e64;
     font-weight: 900;
   }
+
+  .wrap .promo-card{
+    display: grid;
+    gap: 22px;
+    justify-items: center;
+    text-align: center;
+    animation: result-rise 0.5s ease-out both;
+  }
+  .wrap .promo-lead{
+    margin: 0;
+    font-size: clamp(20px, 4.2vw, 24px);
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 34em;
+    white-space: pre-line;
+  }
+  .wrap .promo-image{
+    width: min(640px, 100%);
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 14px 36px rgba(74, 93, 99, 0.16);
+    display: block;
+    background: #fff;
+  }

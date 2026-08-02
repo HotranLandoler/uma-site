@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import "./caige-test/styles/index.css";
+  import keyboardFarmBanner from "../assets/games/KeyboardFarm.png?url";
   import {
     QUESTIONS,
     TYPES,
@@ -10,7 +11,7 @@
     type Score,
   } from "../data/vgti";
 
-  type Screen = "start" | "quiz" | "result";
+  type Screen = "start" | "quiz" | "result" | "promo";
 
   // 交互状态
   let screen = $state<Screen>("start");
@@ -24,7 +25,7 @@
   let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-58";
+  const UI_VERSION = "2026.08.02-59";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -294,6 +295,11 @@
       current += 1;
       selected = null;
     }
+  }
+
+  function goToPromo() {
+    screen = "promo";
+    toast = "";
   }
 
   function restart() {
@@ -788,7 +794,7 @@
             </div>
           </div>
         </div>
-      {:else}
+      {:else if screen === "result"}
         <div class="result-card">
           <img
             class="result-img"
@@ -832,9 +838,19 @@
           </div>
           <div class="actions">
             <button onclick={saveResult}>{UI.saveBtn}</button>
-            <button class="secondary" onclick={restart}>{UI.againBtn}</button>
+            <button class="secondary" onclick={goToPromo}>{UI.againBtn}</button>
           </div>
           <div class="toast" aria-live="polite">{toast}</div>
+        </div>
+      {:else}
+        <div class="promo-card">
+          <p class="promo-lead">{UI.promoLead}</p>
+          <img
+            class="promo-image"
+            src={keyboardFarmBanner}
+            alt={UI.promoImageAlt}
+          />
+          <button onclick={restart}>{UI.againBtn}</button>
         </div>
       {/if}
     </div>

@@ -826,7 +826,6 @@
                   >
                     {TYPES[rel.key].name}
                   </p>
-                  <p class="relation-friend-tag">{rel.tagline}</p>
                 </div>
               {/each}
             </div>

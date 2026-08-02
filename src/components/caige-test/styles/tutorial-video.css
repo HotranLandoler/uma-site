@@ -1,0 +1,359 @@
+.wrap {
+  /*
+   * “一个教程视频的开头”背景参数
+   * cycle：两次“正常播放一段—快速拖回开头”的总时长。
+   * player-*：播放器窗口位置和尺寸；移动端会单独覆盖。
+   * progress：已播放进度色；track：未播放轨道色。
+   * food/chef 的 left/right/bottom/size：蛋糕和厨师的位置与大小；
+   * 数值越大越靠内、越靠上或尺寸越大，移动端有独立覆盖。
+   */
+  --tutorial-video-cycle: 8s;
+  --tutorial-video-background-top: #f2d6bd;
+  --tutorial-video-background-bottom: #b8cda5;
+  --tutorial-video-player-width: min(640px, 70vw);
+  --tutorial-video-player-bottom: clamp(26px, 6vh, 76px);
+  --tutorial-video-frame: #76564d;
+  --tutorial-video-screen: #f7e6cf;
+  --tutorial-video-controls: #57433e;
+  --tutorial-video-track: rgba(238, 244, 242, 0.24);
+  --tutorial-video-progress: #e66f62;
+  --tutorial-video-icon: rgba(246, 249, 247, 0.9);
+  --tutorial-video-scrub-first: clamp(110px, 22vw, 235px);
+  --tutorial-video-scrub-second: clamp(160px, 32vw, 330px);
+  --tutorial-video-food-left: 23%;
+  --tutorial-video-food-bottom: 10%;
+  --tutorial-video-food-size: clamp(102px, 11vw, 142px);
+  --tutorial-video-chef-right: 16%;
+  --tutorial-video-chef-bottom: 20%;
+  --tutorial-video-chef-size: clamp(166px, 18vw, 252px);
+}
+
+.wrap .tutorial-video-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    155deg,
+    var(--tutorial-video-background-top),
+    var(--tutorial-video-background-bottom)
+  );
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+
+.wrap .tutorial-video-stage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.wrap .tutorial-video-player {
+  position: absolute;
+  right: clamp(28px, 9vw, 148px);
+  bottom: var(--tutorial-video-player-bottom);
+  width: var(--tutorial-video-player-width);
+  overflow: hidden;
+  border: 5px solid var(--tutorial-video-frame);
+  border-radius: 14px;
+  background: var(--tutorial-video-frame);
+  box-shadow:
+    0 9px 0 rgba(32, 48, 53, 0.24),
+    0 24px 46px rgba(31, 48, 53, 0.2);
+  transform: rotate(-0.8deg);
+}
+
+.wrap .tutorial-video-screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--tutorial-video-screen);
+}
+
+.wrap .tutorial-video-counter {
+  position: absolute;
+  inset: auto 0 0;
+  height: 30%;
+  background: #d7a77e;
+}
+
+.wrap .tutorial-video-chef,
+.wrap .tutorial-video-food {
+  position: absolute;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+  line-height: 1;
+  filter: drop-shadow(0 8px 0 rgba(105, 72, 57, 0.12));
+}
+
+.wrap .tutorial-video-chef {
+  right: var(--tutorial-video-chef-right);
+  bottom: var(--tutorial-video-chef-bottom);
+  z-index: 1;
+  font-size: var(--tutorial-video-chef-size);
+}
+
+.wrap .tutorial-video-food {
+  left: var(--tutorial-video-food-left);
+  bottom: var(--tutorial-video-food-bottom);
+  z-index: 2;
+  font-size: var(--tutorial-video-food-size);
+}
+
+.wrap .tutorial-video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: clamp(42px, 6vw, 66px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(25, 38, 43, 0.58);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: tutorial-video-play-flash var(--tutorial-video-cycle) linear
+    infinite paused;
+  will-change: opacity;
+}
+
+.wrap .tutorial-video-play::after {
+  content: "";
+  position: absolute;
+  left: 42%;
+  top: 31%;
+  border-top: clamp(8px, 1.1vw, 13px) solid transparent;
+  border-bottom: clamp(8px, 1.1vw, 13px) solid transparent;
+  border-left: clamp(13px, 1.8vw, 21px) solid var(--tutorial-video-icon);
+}
+
+.wrap .tutorial-video-controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 14px;
+  background: var(--tutorial-video-controls);
+}
+
+.wrap .tutorial-video-control-play {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 12px;
+  background: linear-gradient(
+    to right,
+    var(--tutorial-video-icon) 0 3px,
+    transparent 3px 7px,
+    var(--tutorial-video-icon) 7px 10px
+  );
+}
+
+.wrap .tutorial-video-track {
+  position: relative;
+  flex: 1;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--tutorial-video-track);
+}
+
+.wrap .tutorial-video-progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tutorial-video-progress);
+  transform: scaleX(0.02);
+  transform-origin: left center;
+  animation: tutorial-video-rewatch var(--tutorial-video-cycle) linear infinite
+    paused;
+  will-change: transform;
+}
+
+.wrap .tutorial-video-time {
+  width: 34px;
+  height: 6px;
+  border-radius: 2px;
+  opacity: 0.72;
+  background: var(--tutorial-video-icon);
+}
+
+.wrap .tutorial-video-scrub-pointer {
+  position: absolute;
+  left: 34px;
+  top: 15px;
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  opacity: 0;
+  background: var(--tutorial-video-progress);
+  box-shadow:
+    0 0 0 3px var(--tutorial-video-icon),
+    0 3px 8px rgba(15, 27, 31, 0.28);
+  transform: translate3d(0, 0, 0);
+  animation: tutorial-video-scrub var(--tutorial-video-cycle) linear infinite
+    paused;
+  will-change: transform, opacity;
+}
+
+.wrap .tutorial-video-fullscreen {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--tutorial-video-icon);
+  opacity: 0.78;
+}
+
+.wrap.tutorial-video-active .tutorial-video-scene {
+  opacity: 1;
+}
+
+.wrap.tutorial-video-active .tutorial-video-stage {
+  visibility: visible;
+}
+
+.wrap.tutorial-video-active .tutorial-video-progress,
+.wrap.tutorial-video-active .tutorial-video-play,
+.wrap.tutorial-video-active .tutorial-video-scrub-pointer {
+  animation-play-state: running;
+}
+
+.wrap.tutorial-video-active .facet {
+  opacity: 0;
+}
+
+@keyframes tutorial-video-rewatch {
+  0%,
+  4% {
+    transform: scaleX(0.02);
+    animation-timing-function: linear;
+  }
+  31%,
+  35% {
+    transform: scaleX(0.44);
+    animation-timing-function: cubic-bezier(0.7, 0, 1, 0.5);
+  }
+  45%,
+  49% {
+    transform: scaleX(0.02);
+    animation-timing-function: linear;
+  }
+  77%,
+  81% {
+    transform: scaleX(0.62);
+    animation-timing-function: cubic-bezier(0.7, 0, 1, 0.5);
+  }
+  91%,
+  100% {
+    transform: scaleX(0.02);
+  }
+}
+
+@keyframes tutorial-video-play-flash {
+  0%,
+  4%,
+  45%,
+  49%,
+  91%,
+  100% {
+    opacity: 0.72;
+  }
+  7%,
+  34%,
+  52%,
+  80% {
+    opacity: 0;
+  }
+}
+
+@keyframes tutorial-video-scrub {
+  0%,
+  32%,
+  46%,
+  78%,
+  92%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  34.9% {
+    opacity: 0;
+    transform: translate3d(var(--tutorial-video-scrub-first), 0, 0);
+  }
+  35% {
+    opacity: 0.92;
+    transform: translate3d(var(--tutorial-video-scrub-first), 0, 0);
+  }
+  45% {
+    opacity: 0.92;
+    transform: translate3d(0, 0, 0);
+  }
+  80.9% {
+    opacity: 0;
+    transform: translate3d(var(--tutorial-video-scrub-second), 0, 0);
+  }
+  81% {
+    opacity: 0.92;
+    transform: translate3d(var(--tutorial-video-scrub-second), 0, 0);
+  }
+  91% {
+    opacity: 0.92;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --tutorial-video-player-width: calc(100vw - 28px);
+    --tutorial-video-player-bottom: 24px;
+    --tutorial-video-cycle: 9s;
+    --tutorial-video-scrub-first: 29vw;
+    --tutorial-video-scrub-second: 43vw;
+    --tutorial-video-food-left: 18%;
+    --tutorial-video-food-bottom: 18%;
+    --tutorial-video-food-size: 22vw;
+    --tutorial-video-chef-right: 24%;
+    --tutorial-video-chef-bottom: 34%;
+    --tutorial-video-chef-size: 30vw;
+  }
+
+  .wrap .tutorial-video-scene {
+    transition: none;
+  }
+
+  .wrap .tutorial-video-player {
+    right: 14px;
+    border-width: 4px;
+    border-radius: 11px;
+    transform: none;
+  }
+
+  .wrap .tutorial-video-controls {
+    gap: 8px;
+    height: 38px;
+    padding-inline: 11px;
+  }
+
+  .wrap .tutorial-video-time {
+    width: 27px;
+  }
+
+  .wrap .tutorial-video-scrub-pointer {
+    top: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.tutorial-video-active .tutorial-video-progress {
+    animation: none;
+    transform: scaleX(0.08);
+  }
+
+  .wrap.tutorial-video-active .tutorial-video-play {
+    animation: none;
+    opacity: 0.72;
+  }
+
+  .wrap.tutorial-video-active .tutorial-video-scrub-pointer {
+    animation: none;
+    opacity: 0;
+  }
+}

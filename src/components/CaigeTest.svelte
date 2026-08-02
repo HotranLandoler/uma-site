@@ -24,7 +24,7 @@
   let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-51";
+  const UI_VERSION = "2026.08.02-57";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -95,6 +95,9 @@
   );
   const isFunnyPostSelected = $derived(
     selectedOption?.t === "一条搞笑的帖子",
+  );
+  const isTutorialVideoSelected = $derived(
+    selectedOption?.t === "一个教程视频的开头",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -358,6 +361,7 @@
   class:cat-meme-active={isCatMemeSelected}
   class:alarm-active={isAlarmSelected}
   class:funny-post-active={isFunnyPostSelected}
+  class:tutorial-video-active={isTutorialVideoSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -618,6 +622,26 @@
         <span class="funny-post-honk funny-post-honk--one"></span>
         <span class="funny-post-honk funny-post-honk--two"></span>
         <span class="funny-post-honk funny-post-honk--three"></span>
+      </div>
+    </div>
+    <div class="tutorial-video-scene"></div>
+    <div class="tutorial-video-stage" aria-hidden="true">
+      <div class="tutorial-video-player">
+        <div class="tutorial-video-screen">
+          <span class="tutorial-video-play"></span>
+          <span class="tutorial-video-counter"></span>
+          <span class="tutorial-video-chef">👩‍🍳</span>
+          <span class="tutorial-video-food">🍰</span>
+        </div>
+        <div class="tutorial-video-controls">
+          <span class="tutorial-video-control-play"></span>
+          <span class="tutorial-video-track">
+            <span class="tutorial-video-progress"></span>
+          </span>
+          <span class="tutorial-video-scrub-pointer"></span>
+          <span class="tutorial-video-time"></span>
+          <span class="tutorial-video-fullscreen"></span>
+        </div>
       </div>
     </div>
   </div>

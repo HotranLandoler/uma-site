@@ -1,0 +1,515 @@
+.wrap {
+  /*
+   * 末题四种零食背景参数（只改背景，按钮保持通用选中态）
+   * scene-*：各选项纯色底；drop-duration：物品从上方落到下方的时长。
+   * land-bottom：落地后距视口底边的距离；越大越靠上。
+   * lemon-*：柠檬尺寸与酸黄绿色；bean/ice 数量与错位由 nth-child 控制。
+   * fire-*：落地后持续闪烁的火焰色与节奏；不绘制木头。
+   */
+  --snack-drop-duration: 0.72s;
+  --snack-land-bottom: clamp(28px, 7vh, 72px);
+  --snack-lemon-scene: #6a9e72;
+  --snack-lemon-body: #dafa25;
+  --snack-lemon-size: clamp(72px, 16vw, 118px);
+  /* 百分比圆角随尺寸等比缩放；首值越小两端越尖（勿用 em，手机缩小后会变圆） */
+  --snack-lemon-radius: 18% 52%;
+  --snack-lemon-aspect: 0.9;
+  --snack-bean-scene: #e8b4c8;
+  --snack-ice-scene: #6b4a3a;
+  --snack-fire-scene: #d4784a;
+  --snack-fire-size: clamp(88px, 18vw, 140px);
+  --snack-fire-yellow: #ffdc01;
+  --snack-fire-orange: #fdac01;
+  --snack-fire-red: #f73b01;
+  --snack-flame-time: 1.5s;
+}
+
+.wrap .snack-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.wrap .snack-scene--lemon {
+  background: var(--snack-lemon-scene);
+}
+
+.wrap .snack-scene--bean {
+  background: var(--snack-bean-scene);
+}
+
+.wrap .snack-scene--ice {
+  background: var(--snack-ice-scene);
+}
+
+.wrap .snack-scene--fire {
+  background: var(--snack-fire-scene);
+}
+
+.wrap .snack-stage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+  contain: paint;
+}
+
+/* —— 超酸柠檬糖：一颗柠檬从上方落下 —— */
+.wrap .snack-lemon {
+  position: absolute;
+  left: 50%;
+  bottom: var(--snack-land-bottom);
+  width: var(--snack-lemon-size);
+  height: calc(var(--snack-lemon-size) * var(--snack-lemon-aspect));
+  margin: 0;
+  background: var(--snack-lemon-body);
+  border-radius: var(--snack-lemon-radius);
+  opacity: 0;
+  transform: translate3d(-50%, -120vh, 0) rotate(-28deg);
+  will-change: transform, opacity;
+}
+
+.wrap.snack-lemon-active .snack-scene--lemon {
+  opacity: 1;
+}
+
+.wrap.snack-lemon-active .snack-stage--lemon {
+  visibility: visible;
+}
+
+.wrap.snack-lemon-active .snack-lemon {
+  animation: snack-drop-lemon var(--snack-drop-duration)
+    cubic-bezier(0.33, 0.7, 0.45, 1) forwards;
+}
+
+/* —— 齁甜怪味豆：多颗彩色糖豆错落落下 —— */
+.wrap .snack-bean {
+  --snack-item-x: 50%;
+  --snack-item-rotate: -18deg;
+  --snack-item-delay: 0s;
+  --bean-color: #f06a8a;
+  /* 默认横躺：宽度大于高度 */
+  --bean-w: clamp(42px, 9vw, 68px);
+  --bean-h: clamp(26px, 5.6vw, 42px);
+  position: absolute;
+  left: var(--snack-item-x);
+  bottom: var(--snack-land-bottom);
+  width: var(--bean-w);
+  height: var(--bean-h);
+  background: var(--bean-color);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate3d(-50%, -120vh, 0) rotate(var(--snack-item-rotate));
+  will-change: transform, opacity;
+}
+
+.wrap .snack-bean:nth-child(1) {
+  --snack-item-x: 22%;
+  --bean-color: #f06a8a;
+  --snack-item-rotate: -28deg;
+  --snack-item-delay: 0s;
+  --bean-w: clamp(44px, 9.4vw, 72px);
+  --bean-h: clamp(26px, 5.4vw, 40px);
+}
+
+.wrap .snack-bean:nth-child(2) {
+  --snack-item-x: 38%;
+  --bean-color: #6bc4f0;
+  --snack-item-rotate: 18deg;
+  --snack-item-delay: 0.08s;
+  --bean-w: clamp(36px, 7.6vw, 56px);
+  --bean-h: clamp(28px, 5.8vw, 44px);
+}
+
+.wrap .snack-bean:nth-child(3) {
+  --snack-item-x: 52%;
+  --bean-color: #f0c94a;
+  --snack-item-rotate: -6deg;
+  --snack-item-delay: 0.16s;
+  --bean-w: clamp(48px, 10vw, 76px);
+  --bean-h: clamp(24px, 5vw, 38px);
+}
+
+.wrap .snack-bean:nth-child(4) {
+  --snack-item-x: 66%;
+  --bean-color: #8fd16a;
+  --snack-item-rotate: 32deg;
+  --snack-item-delay: 0.1s;
+  --bean-w: clamp(40px, 8.4vw, 64px);
+  --bean-h: clamp(30px, 6.2vw, 48px);
+}
+
+.wrap .snack-bean:nth-child(5) {
+  --snack-item-x: 78%;
+  --bean-color: #c48ae8;
+  --snack-item-rotate: -40deg;
+  --snack-item-delay: 0.2s;
+  --bean-w: clamp(34px, 7.2vw, 54px);
+  --bean-h: clamp(22px, 4.8vw, 36px);
+}
+
+.wrap .snack-bean:nth-child(6) {
+  --snack-item-x: 30%;
+  --bean-color: #f0925a;
+  --snack-item-rotate: 12deg;
+  --snack-item-delay: 0.24s;
+  bottom: calc(var(--snack-land-bottom) + 18px);
+  --bean-w: clamp(38px, 8vw, 60px);
+  --bean-h: clamp(20px, 4.4vw, 32px);
+}
+
+.wrap.snack-bean-active .snack-scene--bean {
+  opacity: 1;
+}
+
+.wrap.snack-bean-active .snack-stage--bean {
+  visibility: visible;
+}
+
+.wrap.snack-bean-active .snack-bean {
+  animation: snack-drop-item var(--snack-drop-duration)
+    cubic-bezier(0.33, 0.7, 0.45, 1) forwards;
+  animation-delay: var(--snack-item-delay);
+}
+
+/* —— 苦瓜冰美式：几块方冰块落下 —— */
+.wrap .snack-ice {
+  --snack-item-x: 50%;
+  --snack-item-rotate: 12deg;
+  --snack-item-delay: 0s;
+  --ice-size: clamp(34px, 7.2vw, 56px);
+  position: absolute;
+  left: var(--snack-item-x);
+  bottom: var(--snack-land-bottom);
+  width: var(--ice-size);
+  height: var(--ice-size);
+  background: rgba(196, 224, 234, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 3px;
+  opacity: 0;
+  transform: translate3d(-50%, -120vh, 0) rotate(var(--snack-item-rotate));
+  will-change: transform, opacity;
+}
+
+.wrap .snack-ice:nth-child(1) {
+  --snack-item-x: 28%;
+  --snack-item-rotate: -14deg;
+  --snack-item-delay: 0s;
+}
+
+.wrap .snack-ice:nth-child(2) {
+  --snack-item-x: 44%;
+  --snack-item-rotate: 18deg;
+  --snack-item-delay: 0.1s;
+  --ice-size: clamp(28px, 6vw, 46px);
+}
+
+.wrap .snack-ice:nth-child(3) {
+  --snack-item-x: 58%;
+  --snack-item-rotate: -8deg;
+  --snack-item-delay: 0.18s;
+}
+
+.wrap .snack-ice:nth-child(4) {
+  --snack-item-x: 72%;
+  --snack-item-rotate: 22deg;
+  --snack-item-delay: 0.06s;
+  --ice-size: clamp(30px, 6.4vw, 48px);
+  bottom: calc(var(--snack-land-bottom) + 14px);
+}
+
+.wrap .snack-ice:nth-child(5) {
+  --snack-item-x: 36%;
+  --snack-item-rotate: 6deg;
+  --snack-item-delay: 0.22s;
+  --ice-size: clamp(24px, 5.2vw, 40px);
+  bottom: calc(var(--snack-land-bottom) + 22px);
+}
+
+.wrap.snack-ice-active .snack-scene--ice {
+  opacity: 1;
+}
+
+.wrap.snack-ice-active .snack-stage--ice {
+  visibility: visible;
+}
+
+.wrap.snack-ice-active .snack-ice {
+  animation: snack-drop-item var(--snack-drop-duration)
+    cubic-bezier(0.33, 0.7, 0.45, 1) forwards;
+  animation-delay: var(--snack-item-delay);
+}
+
+/* —— 爆辣脆薯片：一团火焰落下后持续闪烁（无木头） —— */
+.wrap .snack-fire {
+  position: absolute;
+  left: 50%;
+  bottom: var(--snack-land-bottom);
+  width: var(--snack-fire-size);
+  height: var(--snack-fire-size);
+  opacity: 0;
+  transform: translate3d(-50%, -120vh, 0) scale(0.92);
+  will-change: transform, opacity;
+}
+
+.wrap .snack-flames {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  width: 60%;
+  height: 70%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.wrap .snack-flame {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  background-color: var(--snack-fire-yellow);
+  border-radius: 8px;
+}
+
+.wrap .snack-flame:nth-child(2n + 1) {
+  animation: snack-flame-odd var(--snack-flame-time) ease-in infinite paused;
+}
+
+.wrap .snack-flame:nth-child(2n) {
+  animation: snack-flame-even var(--snack-flame-time) ease-in infinite paused;
+}
+
+.wrap .snack-flame:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.wrap .snack-flame:nth-child(2) {
+  animation-delay: calc(var(--snack-flame-time) / 4);
+}
+
+.wrap .snack-flame:nth-child(3) {
+  animation-delay: calc(var(--snack-flame-time) / 4 * 2);
+}
+
+.wrap .snack-flame:nth-child(4) {
+  animation-delay: calc(var(--snack-flame-time) / 4 * 3);
+}
+
+.wrap.snack-fire-active .snack-scene--fire {
+  opacity: 1;
+}
+
+.wrap.snack-fire-active .snack-stage--fire {
+  visibility: visible;
+}
+
+.wrap.snack-fire-active .snack-fire {
+  animation: snack-drop-fire var(--snack-drop-duration)
+    cubic-bezier(0.33, 0.7, 0.45, 1) forwards;
+}
+
+.wrap.snack-fire-active .snack-flame {
+  animation-play-state: running;
+}
+
+.wrap.snack-lemon-active .facet,
+.wrap.snack-bean-active .facet,
+.wrap.snack-ice-active .facet,
+.wrap.snack-fire-active .facet {
+  opacity: 0.04;
+}
+
+@keyframes snack-drop-lemon {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -120vh, 0) rotate(-28deg);
+  }
+  14% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+    transform: translate3d(-50%, 10px, 0) rotate(12deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) rotate(8deg);
+  }
+}
+
+@keyframes snack-drop-item {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -120vh, 0) rotate(var(--snack-item-rotate));
+  }
+  12% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+    transform: translate3d(-50%, 8px, 0)
+      rotate(calc(var(--snack-item-rotate) * -0.35));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0)
+      rotate(calc(var(--snack-item-rotate) * 0.55));
+  }
+}
+
+@keyframes snack-drop-fire {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -120vh, 0) scale(0.88);
+  }
+  14% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+    transform: translate3d(-50%, 8px, 0) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+/* Adapted from CodePen JXVpgp flame keyframes; logs removed. */
+@keyframes snack-flame-odd {
+  0%,
+  100% {
+    width: 0%;
+    height: 0%;
+    right: 0%;
+    bottom: 0%;
+    background-color: var(--snack-fire-yellow);
+    z-index: 2;
+  }
+  25% {
+    width: 100%;
+    height: 100%;
+    right: 1%;
+    bottom: 2%;
+    background-color: var(--snack-fire-yellow);
+    z-index: 2;
+  }
+  40% {
+    background-color: var(--snack-fire-orange);
+    z-index: 2;
+  }
+  100% {
+    width: 0%;
+    height: 0%;
+    right: 150%;
+    bottom: 170%;
+    background-color: var(--snack-fire-red);
+    z-index: 0;
+  }
+}
+
+@keyframes snack-flame-even {
+  0%,
+  100% {
+    width: 0%;
+    height: 0%;
+    right: 0%;
+    bottom: 0%;
+    background-color: var(--snack-fire-yellow);
+    z-index: 2;
+  }
+  25% {
+    width: 100%;
+    height: 100%;
+    right: 2%;
+    bottom: 1%;
+    background-color: var(--snack-fire-yellow);
+    z-index: 2;
+  }
+  40% {
+    background-color: var(--snack-fire-orange);
+    z-index: 2;
+  }
+  100% {
+    width: 0%;
+    height: 0%;
+    right: 170%;
+    bottom: 150%;
+    background-color: var(--snack-fire-red);
+    z-index: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --snack-land-bottom: clamp(20px, 5.5vh, 48px);
+    --snack-lemon-size: clamp(64px, 22vw, 96px);
+    /* 手机略压扁、两端更尖，避免缩小时读成正圆 */
+    --snack-lemon-radius: 14% 54%;
+    --snack-lemon-aspect: 0.86;
+    --snack-fire-size: clamp(76px, 24vw, 112px);
+  }
+
+  /* 手机少画两颗糖豆、一块冰，减轻选中瞬间合成压力 */
+  .wrap .snack-bean:nth-child(n + 5),
+  .wrap .snack-ice:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap .snack-scene {
+    transition: none;
+  }
+
+  .wrap.snack-lemon-active .snack-lemon,
+  .wrap.snack-bean-active .snack-bean,
+  .wrap.snack-ice-active .snack-ice,
+  .wrap.snack-fire-active .snack-fire {
+    animation: none;
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  .wrap.snack-lemon-active .snack-lemon {
+    transform: translate3d(-50%, 0, 0) rotate(8deg);
+  }
+
+  .wrap.snack-bean-active .snack-bean,
+  .wrap.snack-ice-active .snack-ice {
+    transform: translate3d(-50%, 0, 0) rotate(var(--snack-item-rotate));
+  }
+
+  .wrap .snack-flame,
+  .wrap.snack-fire-active .snack-flame {
+    animation: none;
+    width: 70%;
+    height: 70%;
+    right: 15%;
+    bottom: 20%;
+    background-color: var(--snack-fire-orange);
+  }
+
+  .wrap .snack-flame:nth-child(2) {
+    width: 55%;
+    height: 55%;
+    right: 35%;
+    bottom: 40%;
+    background-color: var(--snack-fire-yellow);
+  }
+
+  .wrap .snack-flame:nth-child(3) {
+    width: 40%;
+    height: 40%;
+    right: 55%;
+    bottom: 55%;
+    background-color: var(--snack-fire-red);
+  }
+
+  .wrap .snack-flame:nth-child(4) {
+    display: none;
+  }
+}

@@ -24,7 +24,7 @@
   let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-57";
+  const UI_VERSION = "2026.08.02-58";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -101,6 +101,18 @@
   );
   const isReviewsSelected = $derived(
     selectedOption?.t === "一家外卖店的评论区",
+  );
+  const isLemonCandySelected = $derived(
+    selectedOption?.t === "超酸柠檬糖",
+  );
+  const isJellyBeanSelected = $derived(
+    selectedOption?.t === "齁甜怪味豆",
+  );
+  const isBitterIceSelected = $derived(
+    selectedOption?.t === "苦瓜冰美式",
+  );
+  const isSpicyChipSelected = $derived(
+    selectedOption?.t === "爆辣脆薯片",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -276,6 +288,7 @@
     if (selected === null) return;
     answers = [...answers, question.a[selected].s];
     if (current + 1 >= total) {
+      selected = null;
       screen = "result";
     } else {
       current += 1;
@@ -366,6 +379,10 @@
   class:funny-post-active={isFunnyPostSelected}
   class:tutorial-video-active={isTutorialVideoSelected}
   class:reviews-active={isReviewsSelected}
+  class:snack-lemon-active={isLemonCandySelected}
+  class:snack-bean-active={isJellyBeanSelected}
+  class:snack-ice-active={isBitterIceSelected}
+  class:snack-fire-active={isSpicyChipSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -659,6 +676,30 @@
           <span class="reviews-emoji reviews-emoji--thumb">👎</span>
           <span class="reviews-emoji reviews-emoji--fist">🤛</span>
         </span>
+      </div>
+    </div>
+    <!-- 末题四种零食：纯色背景 + CSS 物品从上方落下后停在底部 -->
+    <div class="snack-scene snack-scene--lemon"></div>
+    <div class="snack-scene snack-scene--bean"></div>
+    <div class="snack-scene snack-scene--ice"></div>
+    <div class="snack-scene snack-scene--fire"></div>
+    <div class="snack-stage snack-stage--lemon" aria-hidden="true">
+      <span class="snack-lemon"></span>
+    </div>
+    <div class="snack-stage snack-stage--bean" aria-hidden="true">
+      {#each Array(6) as _}<span class="snack-bean"></span>{/each}
+    </div>
+    <div class="snack-stage snack-stage--ice" aria-hidden="true">
+      {#each Array(5) as _}<span class="snack-ice"></span>{/each}
+    </div>
+    <div class="snack-stage snack-stage--fire" aria-hidden="true">
+      <div class="snack-fire">
+        <div class="snack-flames">
+          <span class="snack-flame"></span>
+          <span class="snack-flame"></span>
+          <span class="snack-flame"></span>
+          <span class="snack-flame"></span>
+        </div>
       </div>
     </div>
   </div>

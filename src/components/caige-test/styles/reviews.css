@@ -1,0 +1,630 @@
+.wrap {
+  /*
+   * “一家外卖店的评论区”背景参数
+   * scene-*：低饱和暖杏评论氛围底色，不改变选项按钮本身。
+   * cycle：好评/差评从轻推到拳头对打并整体冲出屏幕的总时长。
+   * pair-top/left：起始停靠位置（默认右上）；exit-x/y：整体离场终点（左下）。
+   * gap：两侧间距，略拉开以减少拳头交叠。
+   * push-1～4：四轮顶撞的水平幅度；scale-1～4：对应缩放峰值。
+   * fist-swing：拳头互殴时相对位移，越大越像打来打去。
+   */
+  --reviews-scene-top: #edd8c4;
+  --reviews-scene-bottom: #c49a86;
+  --reviews-scene-accent: rgba(120, 58, 48, 0.12);
+  --reviews-cycle: 10s;
+  --reviews-size: clamp(78px, 10vw, 142px);
+  --reviews-pair-top: 18%;
+  --reviews-pair-left: 78%;
+  --reviews-gap: 0.5em;
+  --reviews-push-1: 22px;
+  --reviews-push-2: 38px;
+  --reviews-push-3: 58px;
+  --reviews-push-4: 82px;
+  --reviews-scale-1: 1.14;
+  --reviews-scale-2: 1.28;
+  --reviews-scale-3: 1.42;
+  --reviews-scale-4: 1.58;
+  --reviews-fist-swing: 104px;
+  --reviews-exit-x: -92vw;
+  --reviews-exit-y: 78vh;
+}
+
+.wrap .reviews-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at 22% 28%,
+      var(--reviews-scene-accent) 0 11%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 78% 72%,
+      var(--reviews-scene-accent) 0 10%,
+      transparent 28%
+    ),
+    linear-gradient(
+      158deg,
+      var(--reviews-scene-top),
+      var(--reviews-scene-bottom)
+    );
+  transition: opacity 0.32s ease;
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.wrap .reviews-stage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.wrap .reviews-pair {
+  position: absolute;
+  top: var(--reviews-pair-top);
+  left: var(--reviews-pair-left);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--reviews-gap);
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji",
+    sans-serif;
+  font-size: var(--reviews-size);
+  line-height: 1;
+  transform: translate3d(-50%, -50%, 0);
+  animation: reviews-pair-travel var(--reviews-cycle) linear infinite paused;
+  will-change: transform, opacity;
+}
+
+.wrap .reviews-side {
+  position: relative;
+  display: block;
+  width: 1.05em;
+  height: 1.05em;
+  animation-duration: var(--reviews-cycle);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+  will-change: transform, opacity;
+}
+
+.wrap .reviews-side--good {
+  animation-name: reviews-good-push;
+}
+
+.wrap .reviews-side--bad {
+  animation-name: reviews-bad-push;
+}
+
+.wrap .reviews-emoji {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation-duration: var(--reviews-cycle);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+  will-change: opacity, transform;
+}
+
+.wrap .reviews-emoji--thumb {
+  animation-name: reviews-thumb-face;
+}
+
+.wrap .reviews-emoji--fist {
+  opacity: 0;
+  animation-name: reviews-fist-face;
+}
+
+.wrap.reviews-active .reviews-scene {
+  opacity: 1;
+}
+
+.wrap.reviews-active .reviews-stage {
+  visibility: visible;
+}
+
+.wrap.reviews-active .reviews-pair,
+.wrap.reviews-active .reviews-side,
+.wrap.reviews-active .reviews-emoji {
+  animation-play-state: running;
+}
+
+.wrap.reviews-active .facet {
+  opacity: 0.05;
+}
+
+/*
+ * 时间轴：四轮拇指轮流顶撞逐步升级 → 换成拳头拉开互殴 →
+ * 整组沿右上→左下对角线匀速离场，途中继续一来一回对打。
+ */
+@keyframes reviews-pair-travel {
+  0%,
+  76% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) rotate(0deg) scale3d(1, 1, 1);
+  }
+  84% {
+    opacity: 1;
+    transform: translate3d(
+        calc(-50% + var(--reviews-exit-x) * 0.33),
+        calc(-50% + var(--reviews-exit-y) * 0.33),
+        0
+      )
+      rotate(-6deg) scale3d(1.08, 1.08, 1);
+  }
+  92% {
+    opacity: 1;
+    transform: translate3d(
+        calc(-50% + var(--reviews-exit-x) * 0.66),
+        calc(-50% + var(--reviews-exit-y) * 0.66),
+        0
+      )
+      rotate(-12deg) scale3d(1.16, 1.16, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(
+        calc(-50% + var(--reviews-exit-x)),
+        calc(-50% + var(--reviews-exit-y)),
+        0
+      )
+      rotate(-18deg) scale3d(1.24, 1.24, 1);
+  }
+}
+
+@keyframes reviews-good-push {
+  0%,
+  3% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate(0deg);
+  }
+  /* 第1轮：好评轻推 */
+  7% {
+    opacity: 1;
+    transform: translate3d(var(--reviews-push-1), -5%, 0)
+      scale3d(var(--reviews-scale-1), var(--reviews-scale-1), 1) rotate(9deg);
+  }
+  10%,
+  13% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate(-2deg);
+  }
+  /* 第1轮：被差评顶回 */
+  17% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-1) * -0.55), 4%, 0)
+      scale3d(0.92, 0.92, 1) rotate(-8deg);
+  }
+  20%,
+  23% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate(0deg);
+  }
+  /* 第2轮 */
+  27% {
+    opacity: 1;
+    transform: translate3d(var(--reviews-push-2), -7%, 0)
+      scale3d(var(--reviews-scale-2), var(--reviews-scale-2), 1) rotate(12deg);
+  }
+  30%,
+  33% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.02, 1.02, 1) rotate(-3deg);
+  }
+  37% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-2) * -0.6), 5%, 0)
+      scale3d(0.9, 0.9, 1) rotate(-11deg);
+  }
+  40%,
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.04, 1.04, 1) rotate(0deg);
+  }
+  /* 第3轮 */
+  46% {
+    opacity: 1;
+    transform: translate3d(var(--reviews-push-3), -8%, 0)
+      scale3d(var(--reviews-scale-3), var(--reviews-scale-3), 1) rotate(15deg);
+  }
+  49%,
+  51% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.06, 1.06, 1) rotate(-4deg);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-3) * -0.62), 6%, 0)
+      scale3d(0.88, 0.88, 1) rotate(-14deg);
+  }
+  /* 第4轮拇指最后一顶，随后切拳头 */
+  58% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.08, 1.08, 1) rotate(0deg);
+  }
+  61% {
+    opacity: 1;
+    transform: translate3d(var(--reviews-push-4), -10%, 0)
+      scale3d(var(--reviews-scale-4), var(--reviews-scale-4), 1) rotate(18deg);
+  }
+  63% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.1, 1.1, 1) rotate(-5deg);
+  }
+  66% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-4) * -0.65), 7%, 0)
+      scale3d(0.86, 0.86, 1) rotate(-16deg);
+  }
+  68% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.12, 1.12, 1) rotate(0deg);
+  }
+  /*
+   * 拳头互殴：左顶→左收→右顶→右收。
+   * 单回合约 6%（10s 周期下约 0.6s），全程等间隔，离场不减速。
+   */
+  69% {
+    opacity: 1;
+    transform: translate3d(var(--reviews-fist-swing), -10%, 0)
+      scale3d(1.7, 1.7, 1) rotate(22deg);
+  }
+  70.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotate(-4deg);
+  }
+  72% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -0.45), 6%, 0)
+      scale3d(1.08, 1.08, 1) rotate(-8deg);
+  }
+  73.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.22, 1.22, 1) rotate(0deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 1.1), -11%, 0)
+      scale3d(1.8, 1.8, 1) rotate(24deg);
+  }
+  76.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.22, 1.22, 1) rotate(-4deg);
+  }
+  78% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -0.48), 6%, 0)
+      scale3d(1.1, 1.1, 1) rotate(-9deg);
+  }
+  79.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.24, 1.24, 1) rotate(0deg);
+  }
+  81% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 1.15), -12%, 0)
+      scale3d(1.85, 1.85, 1) rotate(26deg);
+  }
+  82.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.24, 1.24, 1) rotate(-5deg);
+  }
+  84% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -0.5), 7%, 0)
+      scale3d(1.1, 1.1, 1) rotate(-10deg);
+  }
+  85.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.26, 1.26, 1) rotate(0deg);
+  }
+  87% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 1.2), -12%, 0)
+      scale3d(1.9, 1.9, 1) rotate(28deg);
+  }
+  88.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.24, 1.24, 1) rotate(-4deg);
+  }
+  90% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -0.5), 6%, 0)
+      scale3d(1.1, 1.1, 1) rotate(-10deg);
+  }
+  91.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.26, 1.26, 1) rotate(0deg);
+  }
+  93% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 1.25), -14%, 0)
+      scale3d(1.95, 1.95, 1) rotate(30deg);
+  }
+  94.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.26, 1.26, 1) rotate(-4deg);
+  }
+  96% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -0.45), 5%, 0)
+      scale3d(1.12, 1.12, 1) rotate(-8deg);
+  }
+  97.5%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotate(0deg);
+  }
+}
+
+@keyframes reviews-bad-push {
+  0%,
+  3% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate(0deg);
+  }
+  /* 第1轮：被好评顶回 */
+  7% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-1) * -0.5), 4%, 0)
+      scale3d(0.93, 0.93, 1) rotate(7deg);
+  }
+  10%,
+  13% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate(2deg);
+  }
+  /* 第1轮：差评回顶 */
+  17% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-1) * -1), -5%, 0)
+      scale3d(var(--reviews-scale-1), var(--reviews-scale-1), 1) rotate(-9deg);
+  }
+  20%,
+  23% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotate(0deg);
+  }
+  /* 第2轮 */
+  27% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-2) * -0.55), 5%, 0)
+      scale3d(0.9, 0.9, 1) rotate(9deg);
+  }
+  30%,
+  33% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.02, 1.02, 1) rotate(3deg);
+  }
+  37% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-2) * -1), -7%, 0)
+      scale3d(var(--reviews-scale-2), var(--reviews-scale-2), 1) rotate(-13deg);
+  }
+  40%,
+  42% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.04, 1.04, 1) rotate(0deg);
+  }
+  /* 第3轮 */
+  46% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-3) * -0.58), 6%, 0)
+      scale3d(0.88, 0.88, 1) rotate(12deg);
+  }
+  49%,
+  51% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.06, 1.06, 1) rotate(4deg);
+  }
+  55% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-3) * -1), -8%, 0)
+      scale3d(var(--reviews-scale-3), var(--reviews-scale-3), 1) rotate(-16deg);
+  }
+  /* 第4轮拇指最后一顶，随后切拳头 */
+  58% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.08, 1.08, 1) rotate(0deg);
+  }
+  61% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-4) * -0.62), 7%, 0)
+      scale3d(0.86, 0.86, 1) rotate(14deg);
+  }
+  63% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.1, 1.1, 1) rotate(5deg);
+  }
+  66% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-push-4) * -1), -10%, 0)
+      scale3d(var(--reviews-scale-4), var(--reviews-scale-4), 1) rotate(-19deg);
+  }
+  68% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.12, 1.12, 1) rotate(0deg);
+  }
+  /* 与左侧同步：单回合约 0.6s，全程等间隔 */
+  69% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 0.4), 5%, 0)
+      scale3d(1.08, 1.08, 1) rotate(8deg);
+  }
+  70.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotate(0deg);
+  }
+  72% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -1), -10%, 0)
+      scale3d(1.7, 1.7, 1) rotate(-22deg);
+  }
+  73.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.22, 1.22, 1) rotate(4deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 0.42), 5%, 0)
+      scale3d(1.1, 1.1, 1) rotate(9deg);
+  }
+  76.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.22, 1.22, 1) rotate(0deg);
+  }
+  78% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -1.1), -11%, 0)
+      scale3d(1.8, 1.8, 1) rotate(-24deg);
+  }
+  79.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.24, 1.24, 1) rotate(3deg);
+  }
+  81% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 0.45), 6%, 0)
+      scale3d(1.1, 1.1, 1) rotate(10deg);
+  }
+  82.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.24, 1.24, 1) rotate(0deg);
+  }
+  84% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -1.15), -12%, 0)
+      scale3d(1.85, 1.85, 1) rotate(-26deg);
+  }
+  85.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.26, 1.26, 1) rotate(4deg);
+  }
+  87% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 0.45), 6%, 0)
+      scale3d(1.1, 1.1, 1) rotate(10deg);
+  }
+  88.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.24, 1.24, 1) rotate(0deg);
+  }
+  90% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -1.15), -12%, 0)
+      scale3d(1.85, 1.85, 1) rotate(-26deg);
+  }
+  91.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.26, 1.26, 1) rotate(4deg);
+  }
+  93% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * 0.5), 7%, 0)
+      scale3d(1.12, 1.12, 1) rotate(10deg);
+  }
+  94.5% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.26, 1.26, 1) rotate(0deg);
+  }
+  96% {
+    opacity: 1;
+    transform: translate3d(calc(var(--reviews-fist-swing) * -1.2), -12%, 0)
+      scale3d(1.9, 1.9, 1) rotate(-28deg);
+  }
+  97.5%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1.2, 1.2, 1) rotate(2deg);
+  }
+}
+
+@keyframes reviews-thumb-face {
+  0%,
+  66% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+  69%,
+  100% {
+    opacity: 0;
+    transform: scale3d(0.7, 0.7, 1);
+  }
+}
+
+@keyframes reviews-fist-face {
+  0%,
+  66% {
+    opacity: 0;
+    transform: scale3d(0.7, 0.7, 1) rotate(0deg);
+  }
+  69% {
+    opacity: 1;
+    transform: scale3d(1.1, 1.1, 1) rotate(0deg);
+  }
+  77%,
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1) rotate(0deg);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --reviews-size: clamp(62px, 18vw, 94px);
+    --reviews-pair-top: 16%;
+    --reviews-pair-left: 70%;
+    --reviews-gap: 0.36em;
+    --reviews-push-1: 14px;
+    --reviews-push-2: 24px;
+    --reviews-push-3: 36px;
+    --reviews-push-4: 52px;
+    --reviews-scale-1: 1.12;
+    --reviews-scale-2: 1.24;
+    --reviews-scale-3: 1.36;
+    --reviews-scale-4: 1.5;
+    --reviews-fist-swing: 56px;
+    --reviews-exit-x: -108vw;
+    --reviews-exit-y: 86vh;
+  }
+
+  .wrap .reviews-scene {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.reviews-active .reviews-pair,
+  .wrap.reviews-active .reviews-side,
+  .wrap.reviews-active .reviews-emoji {
+    animation: none !important;
+  }
+
+  .wrap.reviews-active .reviews-pair {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
+  }
+
+  .wrap.reviews-active .reviews-side--good {
+    opacity: 1;
+    transform: translate3d(14px, 0, 0) scale3d(1.1, 1.1, 1) rotate(8deg);
+  }
+
+  .wrap.reviews-active .reviews-side--bad {
+    opacity: 1;
+    transform: translate3d(-14px, 0, 0) scale3d(1.1, 1.1, 1) rotate(-8deg);
+  }
+
+  .wrap.reviews-active .reviews-emoji--thumb {
+    opacity: 0;
+  }
+
+  .wrap.reviews-active .reviews-emoji--fist {
+    opacity: 1;
+  }
+}

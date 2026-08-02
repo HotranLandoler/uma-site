@@ -99,6 +99,9 @@
   const isTutorialVideoSelected = $derived(
     selectedOption?.t === "一个教程视频的开头",
   );
+  const isReviewsSelected = $derived(
+    selectedOption?.t === "一家外卖店的评论区",
+  );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
   );
@@ -362,6 +365,7 @@
   class:alarm-active={isAlarmSelected}
   class:funny-post-active={isFunnyPostSelected}
   class:tutorial-video-active={isTutorialVideoSelected}
+  class:reviews-active={isReviewsSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -642,6 +646,19 @@
           <span class="tutorial-video-time"></span>
           <span class="tutorial-video-fullscreen"></span>
         </div>
+      </div>
+    </div>
+    <div class="reviews-scene"></div>
+    <div class="reviews-stage" aria-hidden="true">
+      <div class="reviews-pair">
+        <span class="reviews-side reviews-side--good">
+          <span class="reviews-emoji reviews-emoji--thumb">👍</span>
+          <span class="reviews-emoji reviews-emoji--fist">🤜</span>
+        </span>
+        <span class="reviews-side reviews-side--bad">
+          <span class="reviews-emoji reviews-emoji--thumb">👎</span>
+          <span class="reviews-emoji reviews-emoji--fist">🤛</span>
+        </span>
       </div>
     </div>
   </div>

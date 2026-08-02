@@ -1,0 +1,307 @@
+.wrap {
+  /*
+   * “一条搞笑的帖子”鹅叫背景参数
+   * background-*：低饱和草绿色背景，只改变页面背景，不改变选项按钮。
+   * cycle：鹅轻轻起伏一轮的时长；honk-cycle：单条叫声线扩散的时长。
+   * goose-*：整只鹅的位置、画布与尺寸倍率；移动端会单独覆盖。
+   * body/neck/head/beak/eye/leg/shadow/honk-*：各组件相对鹅画布的位置与尺寸。
+   * x 正值向右，y 正值向下；rotate 正值顺时针旋转。
+   */
+  --funny-post-background-top: #bddb72;
+  --funny-post-background-bottom: #8fbd57;
+  --funny-post-goose-white: #fffdf8;
+  --funny-post-beak: #eea524;
+  --funny-post-eye: #202320;
+  --funny-post-honk: #4d6744;
+  --funny-post-cycle: 1.6s;
+  --funny-post-honk-cycle: 1.2s;
+  --funny-post-goose-right: clamp(100px, 14vw, 210px);
+  --funny-post-goose-bottom: clamp(26px, 6vh, 82px);
+  --funny-post-goose-width: 360px;
+  --funny-post-goose-height: 250px;
+  --funny-post-goose-scale: 1;
+  --funny-post-shadow-x: 45px;
+  --funny-post-shadow-y: 183px;
+  --funny-post-shadow-width: 218px;
+  --funny-post-shadow-height: 58px;
+  --funny-post-leg-y: 180px;
+  --funny-post-leg-width: 30px;
+  --funny-post-leg-height: 58px;
+  --funny-post-leg-left-x: 94px;
+  --funny-post-leg-right-x: 151px;
+  --funny-post-leg-left-rotate: 13deg;
+  --funny-post-leg-right-rotate: -10deg;
+  --funny-post-body-x: 16px;
+  --funny-post-body-y: 78px;
+  --funny-post-body-width: 218px;
+  --funny-post-body-height: 128px;
+  --funny-post-body-rotate: 7deg;
+  --funny-post-neck-x: 168px;
+  --funny-post-neck-y: 23px;
+  --funny-post-neck-width: 76px;
+  --funny-post-neck-height: 155px;
+  --funny-post-neck-rotate: 10deg;
+  --funny-post-head-x: 178px;
+  --funny-post-head-y: 6px;
+  --funny-post-head-width: 102px;
+  --funny-post-head-height: 79px;
+  --funny-post-head-rotate: 8deg;
+  --funny-post-eye-size: 13px;
+  --funny-post-eye-left-x: 225px;
+  --funny-post-eye-left-y: 21px;
+  --funny-post-eye-right-x: 247px;
+  --funny-post-eye-right-y: 30px;
+  --funny-post-beak-x: 260px;
+  --funny-post-beak-y: 47px;
+  --funny-post-beak-width: 73px;
+  --funny-post-beak-height: 36px;
+  --funny-post-beak-rotate: 8deg;
+  --funny-post-honk-x: 350px;
+  --funny-post-honk-y: 67px;
+  --funny-post-honk-width: 48px;
+  --funny-post-honk-height: 7px;
+  --funny-post-honk-angle-top: -32deg;
+  --funny-post-honk-angle-middle: 0deg;
+  --funny-post-honk-angle-bottom: 32deg;
+}
+
+.wrap .funny-post-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--funny-post-background-top),
+    var(--funny-post-background-bottom)
+  );
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+}
+
+.wrap .funny-post-stage {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.wrap .funny-post-goose {
+  position: absolute;
+  right: var(--funny-post-goose-right);
+  bottom: var(--funny-post-goose-bottom);
+  width: var(--funny-post-goose-width);
+  height: var(--funny-post-goose-height);
+  transform: scale(var(--funny-post-goose-scale));
+  transform-origin: right bottom;
+}
+
+.wrap .funny-post-goose > span {
+  position: absolute;
+  display: block;
+}
+
+.wrap .funny-post-shadow {
+  left: var(--funny-post-shadow-x);
+  top: var(--funny-post-shadow-y);
+  width: var(--funny-post-shadow-width);
+  height: var(--funny-post-shadow-height);
+  border-radius: 50%;
+  background: rgba(79, 106, 57, 0.18);
+}
+
+.wrap .funny-post-leg {
+  z-index: 1;
+  top: var(--funny-post-leg-y);
+  width: var(--funny-post-leg-width);
+  height: var(--funny-post-leg-height);
+  border-radius: 999px;
+  background: var(--funny-post-beak);
+  transform-origin: top center;
+}
+
+.wrap .funny-post-leg--left {
+  left: var(--funny-post-leg-left-x);
+  transform: rotate(var(--funny-post-leg-left-rotate));
+}
+
+.wrap .funny-post-leg--right {
+  left: var(--funny-post-leg-right-x);
+  transform: rotate(var(--funny-post-leg-right-rotate));
+}
+
+.wrap .funny-post-body {
+  z-index: 2;
+  left: var(--funny-post-body-x);
+  top: var(--funny-post-body-y);
+  width: var(--funny-post-body-width);
+  height: var(--funny-post-body-height);
+  border-radius: 999px;
+  background: var(--funny-post-goose-white);
+  transform: rotate(var(--funny-post-body-rotate));
+}
+
+.wrap .funny-post-neck {
+  z-index: 3;
+  left: var(--funny-post-neck-x);
+  top: var(--funny-post-neck-y);
+  width: var(--funny-post-neck-width);
+  height: var(--funny-post-neck-height);
+  border-radius: 999px;
+  background: var(--funny-post-goose-white);
+  transform: rotate(var(--funny-post-neck-rotate));
+}
+
+.wrap .funny-post-head {
+  z-index: 4;
+  left: var(--funny-post-head-x);
+  top: var(--funny-post-head-y);
+  width: var(--funny-post-head-width);
+  height: var(--funny-post-head-height);
+  border-radius: 999px;
+  background: var(--funny-post-goose-white);
+  transform: rotate(var(--funny-post-head-rotate));
+}
+
+.wrap .funny-post-eye {
+  z-index: 5;
+  width: var(--funny-post-eye-size);
+  height: var(--funny-post-eye-size);
+  border-radius: 50%;
+  background: var(--funny-post-eye);
+}
+
+.wrap .funny-post-eye--left {
+  left: var(--funny-post-eye-left-x);
+  top: var(--funny-post-eye-left-y);
+}
+
+.wrap .funny-post-eye--right {
+  left: var(--funny-post-eye-right-x);
+  top: var(--funny-post-eye-right-y);
+}
+
+.wrap .funny-post-beak {
+  z-index: 6;
+  left: var(--funny-post-beak-x);
+  top: var(--funny-post-beak-y);
+  width: var(--funny-post-beak-width);
+  height: var(--funny-post-beak-height);
+  border-radius: 999px;
+  background: var(--funny-post-beak);
+  transform: rotate(var(--funny-post-beak-rotate));
+}
+
+.wrap .funny-post-honk {
+  z-index: 7;
+  left: var(--funny-post-honk-x);
+  top: var(--funny-post-honk-y);
+  width: var(--funny-post-honk-width);
+  height: var(--funny-post-honk-height);
+  border-radius: 999px;
+  opacity: 0;
+  background: var(--funny-post-honk);
+  transform-origin: left center;
+  animation: funny-post-honk var(--funny-post-honk-cycle) ease-out infinite
+    paused;
+  will-change: transform, opacity;
+}
+
+.wrap .funny-post-honk--one {
+  --funny-post-honk-angle: var(--funny-post-honk-angle-top);
+}
+
+.wrap .funny-post-honk--two {
+  --funny-post-honk-angle: var(--funny-post-honk-angle-middle);
+}
+
+.wrap .funny-post-honk--three {
+  --funny-post-honk-angle: var(--funny-post-honk-angle-bottom);
+}
+
+.wrap.funny-post-active .funny-post-scene {
+  opacity: 1;
+}
+
+.wrap.funny-post-active .funny-post-stage {
+  visibility: visible;
+}
+
+.wrap.funny-post-active .funny-post-goose {
+  animation: funny-post-goose-bob var(--funny-post-cycle) ease-in-out infinite;
+  will-change: transform;
+}
+
+.wrap.funny-post-active .funny-post-honk {
+  animation-play-state: running;
+}
+
+.wrap.funny-post-active .facet {
+  opacity: 0;
+}
+
+@keyframes funny-post-goose-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(var(--funny-post-goose-scale));
+  }
+  50% {
+    transform: translate3d(0, -5px, 0) scale(var(--funny-post-goose-scale));
+  }
+}
+
+@keyframes funny-post-honk {
+  0%,
+  2% {
+    opacity: 0;
+    transform: rotate(var(--funny-post-honk-angle)) translate3d(0, 0, 0)
+      scaleX(0.72);
+  }
+  6% {
+    opacity: 0.86;
+    transform: rotate(var(--funny-post-honk-angle)) translate3d(2px, 0, 0)
+      scaleX(0.82);
+  }
+  24% {
+    opacity: 0.78;
+    transform: rotate(var(--funny-post-honk-angle)) translate3d(16px, 0, 0)
+      scaleX(1);
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: rotate(var(--funny-post-honk-angle)) translate3d(24px, 0, 0)
+      scaleX(1);
+  }
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    --funny-post-goose-scale: 0.7;
+    --funny-post-cycle: 2.1s;
+    --funny-post-goose-right: 94px;
+    --funny-post-goose-bottom: 22px;
+    --funny-post-honk-width: 42px;
+  }
+
+  .wrap .funny-post-scene {
+    transition: none;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap.funny-post-active .funny-post-goose {
+    animation: none;
+    transform: scale(var(--funny-post-goose-scale));
+  }
+
+  .wrap.funny-post-active .funny-post-honk {
+    animation: none;
+    opacity: 0.62;
+    transform: rotate(var(--funny-post-honk-angle)) scaleX(0.72);
+  }
+
+  .wrap.funny-post-active .funny-post-honk--two {
+    transform: rotate(var(--funny-post-honk-angle)) translateX(12px)
+      scaleX(0.72);
+  }
+}

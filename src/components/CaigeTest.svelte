@@ -24,7 +24,7 @@
   let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-47";
+  const UI_VERSION = "2026.08.02-51";
   const POOL_WAVE_OFFSETS = [-64, -32, 18, 52, 76] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -92,6 +92,9 @@
   );
   const isAlarmSelected = $derived(
     selectedOption?.t === "早上7点的闹钟正在响铃",
+  );
+  const isFunnyPostSelected = $derived(
+    selectedOption?.t === "一条搞笑的帖子",
   );
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
@@ -354,6 +357,7 @@
   class:avoid-message-active={isAvoidMessageSelected}
   class:cat-meme-active={isCatMemeSelected}
   class:alarm-active={isAlarmSelected}
+  class:funny-post-active={isFunnyPostSelected}
   class="wrap"
 >
   <div class="background-art" aria-hidden="true">
@@ -598,6 +602,23 @@
           d="M7 15.7c1.11 0 2-0.89 2-2H5c0 1.11 0.89 2 2 2z"
         ></path>
       </svg>
+    </div>
+    <div class="funny-post-scene"></div>
+    <div class="funny-post-stage" aria-hidden="true">
+      <div class="funny-post-goose">
+        <span class="funny-post-shadow"></span>
+        <span class="funny-post-leg funny-post-leg--left"></span>
+        <span class="funny-post-leg funny-post-leg--right"></span>
+        <span class="funny-post-body"></span>
+        <span class="funny-post-neck"></span>
+        <span class="funny-post-head"></span>
+        <span class="funny-post-eye funny-post-eye--left"></span>
+        <span class="funny-post-eye funny-post-eye--right"></span>
+        <span class="funny-post-beak"></span>
+        <span class="funny-post-honk funny-post-honk--one"></span>
+        <span class="funny-post-honk funny-post-honk--two"></span>
+        <span class="funny-post-honk funny-post-honk--three"></span>
+      </div>
     </div>
   </div>
   <section class:quiz-panel={screen === "quiz"} class="panel">

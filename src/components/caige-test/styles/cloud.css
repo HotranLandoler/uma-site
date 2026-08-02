@@ -1,12 +1,11 @@
 .wrap{
     /*
      * 棉花糖云朵参数
-     * sky-*：区别于水面的暖粉紫天空；front/back：前后景纯色云体。
+     * sky：区别于水面的暖粉紫纯色天空；front/back：前后景纯色云体。
      * drift-speed：基准飘动周期，各朵云在选择器中略有快慢变化。
      * button-*：按钮只保留奶油云体、紫灰圆框、文字与软阴影，不叠图形。
      */
-    --cloud-sky-top: #c7b8dc;
-    --cloud-sky-bottom: #efd0d1;
+    --cloud-sky: #dbc4d7;
     --cloud-front: #fffaf5;
     --cloud-back: #e9dcec;
     --cloud-drift-speed: 26s;
@@ -21,11 +20,7 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    background: linear-gradient(
-      180deg,
-      var(--cloud-sky-top),
-      var(--cloud-sky-bottom)
-    );
+    background: var(--cloud-sky);
     transition: opacity 0.4s ease;
     transform: translateZ(0);
     will-change: opacity;
@@ -139,7 +134,7 @@
     color: var(--cloud-button-text);
     border-color: var(--cloud-button-frame);
     border-radius: 999px;
-    background: linear-gradient(180deg, #fffdfb, var(--cloud-button-body));
+    background: var(--cloud-button-body);
     box-shadow:
       0 6px 0 var(--cloud-button-shadow-base),
       0 14px 26px var(--cloud-button-shadow-soft);

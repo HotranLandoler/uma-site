@@ -1,13 +1,11 @@
 .wrap {
   /*
    * 键盘侠背景参数
-   * scene-*：低饱和的“火气上头”背景；只改变页面背景。
+   * scene：低饱和的“火气上头”纯色背景；只改变页面背景。
    * cycle：一阵符号完成“集中抛落—停顿”的总时长。
    * symbol：符号颜色；移动轨迹只使用 transform / opacity。
    */
-  --keyboard-warrior-scene-top: #e3c8bd;
-  --keyboard-warrior-scene-bottom: #b58e8c;
-  --keyboard-warrior-scene-accent: rgba(103, 53, 67, 0.12);
+  --keyboard-warrior-scene: #ccaba5;
   --keyboard-warrior-cycle: 4.2s;
   --keyboard-warrior-symbol: #633846;
 }
@@ -16,17 +14,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background:
-    radial-gradient(
-      circle at 88% 12%,
-      var(--keyboard-warrior-scene-accent) 0 13%,
-      transparent 34%
-    ),
-    linear-gradient(
-      155deg,
-      var(--keyboard-warrior-scene-top),
-      var(--keyboard-warrior-scene-bottom)
-    );
+  background: var(--keyboard-warrior-scene);
   transition: opacity 0.32s ease;
   will-change: opacity;
 }

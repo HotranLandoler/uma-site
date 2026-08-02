@@ -7,14 +7,12 @@
 .wrap {
   /*
    * DDL 作业背景参数
-   * scene-*：熬夜赶工的低饱和暖灰背景。
+   * scene：熬夜赶工的低饱和暖灰纯色背景。
    * document-cycle：写完三行的总时长；三行分别占 20% / 35% / 45%。
    * 字块与倒计时共用这条时间轴，换行时倒计时会立刻重新填满。
    * document-*：文档纸张、字块和倒计时颜色。
    */
-  --deadline-scene-top: #d8d0c2;
-  --deadline-scene-bottom: #a79f9a;
-  --deadline-scene-accent: rgba(111, 76, 61, 0.13);
+  --deadline-scene: #c0b8ae;
   --deadline-document-cycle: 10s;
   --deadline-document-bg: rgba(248, 246, 237, 0.94);
   --deadline-document-border: rgba(72, 69, 67, 0.28);
@@ -28,22 +26,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background:
-    radial-gradient(
-      circle at 15% 18%,
-      var(--deadline-scene-accent) 0 12%,
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 88% 78%,
-      var(--deadline-scene-accent) 0 10%,
-      transparent 28%
-    ),
-    linear-gradient(
-      155deg,
-      var(--deadline-scene-top),
-      var(--deadline-scene-bottom)
-    );
+  background: var(--deadline-scene);
   transition: opacity 0.32s ease;
   will-change: opacity;
 }

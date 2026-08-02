@@ -1,7 +1,6 @@
 .wrap {
   /* “回一个猫猫表情包”：造型比例改编自参考 CodePen 的蓝猫。 */
-  --cat-meme-scene-top: #d8d2c9;
-  --cat-meme-scene-bottom: #9ca8a8;
+  --cat-meme-scene: #babdb9;
   --cat-meme-fur: #7c85ab;
   --cat-meme-fur-dark: #475881;
   --cat-meme-muzzle: #fbf1d8;
@@ -43,11 +42,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(
-    160deg,
-    var(--cat-meme-scene-top),
-    var(--cat-meme-scene-bottom)
-  );
+  background: var(--cat-meme-scene);
   transition: opacity 0.35s ease;
   will-change: opacity;
 }

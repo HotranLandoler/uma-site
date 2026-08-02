@@ -1,15 +1,14 @@
 .wrap{
     /*
      * 水池背景参数
-     * bg-top / bg-bottom：背景上下端颜色。
+     * bg：水池场景纯色背景。
      * wave-height：波浪区域高度；数值越大，波浪在页面中占据的高度越多。
      * wave-color-1~4：由前至后的四层波浪颜色；alpha 越大越不透明。
      * wave-speed-1~4：每层完成一次移动所需时间；秒数越小，移动越快。
      * wave-phase-1~4：负值 delay，选中瞬间各层已处于周期中的不同相位。
      * wave-offset：由交互循环写入的水平偏移，避免每次激活都从同一位置出现。
      */
-    --pool-bg-top: #8edee0;
-    --pool-bg-bottom: #3ca8bd;
+    --pool-bg: #66c3ce;
     --pool-wave-height: clamp(150px, 20vh, 270px);
     --pool-wave-color-1: rgba(223, 255, 252, 0.68);
     --pool-wave-color-2: rgba(173, 240, 236, 0.56);
@@ -46,11 +45,7 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    background: linear-gradient(
-      180deg,
-      var(--pool-bg-top),
-      var(--pool-bg-bottom)
-    );
+    background: var(--pool-bg);
     transition: opacity 0.45s ease;
     transform: translateZ(0);
     will-change: opacity;

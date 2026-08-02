@@ -1,14 +1,12 @@
 .wrap{
     /*
      * 吐槽背景参数
-     * scene-*：带一点“气上头”感觉的暖色背景，不改变选项按钮本身。
+     * scene：带一点“气上头”感觉的暖色纯色背景，不改变选项按钮本身。
      * cycle：双手完成“左侧停留—右侧停留”的一轮时长。
      * edge：手停靠页面左右两侧时的边距。
      * mark：巨大标点颜色；标点与手都只动画 transform / opacity。
      */
-    --rant-scene-top: #f4d4c2;
-    --rant-scene-bottom: #d69b96;
-    --rant-scene-accent: rgba(142, 66, 76, 0.14);
+    --rant-scene: #e5b8ac;
     --rant-cycle: 7.2s;
     --rant-edge: clamp(10px, 4vw, 56px);
     --rant-mark: #71394b;
@@ -18,22 +16,7 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    background:
-      radial-gradient(
-        circle at 18% 22%,
-        var(--rant-scene-accent) 0 12%,
-        transparent 31%
-      ),
-      radial-gradient(
-        circle at 82% 76%,
-        var(--rant-scene-accent) 0 10%,
-        transparent 29%
-      ),
-      linear-gradient(
-        160deg,
-        var(--rant-scene-top),
-        var(--rant-scene-bottom)
-      );
+    background: var(--rant-scene);
     transition: opacity 0.32s ease;
     transform: translateZ(0);
     will-change: opacity;

@@ -4,10 +4,10 @@
    * cycle：亮屏、通知、熄屏、映出表情并抛走的一轮总时长。
    * throw-x/height/end-y：抛物线的水平距离、最高点和离场高度。
    * phone-*：手机外壳、亮屏、熄屏及反光颜色。
+   * scene：低饱和纯色背景。
    */
   --avoid-message-cycle: 5s;
-  --avoid-message-scene-top: #d4d0ca;
-  --avoid-message-scene-bottom: #97979a;
+  --avoid-message-scene: #b6b4b2;
   --avoid-message-phone-shell: #393d43;
   --avoid-message-phone-edge: #74777c;
   --avoid-message-screen-on: #dce9e6;
@@ -24,11 +24,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(
-    155deg,
-    var(--avoid-message-scene-top),
-    var(--avoid-message-scene-bottom)
-  );
+  background: var(--avoid-message-scene);
   transition: opacity 0.3s ease;
   will-change: opacity;
 }

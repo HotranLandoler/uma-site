@@ -1,13 +1,11 @@
 .wrap {
   /*
    * 反复斟酌回复的背景参数
-   * scene-*：克制的灰紫对话背景；只改变页面背景。
+   * scene：克制的灰紫纯色对话背景；只改变页面背景。
    * cycle：三段草稿完成“输入—停顿—删除”的总时长。
    * composer-*：输入框主体、边框与文字颜色。
    */
-  --draft-scene-top: #d9d9e4;
-  --draft-scene-bottom: #aebbc0;
-  --draft-scene-accent: rgba(91, 83, 119, 0.12);
+  --draft-scene: #c4c4d2;
   --draft-cycle: 10.8s;
   --draft-composer-bg: rgba(247, 247, 243, 0.9);
   --draft-composer-border: rgba(68, 78, 91, 0.34);
@@ -19,22 +17,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background:
-    radial-gradient(
-      circle at 14% 20%,
-      var(--draft-scene-accent) 0 12%,
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 88% 78%,
-      var(--draft-scene-accent) 0 10%,
-      transparent 28%
-    ),
-    linear-gradient(
-      155deg,
-      var(--draft-scene-top),
-      var(--draft-scene-bottom)
-    );
+  background: var(--draft-scene);
   transition: opacity 0.32s ease;
   will-change: opacity;
 }

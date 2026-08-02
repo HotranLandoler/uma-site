@@ -8,8 +8,7 @@
    * 数值越大越靠内、越靠上或尺寸越大，移动端有独立覆盖。
    */
   --tutorial-video-cycle: 8s;
-  --tutorial-video-background-top: #f2d6bd;
-  --tutorial-video-background-bottom: #b8cda5;
+  --tutorial-video-background: #e4d0b8;
   --tutorial-video-player-width: min(640px, 70vw);
   --tutorial-video-player-bottom: clamp(26px, 6vh, 76px);
   --tutorial-video-frame: #76564d;
@@ -32,11 +31,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(
-    155deg,
-    var(--tutorial-video-background-top),
-    var(--tutorial-video-background-bottom)
-  );
+  background: var(--tutorial-video-background);
   transition: opacity 0.32s ease;
   will-change: opacity;
 }

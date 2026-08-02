@@ -1,14 +1,13 @@
 .wrap {
   /*
    * “立刻问什么事”棒球背景参数
-   * scene-*：无装饰的低饱和背景；只改变页面背景，不改变选项按钮。
+   * scene：无装饰的低饱和纯色背景；只改变页面背景，不改变选项按钮。
    * cycle：一轮“慢速高抛—受击—快速直线返回—停顿”的总时长。
    * contact-x/y：球的受击点；移动端会单独覆盖。
    * incoming/return/exit-x：来球起点、回球终点和消失点。
    * arc-height：抛物线最高点；负值绝对值越大，弧线越高。
    */
-  --fast-reply-scene-top: #c9d8d0;
-  --fast-reply-scene-bottom: #88a68f;
+  --fast-reply-scene: #a8bfb0;
   --fast-reply-cycle: 3s;
   --fast-reply-contact-x: 18%;
   --fast-reply-contact-y: 72%;
@@ -24,11 +23,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--fast-reply-scene-top),
-    var(--fast-reply-scene-bottom)
-  );
+  background: var(--fast-reply-scene);
   transition: opacity 0.32s ease;
   will-change: opacity;
 }

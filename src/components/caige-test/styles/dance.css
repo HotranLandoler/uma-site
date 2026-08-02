@@ -1,15 +1,14 @@
 .wrap{
     /*
      * 广场舞背景与按钮参数
-     * sky / ground：晚饭后广场的天空、地面颜色。
+     * sky / ground：晚饭后广场的天空、地面纯色分区。
      * grid：地砖分隔线；crowd-*：人物轮廓与五件低饱和上衣颜色。
      * beat-speed：一轮“动次打次”的时长。
      * crowd-shift-*：人群左右整体移动幅度；button-scale-*：按钮强弱拍缩放。
      * 注意：≤560px 会在下方媒体查询中覆盖这两组幅度；调整桌面值不会影响手机值。
      * button-*：按钮主体、结构线、节拍块、文字与阴影颜色。
      */
-    --dance-sky-top: #f1d9bf;
-    --dance-sky-bottom: #d8bab2;
+    --dance-sky: #f1d9bf;
     --dance-ground: #a49aaa;
     --dance-ground-deep: #81798d;
     --dance-grid: rgba(244, 225, 202, 0.3);
@@ -55,9 +54,9 @@
       0 100% / 100% 38% no-repeat,
       linear-gradient(
         180deg,
-        var(--dance-sky-top) 0 62%,
+        var(--dance-sky) 0 62%,
         var(--dance-ground) 62% 82%,
-        var(--dance-ground-deep) 100%
+        var(--dance-ground-deep) 82% 100%
       );
     transition: opacity 0.35s ease;
     transform: translateZ(0);

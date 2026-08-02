@@ -1,16 +1,14 @@
 .wrap {
   /*
    * “一家外卖店的评论区”背景参数
-   * scene-*：低饱和暖杏评论氛围底色，不改变选项按钮本身。
+   * scene：低饱和暖杏评论氛围纯色底，不改变选项按钮本身。
    * cycle：好评/差评从轻推到拳头对打并整体冲出屏幕的总时长。
    * pair-top/left：起始停靠位置（默认右上）；exit-x/y：整体离场终点（左下）。
    * gap：两侧间距，略拉开以减少拳头交叠。
    * push-1～4：四轮顶撞的水平幅度；scale-1～4：对应缩放峰值。
    * fist-swing：拳头互殴时相对位移，越大越像打来打去。
    */
-  --reviews-scene-top: #edd8c4;
-  --reviews-scene-bottom: #c49a86;
-  --reviews-scene-accent: rgba(120, 58, 48, 0.12);
+  --reviews-scene: #d8b9a5;
   --reviews-cycle: 10s;
   --reviews-size: clamp(78px, 10vw, 142px);
   --reviews-pair-top: 18%;
@@ -33,22 +31,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background:
-    radial-gradient(
-      circle at 22% 28%,
-      var(--reviews-scene-accent) 0 11%,
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 78% 72%,
-      var(--reviews-scene-accent) 0 10%,
-      transparent 28%
-    ),
-    linear-gradient(
-      158deg,
-      var(--reviews-scene-top),
-      var(--reviews-scene-bottom)
-    );
+  background: var(--reviews-scene);
   transition: opacity 0.32s ease;
   transform: translateZ(0);
   will-change: opacity;

@@ -54,7 +54,7 @@
     overflow: hidden;
   }
   .wrap .relation-hero{
-    background: linear-gradient(180deg, #f7d3c0 0%, #fbe4d6 100%);
+    background: #f7d3c0;
     padding: 24px 20px 50px;
     text-align: center;
     clip-path: url(#hero-wave);

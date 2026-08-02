@@ -1,14 +1,13 @@
 .wrap {
   /*
    * “一条搞笑的帖子”鹅叫背景参数
-   * background-*：低饱和草绿色背景，只改变页面背景，不改变选项按钮。
+   * background：低饱和草绿色纯色背景，只改变页面背景，不改变选项按钮。
    * cycle：鹅轻轻起伏一轮的时长；honk-cycle：单条叫声线扩散的时长。
    * goose-*：整只鹅的位置、画布与尺寸倍率；移动端会单独覆盖。
    * body/neck/head/beak/eye/leg/shadow/honk-*：各组件相对鹅画布的位置与尺寸。
    * x 正值向右，y 正值向下；rotate 正值顺时针旋转。
    */
-  --funny-post-background-top: #bddb72;
-  --funny-post-background-bottom: #8fbd57;
+  --funny-post-background: #a6cc65;
   --funny-post-goose-white: #fffdf8;
   --funny-post-beak: #eea524;
   --funny-post-eye: #202320;
@@ -69,11 +68,7 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--funny-post-background-top),
-    var(--funny-post-background-bottom)
-  );
+  background: var(--funny-post-background);
   transition: opacity 0.32s ease;
   will-change: opacity;
 }

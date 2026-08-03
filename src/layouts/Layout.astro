@@ -2,8 +2,8 @@
 import "../styles/global.css";
 
 interface Props {
-	title?: string;
-	fullBleed?: boolean;
+  title?: string;
+  fullBleed?: boolean;
 }
 
 const { title = "UMa Studio", fullBleed = false } = Astro.props;
@@ -11,34 +11,38 @@ const { title = "UMa Studio", fullBleed = false } = Astro.props;
 
 <!doctype html>
 <html lang="zh">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg" href="/favicon.svg" />
-		<meta name="description" content="Official website of UMa Studio, an indie game team from China." />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body class="text-center">
-		<slot name="topnav" />
-		{
-			fullBleed ? (
-				<slot />
-			) : (
-				<div class="max-w-[40rem] p-8 mx-auto">
-					<slot />
-				</div>
-			)
-		}
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg" href="/favicon.svg" />
+    <meta
+      name="description"
+      content="Official website of UMa Studio, an indie game team from China."
+    />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="text-center">
+    <slot name="topnav" />
+    {
+      fullBleed ? (
+        <slot />
+      ) : (
+        <div class="max-w-[40rem] p-8 mx-auto">
+          <slot />
+        </div>
+      )
+    }
+  </body>
 </html>
 
 <style>
-	:root {
-		font-size: 1em;
-	}
-	body {
-		font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB",
-			"Noto Sans CJK SC", sans-serif;
-	}
+  :root {
+    font-size: 1em;
+  }
+  body {
+    font-family:
+      "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans CJK SC",
+      sans-serif;
+  }
 </style>

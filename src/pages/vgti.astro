@@ -7,18 +7,22 @@ import UMaLogo from "../assets/UMaLogo.svg";
 ---
 
 <Layout title="键盘农场｜菜格测试" fullBleed>
-	<a
-		href="/"
-		aria-label="返回主页"
-		title="返回主页"
-		class="flex w-fit items-center gap-2 ml-4 mt-4 rounded-full bg-white px-2 pr-4 py-2 transition hover:shadow-lg"
-	>
-		<Image src={UMaLogo} alt="UMa Studio" class="h-8 w-8 rounded-full" />
-		<span class="font-bold text-[#2e5965]">UMa Studio</span>
-	</a>
-	<CaigeTest client:load />
+  <div class="flex flex-col min-h-svh">
+    <a
+      href="/"
+      aria-label="返回主页"
+      title="返回主页"
+      class="flex w-fit items-center gap-2 m-4 rounded-full bg-white px-2 pr-4 py-2 transition hover:shadow-lg">
+      <Image src={UMaLogo} alt="UMa Studio" class="h-8 w-8 rounded-full" />
+      <span class="font-bold text-[#2e5965]">UMa Studio</span>
+    </a>
 
-  <footer class="text-left p-4 text-white">
-    <CopyRight />
-  </footer>
+    <div class="flex-1 flex flex-col min-h-0">
+      <CaigeTest client:load />
+    </div>
+
+    <footer class="text-left p-4 text-white">
+      <CopyRight />
+    </footer>
+  </div>
 </Layout>

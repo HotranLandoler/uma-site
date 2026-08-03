@@ -55,18 +55,10 @@
   const selectedOption = $derived(
     selected === null ? null : question.a[selected],
   );
-  const isPoolSelected = $derived(
-    selectedOption?.t === "波光闪闪的水面",
-  );
-  const isCloudSelected = $derived(
-    selectedOption?.t === "棉花糖一样的云朵",
-  );
-  const isCommuterSelected = $derived(
-    selectedOption?.t === "行色匆忙的路人",
-  );
-  const isDanceSelected = $derived(
-    selectedOption?.t === "跳广场舞的叔叔阿姨",
-  );
+  const isPoolSelected = $derived(selectedOption?.t === "波光闪闪的水面");
+  const isCloudSelected = $derived(selectedOption?.t === "棉花糖一样的云朵");
+  const isCommuterSelected = $derived(selectedOption?.t === "行色匆忙的路人");
+  const isDanceSelected = $derived(selectedOption?.t === "跳广场舞的叔叔阿姨");
   const isRantSelected = $derived(
     selectedOption?.t === "和朋友吐槽刚遇到的奇葩",
   );
@@ -79,42 +71,26 @@
   const isDeadlineSelected = $derived(
     selectedOption?.t === "赶一个马上就到ddl的作业",
   );
-  const isFastReplySelected = $derived(
-    selectedOption?.t === "立刻问什么事",
-  );
+  const isFastReplySelected = $derived(selectedOption?.t === "立刻问什么事");
   const isDelayedReplySelected = $derived(
     selectedOption?.t === "已读，但是等到有空再回",
   );
   const isAvoidMessageSelected = $derived(
     selectedOption?.t === "不要来找我不要来找我……",
   );
-  const isCatMemeSelected = $derived(
-    selectedOption?.t === "回一个猫猫表情包",
-  );
+  const isCatMemeSelected = $derived(selectedOption?.t === "回一个猫猫表情包");
   const isAlarmSelected = $derived(
     selectedOption?.t === "早上7点的闹钟正在响铃",
   );
-  const isFunnyPostSelected = $derived(
-    selectedOption?.t === "一条搞笑的帖子",
-  );
+  const isFunnyPostSelected = $derived(selectedOption?.t === "一条搞笑的帖子");
   const isTutorialVideoSelected = $derived(
     selectedOption?.t === "一个教程视频的开头",
   );
-  const isReviewsSelected = $derived(
-    selectedOption?.t === "一家餐厅的评论区",
-  );
-  const isLemonCandySelected = $derived(
-    selectedOption?.t === "超酸柠檬糖",
-  );
-  const isJellyBeanSelected = $derived(
-    selectedOption?.t === "齁甜怪味豆",
-  );
-  const isBitterIceSelected = $derived(
-    selectedOption?.t === "苦瓜冰美式",
-  );
-  const isSpicyChipSelected = $derived(
-    selectedOption?.t === "爆辣脆薯片",
-  );
+  const isReviewsSelected = $derived(selectedOption?.t === "一家餐厅的评论区");
+  const isLemonCandySelected = $derived(selectedOption?.t === "超酸柠檬糖");
+  const isJellyBeanSelected = $derived(selectedOption?.t === "齁甜怪味豆");
+  const isBitterIceSelected = $derived(selectedOption?.t === "苦瓜冰美式");
+  const isSpicyChipSelected = $derived(selectedOption?.t === "爆辣脆薯片");
   const poolWaveOffset = $derived(
     poolWaveOffsetIndex < 0 ? 0 : POOL_WAVE_OFFSETS[poolWaveOffsetIndex],
   );
@@ -135,12 +111,8 @@
       style.getPropertyValue(name).trim() || fallback;
     const riseTime = cssTimeToMs(css("--cat-meme-head-rise-time", "0.2s"));
     const fallTime = cssTimeToMs(css("--cat-meme-head-fall-time", "0.8s"));
-    const lowHoldTime = cssTimeToMs(
-      css("--cat-meme-head-low-hold-time", "1s"),
-    );
-    const resetTime = cssTimeToMs(
-      css("--cat-meme-head-reset-time", "0.2s"),
-    );
+    const lowHoldTime = cssTimeToMs(css("--cat-meme-head-low-hold-time", "1s"));
+    const resetTime = cssTimeToMs(css("--cat-meme-head-reset-time", "0.2s"));
     const defaultHoldTime = cssTimeToMs(
       css("--cat-meme-head-default-hold-time", "1s"),
     );
@@ -198,8 +170,7 @@
         },
         {
           transform: defaultPoint,
-          offset:
-            (riseTime + fallTime + lowHoldTime + resetTime) / totalTime,
+          offset: (riseTime + fallTime + lowHoldTime + resetTime) / totalTime,
           easing: "linear",
         },
         { transform: defaultPoint, offset: 1 },
@@ -414,8 +385,7 @@
         <use href="#pool-gentle-wave" x="48" y="0"></use>
         <use href="#pool-gentle-wave" x="48" y="3"></use>
         <use href="#pool-gentle-wave" x="48" y="5"></use>
-        <use class="pool-wave-back" href="#pool-gentle-wave" x="48" y="7"
-        ></use>
+        <use class="pool-wave-back" href="#pool-gentle-wave" x="48" y="7"></use>
       </g>
     </svg>
     <div class="cloud-sky"></div>
@@ -808,7 +778,7 @@
           <p class="promo-lead">{UI.promoLead}</p>
           <img
             class="promo-image"
-            src={keyboardFarmBanner}
+            src="/vgti/KeyboardFarm.webp"
             alt={UI.promoImageAlt}
           />
           <button onclick={restart}>{UI.againBtn}</button>

@@ -24,10 +24,6 @@
     --dance-button-shadow-color: rgba(62, 52, 64, 0.22);
 }
 
-  .wrap.dance-active .ui-version{
-    color: rgba(255, 250, 240, 0.48);
-  }
-
   .wrap .dance-plaza{
     position: absolute;
     inset: 0;

@@ -32,19 +32,6 @@ body {
   overflow: hidden;
   contain: paint;
 }
-.wrap .ui-version {
-  position: absolute;
-  right: 9px;
-  bottom: 7px;
-  z-index: 0;
-  color: rgba(37, 63, 67, 0.34);
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  user-select: text;
-}
-
 .wrap .facet {
   position: absolute;
   opacity: 0.42;

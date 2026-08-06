@@ -25,7 +25,6 @@
   let catMemeVoice = $state<HTMLSpanElement | null>(null);
 
   const total = QUESTIONS.length;
-  const UI_VERSION = "2026.08.02-59";
   const POOL_WAVE_OFFSETS = [-28, -14, 0, 16, 28] as const;
 
   // 计分：累加各类型得分，并列时按 TIE_ORDER 决出胜者
@@ -786,5 +785,4 @@
       {/if}
     </div>
   </section>
-  <small class="ui-version" title="页面版本">VGTI {UI_VERSION}</small>
 </section>

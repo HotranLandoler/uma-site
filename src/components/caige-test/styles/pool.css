@@ -38,10 +38,6 @@
     --pool-button-sparkle: rgba(255, 255, 255, 0.88);
 }
 
-  .wrap.pool-active .ui-version{
-    color: rgba(255, 255, 255, 0.38);
-  }
-
   .wrap .pool-sky{
     position: absolute;
     inset: 0;
